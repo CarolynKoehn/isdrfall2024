@@ -45,7 +45,7 @@ gitcreds_get()
 R should return something that looks like this:
 
 ```{r gitsuccess, echo=FALSE, out.width="70%"}
-knitr::include_graphics("img/01/credentialsuccess.png", error = FALSE)
+#knitr::include_graphics("img/01/credentialsuccess.png", error = FALSE)
 ```
 
 ### Bring the project into RStudio
@@ -59,7 +59,7 @@ knitr::include_graphics("img/01/credentialsuccess.png", error = FALSE)
 Assuming all this has worked, you should be able to click on the "Git" tab and see something like this:
 
 ```{r gittab, echo=FALSE, out.width="70%"}
-knitr::include_graphics("img/01/gittab.png", error = FALSE)
+#knitr::include_graphics("img/01/gittab.png", error = FALSE)
 ```
 
 ### Basic workflow
@@ -78,7 +78,9 @@ knitr::include_graphics("img/01/gittab.png", error = FALSE)
 
 This is a [Quarto document](https://quarto.org/docs/get-started/authoring/rstudio.html) (in fact, this whole webpage and all of the slides were built with Quarto). Quarto uses the `knitr` package to render files containing `R`, `python`, and `julia` to  [Markdown](https://daringfireball.net/projects/markdown/) as a means of rendering code, text, math, figures, and tables to a variety of formats.
 
+<!--
 ![](/example/img/01/rstudio_qmd_workflow.png){.border fig-alt="Workflow diagram starting with a qmd file, then knitr, then md, then pandoc, then PDF, MS Word, or HTML." fig-align="center"}
+-->
 
 Markdown is a simple formatting syntax for authoring HTML documents (it's the basis for the Readme docs that GitHub creates for you). From there, `RStudio` calls [pandoc](https://pandoc.org/) to render the markdown file into your chosen output format. **I'm telling you this because there will be times when some part of this pipeline may break and you'll need to know where the errors might be coming from.**
 

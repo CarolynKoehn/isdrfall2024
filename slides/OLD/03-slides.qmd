@@ -107,10 +107,10 @@ $$
 
 library(sf)
 library(tidyverse)
-cejst <- st_read("/Users/mattwilliamson/Google Drive/My Drive/TEACHING/Intro_Spatial_Data_R/Data/2023/assignment01/cejst_nw.shp", quiet=TRUE) %>% 
-  filter(!st_is_empty(.))
-
-plot(cejst["EBLR_PFS"], main="Expected Annual Building Loss Rate")
+# cejst <- st_read("/Users/mattwilliamson/Google Drive/My Drive/TEACHING/Intro_Spatial_Data_R/Data/2023/assignment01/cejst_nw.shp", quiet=TRUE) %>% 
+#   filter(!st_is_empty(.))
+# 
+# plot(cejst["EBLR_PFS"], main="Expected Annual Building Loss Rate")
 ```
 :::
 :::

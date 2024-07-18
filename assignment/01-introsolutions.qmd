@@ -28,8 +28,8 @@ I can read in the data using `st_read` or `read_sf`
 #| message: false
 library(sf)
 
-cejst.sf <- read_sf("data/opt/data/2023/assignment01/cejst_nw.shp")
-cejst.st <- st_read("data/opt/data/2023/assignment01/cejst_nw.shp")
+# cejst.sf <- read_sf("data/opt/data/2023/assignment01/cejst_nw.shp")
+# cejst.st <- st_read("data/opt/data/2023/assignment01/cejst_nw.shp")
 
 ```
 
@@ -40,8 +40,8 @@ You can inspect the differences between the resulting object classes by calling 
 #| message: false
 library(sf)
 
-class(cejst.sf)
-class(cejst.st)
+# class(cejst.sf)
+# class(cejst.st)
 
 ```
 
@@ -52,7 +52,7 @@ Because the data are in [wide format](https://www.statology.org/long-vs-wide-dat
 ```{r}
 #| echo: fenced
 
-nrow(cejst.sf)
+# nrow(cejst.sf)
 
 ```
 
@@ -61,7 +61,7 @@ Similarly, if we wanted to know how many attributes are collected for each obser
 ```{r}
 #| echo: fenced
 
-ncol(cejst.sf)
+# ncol(cejst.sf)
 
 ```
 
