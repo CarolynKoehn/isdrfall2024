@@ -2,7 +2,7 @@
 title: "Getting Started"
 subtitle: "HES 505 Fall 2023: Session 1"
 author: "Matt Williamson"
-format: 
+format:
   revealjs:
     theme: mytheme.scss
     slide-number: true

@@ -103,10 +103,10 @@ Image Source: Wikimedia Commons
 #| echo: true
 #| code-line-numbers: "3,4,5"
 dir.for.files <- "/Users/mattwilliamson/Library/CloudStorage/GoogleDrive-mattwilliamson@boisestate.edu/My Drive/TEACHING/Intro_Spatial_Data_R/Data/2023/assignment01/"
-vector.data <- sf::st_read(dsn = paste0(dir.for.files, "cejst_nw.shp"), quiet=TRUE)
-sf::st_crs(x = vector.data)$input
-sf::st_crs(x = vector.data)$proj4string
-sf::st_crs(x = vector.data)$wkt
+# vector.data <- sf::st_read(dsn = paste0(dir.for.files, "cejst_nw.shp"), quiet=TRUE)
+# sf::st_crs(x = vector.data)$input
+# sf::st_crs(x = vector.data)$proj4string
+# sf::st_crs(x = vector.data)$wkt
 ```
 
 ## Accessing CRS with `R`
@@ -115,8 +115,8 @@ sf::st_crs(x = vector.data)$wkt
 #| echo: true
 #| code-line-numbers: "2"
 
-raster.data <- terra::rast(x = paste0(dir.for.files, "wildfire_hazard_agg.tif"))
-terra::crs(raster.data, describe=TRUE, proj=TRUE)
+# raster.data <- terra::rast(x = paste0(dir.for.files, "wildfire_hazard_agg.tif"))
+# terra::crs(raster.data, describe=TRUE, proj=TRUE)
 ```
 
 ## What if you don't know the CRS?
@@ -204,13 +204,13 @@ mapview(locations_sf)
 #| code-line-numbers: "1,2,4,5"
 
 
-vector.data.proj <- vector.data %>% 
-  sf::st_transform(., crs = 3083)
-st_crs(vector.data.proj)$input
-
-vector.data.proj.rast <- vector.data %>% 
-  sf::st_transform(., crs = crs(raster.data))
-st_crs(vector.data.proj.rast)$proj4string
+# vector.data.proj <- vector.data %>% 
+#   sf::st_transform(., crs = 3083)
+# st_crs(vector.data.proj)$input
+# 
+# vector.data.proj.rast <- vector.data %>% 
+#   sf::st_transform(., crs = crs(raster.data))
+# st_crs(vector.data.proj.rast)$proj4string
 ```
 
 ## Changing the CRS in `R`
@@ -218,11 +218,11 @@ st_crs(vector.data.proj.rast)$proj4string
 ```{r}
 #| echo: true
 
-raster.data.proj <- project(x = raster.data, y = "EPSG:3083")
-crs(raster.data.proj, describe=TRUE, proj=TRUE)
+# raster.data.proj <- project(x = raster.data, y = "EPSG:3083")
+# crs(raster.data.proj, describe=TRUE, proj=TRUE)
 
-raster.data.proj.vect <- project(x = raster.data, y = vect(vector.data))
-crs(raster.data.proj.vect, describe=TRUE, proj=TRUE)
+# raster.data.proj.vect <- project(x = raster.data, y = vect(vector.data))
+# crs(raster.data.proj.vect, describe=TRUE, proj=TRUE)
 
 ```
 
