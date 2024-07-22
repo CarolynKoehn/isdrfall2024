@@ -1,6 +1,6 @@
 ---
-title: "Last year's class"
+title: "Past years' classes"
 ---
 
-Last year was the first time I taught this class in it's current format. I built a number of worked examples to try to clarify how different parts of a spatial workflow come together. Although the examples are far from perfect (I'm hoping this year's are better), the page does have a number of potentially useful pieces. Check out the [examples](https://isdrfall21.classes.spaseslab.com/example/) to access these.
+2021 was the first time this class was taught in its current format. Matt Williamson built a number of worked examples to try to clarify how different parts of a spatial workflow come together. Although the examples may diverge a bit from the examples we do this year, the page does have a number of potentially useful pieces. Check out the [examples](https://isdrfall21.classes.spaseslab.com/example/) to access these.
 

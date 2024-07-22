@@ -1,28 +1,28 @@
 author: Matt Williamson
 
 instructor:
-  name: Dr. Matt Williamson
-  name_no_title: Matt Williamson
-  email: mattwilliamson@boisestate.edu
-  url: "https://www.spaseslab.com"
-  twitter: MwilliamsonMatt
-  github: mattwilliamson13
-  office: "4125 Environmental Research Building"
+  name: Carolyn Koehn
+  name_no_title: Carolyn Koehn
+  email: carolynkoehn@u.boisestate.edu
+  # url: "https://www.spaseslab.com"
+  # twitter: MwilliamsonMatt
+  github: CarolynKoehn
+  office: "4034 Environmental Research Building"
   contact_policy: >-
     E-mail and Slack are the best ways to get in contact with me. I will try to respond to all course-related e-mails and Slack messages within 48 hours (*really*), but also remember that life can be busy and chaotic for everyone (including me!), so if I don't respond right away, don't worry!
-  appointment_url: https://calendly.com/mattwilliamson/
+  appointment_url: https://calendly.com/carolynkoehn-u
 
 course:
   number: "HES 505"
-  semester: "Fall 2023"
-  days: "Mondays and Wednesdays"
-  time: "1:30–2:45 PM"
-  location: "SMASH 116"
-  dates: "August 21–December 13, 2023"
-  github: "https://www.github.com/mattwilliamson/isdrfall23"
-  url: "https://isdrfall23.classes.spaseslab.com"
+  semester: "Fall 2024"
+  days: "TBD"
+  time: "TBD"
+  location: "TBD"
+  dates: "August 19–December 13, 2023"
+  # github: "https://github.com/CarolynKoehn/isdrfall2024"
+  url: "https://isdrfall24.classes.spaseslab.com"
   copyright_year: "2023"
-  slack: "https://app.slack.com/client/TFDA2L1RQ/CV4DEJ8M7"
+  slack: "https://ecostatsbsu.slack.com/archives/C07DGC07AMB"
 
 university:
   name: Boise State University

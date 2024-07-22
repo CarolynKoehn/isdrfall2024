@@ -74,7 +74,7 @@ image courtesy of NASA/JPL-Caltech/Univ. of Ariz., Public domain, via Wikimedia 
 
 -   Open Source
 
--   Huge useR community
+-   Huge user community
 
 -   Integrated analysis pipelines
 
@@ -187,8 +187,8 @@ p2
 :::
 
 ## Course Webpage { background-image="img/slide_1/hellroaring.jpeg"}
-
-[https://isdrfall23.classes.spaseslab.com/](https://isdrfall23.classes.spaseslab.com/)
+<!-- not set up yet -->
+[https://isdrfall24.classes.spaseslab.com/](https://isdrfall24.classes.spaseslab.com/)
 
 :::{style="font-size: 1.2em; margin-top: 1.5em; color: #fff"}
 - Syllabus
