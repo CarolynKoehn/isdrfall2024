@@ -30,15 +30,15 @@ website:
 
   favicon: "/files/iSDR_logo.png"
 
-  twitter-card:
-    image: "/files/social-image-f22.png"
-    card-style: summary_large_image
-    creator: "@MwilliamsonMatt"
+  # twitter-card:
+  #   image: "/files/social-image-f22.png"
+  #   card-style: summary_large_image
+  #   creator: "@MwilliamsonMatt"
     # site: "@MwilliamsonMatt"
 
-  open-graph:
-    image: "/files/social-image-f22.png"
-    locale: en_US
+  # open-graph:
+  #   image: "/files/social-image-f22.png"
+  #   locale: en_US
 
   navbar:
     pinned: true
@@ -59,12 +59,14 @@ website:
       - icon: slack
         href: "https://ecostatsbsu.slack.com/archives/CV4DEJ8M7"
         aria-label: Slack
-      - icon: github
-        href: "https://github.com/BSU-Spatial-Data-in-R-Fall2022"
-        aria-label: GitHub
-      - icon: cloud-fill
-        href: "https://rstudio-lxp-01.boisestate.edu/auth-sign-in?appUri=%2F"
-        aria-label: Rstudio  
+        # update GitHub when classroom repo is created
+      # - icon: github
+      #   href: "https://github.com/BSU-Spatial-Data-in-R-Fall2022"
+        # update RStudio link when available from Kyle
+      #   aria-label: GitHub
+      # - icon: cloud-fill
+      #   href: "https://rstudio-lxp-01.boisestate.edu/auth-sign-in?appUri=%2F"
+      #   aria-label: Rstudio  
 
   sidebar:
     - title: "Content"

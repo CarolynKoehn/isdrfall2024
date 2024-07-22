@@ -6,7 +6,7 @@ title: "Final Project"
 
 The final project is an opportunity to bring all of the things you've learned in the course into a single reproducible workflow to answer a question of your choosing. Because each of you are in different stages of collecting your own data and because confronting datasets that aren’t yours can help clarify important concepts and design elements, I’m asking you to **develop an analysis of data that isn’t yours**. This final project should help you demonstrate:
 
-* Proper data management, cleaning, and manipulation technques
+* Proper data management, cleaning, and manipulation techniques
 
 * The ability to summarize spatial data and apply different statistical analyses to it
 
@@ -37,7 +37,7 @@ You can generate a 'manuscript' style document (using Quarto) or a flexdashboard
 
 ## Assessment
 
-You'll submit a draft of the final report on **December 7**. I'll give you feedback based on your project and on your objectives for the course. You'll then have a chance to address my feedback before turning in your final draft on **December 14**. Your final self-assessment will ask you to reflect on your objectives for the course and evaluate the degree to which your final project demonstrates that you achieved your objectives. *Thus, when you are designing your project, make sure that you have your initial objectives in mind.*
+You'll submit a draft of the final report on **December 7** <!-- to update -->. I'll give you feedback based on your project and on your objectives for the course. You'll then have a chance to address my feedback before turning in your final draft on **December 14** <!-- to update -->. Your final self-assessment will ask you to reflect on your objectives for the course and evaluate the degree to which your final project demonstrates that you achieved your objectives. *Thus, when you are designing your project, make sure that you have your initial objectives in mind.*
 
 :::{.callout-tip}
 **A note on grades**: You will be responsible for assessing how well your assignment demonstrates that you achieved your objectives. I reserve the right to change the grade you've given yourself, but will provide clear justification for why I'm doing that. _Without a completed self-assessment there is no grade for your final project_, so please make sure you complete it.

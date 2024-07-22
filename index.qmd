@@ -2,7 +2,7 @@
 title: "Intro to Spatial Data in R"
 subtitle: "Use R to load, visualize, and analyze spatial data"
 details: |
-  HES 505 • Fall 2023<br>Human-Environment Systems<br>Boise State University
+  HES 505 • Fall 2024<br>Human-Environment Systems<br>Boise State University
 sidebar: false
 toc: false
 page-layout: full
@@ -32,7 +32,7 @@ withr::with_dir(here::here(), {
 - {{< fa user >}} &nbsp; [{{< var instructor.name >}}]({{< var instructor.url >}})
 - {{< fa university >}} &nbsp; {{< var instructor.office >}}
 - {{< fa envelope >}} &nbsp; <a href="mailto:{{< var instructor.email >}}">{{< var instructor.email >}}</a>
-- {{< fa brands twitter >}} &nbsp; [{{< var instructor.twitter >}}](https://www.twitter.com/{{< var instructor.twitter >}})
+<!-- - {{< fa brands twitter >}} &nbsp; [{{< var instructor.twitter >}}](https://www.twitter.com/{{< var instructor.twitter >}}) -->
 - {{< fa calendar-check >}} &nbsp; [Schedule an appointment]({{< var instructor.appointment_url >}})
 :::
 

@@ -5,7 +5,9 @@ title: "Fun datasets"
 So much data, so little time... Here are some links to help you get started finding data for your geospatial projects
 
 ## Spatial Data Repositories
-- [**DataBasin**](https://databasin.org/): Lots of spatial data related to conservation issues across the US. The [**AdaptWest**](https://adaptwest.databasin.org/) portal has _tons_ of spatial data on climate change and its potential impacts.
+- [**DataBasin**](https://databasin.org/): Lots of spatial data related to conservation issues across the US. 
+
+- The [**AdaptWest**](https://adaptwest.databasin.org/) portal has _tons_ of spatial data on climate change and its potential impacts.
 
 - [**US Protected Areas Database**](https://www.usgs.gov/core-science-systems/science-analytics-and-synthesis/gap/science/protected-areas): PAD-US is America’s official national inventory of U.S. terrestrial and marine protected areas that are dedicated to the preservation of biological diversity and to other natural, recreation and cultural uses, managed for these purposes through legal or other effective means. PAD-US also includes the best available aggregation of federal land and marine areas provided directly by managing agencies, coordinated through the Federal Geographic Data Committee (FGDC) Federal Lands Working Group.
 
@@ -13,7 +15,7 @@ So much data, so little time... Here are some links to help you get started find
 
 ## General Data Repositories
 
-- [**Data is Plural newsletter**](https://tinyletter.com/data-is-plural): Jeremy Singer-Vine sends a weekly newsletter of the most interesting public datasets he's found. You should subscribe to it. [He also has an archive of all the datasets he's highlighted.](https://docs.google.com/spreadsheets/d/1wZhPLMCHKJvwOkP4juclhjFgqIY8fQFMemwKL2c64vk/edit#gid=0)
+- [**Data is Plural newsletter**](https://www.data-is-plural.com/): Jeremy Singer-Vine sends a weekly newsletter of the most interesting public datasets he's found. You should subscribe to it. [He also has an archive of all the datasets he's highlighted.](https://docs.google.com/spreadsheets/d/1wZhPLMCHKJvwOkP4juclhjFgqIY8fQFMemwKL2c64vk/edit#gid=0)
 
 - [**Google Dataset Search**](https://toolbox.google.com/datasetsearch): Google indexes thousands of public datasets; search for them here.
 

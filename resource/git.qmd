@@ -6,7 +6,7 @@ Getting in the habit of using version control can be challenging, especially if 
 
 ## Installing Git and making it play nice with R
 
-[Happy git with R](https://happygitwithr.com/) is [Jenny Bryan's](https://jennybryan.org/): extremely helpful introduction to git and incorporating it into your R workflow. 
+[Happy git with R](https://happygitwithr.com/) is [Jenny Bryan's](https://jennybryan.org/) extremely helpful introduction to git and incorporating it into your R workflow. 
 
 ## Getting the hang of git
 

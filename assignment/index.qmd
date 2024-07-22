@@ -10,15 +10,16 @@ This course is collaborative. I'm hoping to provide a broad suite of information
 
 ## Problem sets
 
-I've created **ten assignments** to practice outlining a workflow, writing R code, and troubleshooting errors. The assignments rely on [these datatasets](/assignment/data.qmd)are designed to provide "bite-sized" practice to help cement the topics covered in the (generally 2) lectures that each applies. That said, they may take some and I'd encourage you to start on them early so that we have time to work on any questions you have.
+I've created **ten assignments** to practice outlining a workflow, writing R code, and troubleshooting errors. The assignments rely on [these datatasets](/assignment/data.qmd) and are designed to provide "bite-sized" practice to help cement the topics covered in the (generally 2) lectures that each applies. That said, they may take some and I'd encourage you to start on them early so that we have time to work on any questions you have.
 Moreover, long coding days are _the worst_ so working in bite size chunks can help keep things fun! Finally, working incrementally will also to encourage you to get in the habit of using `git` to keep track of your progress.
 
 
 
 I'll be grading these according to:
+
 * **Please Resubmit**: This indicates that either your code does not run as written (i.e., your quarto document will not compile on my computer), you did not use Git as instructed, and/or that your responses to the questions I posed indicate that you do not quite understand the material as well as I would like. You’ll need to schedule an appointment to talk with me and we’ll work out what you need to do to get credit for the assignment. Although there isn’t a hard deadline for this resubmission, the assignments build on each other so it’s in your best interest to complete the resubmission before the next assignment. Failure to resubmit will result in no credit for the assignment.
 
-* **Resubmit If You Like**: This indicates that all of the code works as written and that you used Git, but that you may have missed some important concepts. Your are welcome to resubmit the assignment and address my comments to help polish the final product, but it is not required for you to get credit for the assignment.
+* **Resubmit If You Like**: This indicates that all of the code works as written and that you used Git, but that you may have missed some important concepts. You are welcome to resubmit the assignment and address my comments to help polish the final product, but it is not required for you to get credit for the assignment.
 
 * **Good To Go**: All of your code works, you completed the necessary Git steps, and all of the pieces are there and polished. I may have some minor comments, but I don’t need you to address them for this assignment.
 
