@@ -4,10 +4,10 @@ instructor:
   name: Carolyn Koehn
   name_no_title: Carolyn Koehn
   email: carolynkoehn@u.boisestate.edu
-  # url: "https://www.spaseslab.com"
+  url: "https://scholar.google.com/citations?user=nscXWkcAAAAJ"
   # twitter: MwilliamsonMatt
   github: CarolynKoehn
-  office: "4034 Environmental Research Building"
+  office: "4034-1 Environmental Research Building"
   contact_policy: >-
     E-mail and Slack are the best ways to get in contact with me. I will try to respond to all course-related e-mails and Slack messages within 48 hours (*really*), but also remember that life can be busy and chaotic for everyone (including me!), so if I don't respond right away, don't worry!
   appointment_url: https://calendly.com/carolynkoehn-u
@@ -19,9 +19,9 @@ course:
   time: "TBD"
   location: "TBD"
   dates: "August 19–December 13, 2023"
-  github: "https://github.com/CarolynKoehn/isdrfall2024"
+  github: "https://github.com/BSU-Spatial-Data-in-R-Fall2024"
   url: "https://isdrfall24.classes.spaseslab.com"
-  copyright_year: "2023"
+  copyright_year: "2024"
   slack: "https://ecostatsbsu.slack.com/archives/C07DGC07AMB"
 
 university:
