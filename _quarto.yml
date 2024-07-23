@@ -59,9 +59,8 @@ website:
       - icon: slack
         href: "https://ecostatsbsu.slack.com/archives/CV4DEJ8M7"
         aria-label: Slack
-        # update GitHub when classroom repo is created
-      # - icon: github
-      #   href: "https://github.com/BSU-Spatial-Data-in-R-Fall2022"
+      - icon: github
+        href: "https://github.com/BSU-Spatial-Data-in-R-Fall2024"
         # update RStudio link when available from Kyle
       #   aria-label: GitHub
       # - icon: cloud-fill
@@ -221,7 +220,7 @@ website:
 
   page-footer:
     left: |
-      Content {{< fa brands creative-commons >}} {{< var course.copyright_year >}} by [{{< var instructor.name_no_title >}}]({{< var instructor.url >}}) <br>
+      Content {{< fa brands creative-commons >}} 2023 by [Matt Williamson](www.spaseslab.com) <br>
       All content licensed under a {{< fa brands creative-commons >}}
       {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
       [Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
