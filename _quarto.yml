@@ -61,8 +61,8 @@ website:
         aria-label: Slack
       - icon: github
         href: "https://github.com/BSU-Spatial-Data-in-R-Fall2024"
+        aria-label: GitHub
         # update RStudio link when available from Kyle
-      #   aria-label: GitHub
       # - icon: cloud-fill
       #   href: "https://rstudio-lxp-01.boisestate.edu/auth-sign-in?appUri=%2F"
       #   aria-label: Rstudio  
