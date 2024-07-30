@@ -187,7 +187,7 @@ p2
 :::
 
 ## Course Webpage { background-image="img/slide_1/hellroaring.jpeg" background-opacity="0.7"}
-<!-- not set up yet -->
+
 [https://isdrfall24.classes.spaseslab.com/](https://isdrfall24.classes.spaseslab.com/)
 
 :::{style="font-size: 1.2em; margin-top: 1.5em; color: #fff"}
@@ -280,7 +280,7 @@ gitcreds::gitcreds_get()
 
 ## Joining the assignment and cloning the repo
 
-1. Click this [link](https://classroom.github.com/a/8TteH9XA) <!-- need to update -->
+1. Click this [link](https://classroom.github.com/a/oQRH4AqL)
 
 2. Bring the project into RStudio
 
