@@ -1,7 +1,7 @@
 ---
 title: "Getting Started"
-subtitle: "HES 505 Fall 2023: Session 1"
-author: "Matt Williamson"
+subtitle: "HES 505 Fall 2024: Session 1"
+author: "Carolyn Koehn"
 format:
   revealjs:
     theme: mytheme.scss
@@ -45,13 +45,13 @@ image courtesy of NASA/JPL-Caltech/Univ. of Ariz., Public domain, via Wikimedia 
 :::
 :::
 ::: {.column width="60%"}
-![](img/slide_1/Buffalo_Mosaic.png)
+![](img/slide_1/FarmPrES-press-release-figure.jpg)
 :::
 :::
 
 ## What about you? { background-image="img/slide_1/camasprairie.jpeg" background-opacity="0.7"}
 :::{style="font-size: 1.2em; text-align: center; margin-top: 2em; color: #7C4A89"}
-:::{style="color: #9F281A"}
+:::{style="color: #000000"}
 - Your preferred pronouns
 
 - Where are you from?
@@ -186,7 +186,7 @@ p2
 - Readings 
 :::
 
-## Course Webpage { background-image="img/slide_1/hellroaring.jpeg"}
+## Course Webpage { background-image="img/slide_1/hellroaring.jpeg" background-opacity="0.7"}
 <!-- not set up yet -->
 [https://isdrfall24.classes.spaseslab.com/](https://isdrfall24.classes.spaseslab.com/)
 
@@ -280,7 +280,7 @@ gitcreds::gitcreds_get()
 
 ## Joining the assignment and cloning the repo
 
-1. Click this [link](https://classroom.github.com/a/8TteH9XA)
+1. Click this [link](https://classroom.github.com/a/8TteH9XA) <!-- need to update -->
 
 2. Bring the project into RStudio
 
@@ -290,7 +290,7 @@ gitcreds::gitcreds_get()
 
 ## The git workflow
 
-* Make sure to **pull** everytime you start working on a project
+* Make sure to **pull** every time you start working on a project
 
 * Make some changes to code
 
@@ -304,7 +304,7 @@ gitcreds::gitcreds_get()
 
 ## Checking in
 
-1. What are some advantages and disadvantages of using `R` for spatial analysis
+1. What are some advantages and disadvantages of using `R` for spatial analysis?
 
 2. What can I clarify about the course?
 
