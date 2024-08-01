@@ -183,13 +183,44 @@ website:
           contents:
             - example/index.qmd
         - section: "Getting started"
-          contents:
-            - text: "Setup"
-              file: example/getting-setup.qmd
-        # - section: "Spatial operations in R"
+        #   contents:
+        #     - text: "Setup"
+        #       file: example/getting-setup.qmd
+        - section: "Spatial operations in R"
         #   contents:
         #     - text: "Vector data"
         #       file: example/vector-intro.qmd
+        #     - text: "Raster data"
+        #       file: example/raster-intro.qmd
+        #     - text: "Integrating vector and raster data"
+        #       file: example/combining-data.qmd
+        - section: "Statistical Workflows"
+        #   contents:
+        #     - text: "Building dataframes"
+        #       file: example/intro-analysis.qmd
+        #     - text: "Analyzing patterns"
+        #       file: example/pattern-analysis.qmd
+        #     - text: "Spatial Models"
+        #       file: example/stat-analysis.qmd
+        - section: "Visualizing Spatial Data"
+
+    - title: "Lessons"
+      contents:
+        - section: "Overview"
+          contents:
+            - lesson/index.qmd
+        - section: "Getting started"
+          contents:
+            - text: "Setup"
+              file: lesson/getting-setup.qmd
+            - text: "Data Classes"
+              file: lesson/dataclasses.qmd
+            - text: "Quarto"
+              file: lesson/quarto.qmd
+        - section: "Spatial operations in R"
+          contents:
+            - text: "Vector data"
+              file: lesson/vector_intro.qmd
         #     - text: "Raster data"
         #       file: example/raster-intro.qmd
         #     - text: "Integrating vector and raster data"
