@@ -1,52 +1,51 @@
 group,session,date,end_date,title,flag,deadline,content,lesson,example,assignment,note
-Getting started,Session 1,2023-08-21,,Introduction to the course,,,content/01-content,lesson/getting-setup,,,
-Getting started,Session 2,2023-08-23,,Why Geographic Analysis,,,content/02-content,,,,
-Getting started,Session 2,2023-08-25,,Self-Evaluation 1 due,TRUE,11:59 PM,,,,assignment/self-eval1,
-Getting started,Session 3,2023-08-28,,Introduction to Spatial Data,,,content/03-content,,,,
-Getting started,Session 4,2023-08-30,,Introduction to Spatial Data with R,,,content/04-content,lesson/dataclasses,,,
-Getting started,Session 4,2023-08-31,,Homework 1,TRUE,11:59 PM,,,,assignment/01-intro,
-Getting started,Session 5,2023-09-04,,No Class,,,,,,,(Labor Day)
-Getting started,Session 6,2023-09-06,,"Literate Programming, Quarto, Workflows",,,content/06-content,lesson/quarto,,,
-Getting started,Session 6,2023-09-07,,Homework 2,TRUE,11:59 PM,,,,assignment/02-introspatial,
-Spatial Data Operations in R,Session 7,2023-09-11,,Areal Data: Coordinates and Geometries,,,content/07-content,,,,(remote)
-Spatial Data Operations in R,Session 8,2023-09-13,,Areal Data: Vector Data,,,content/08-content,,example/vector-intro,,(remote)
-Spatial Data Operations in R,Session 8,2023-09-14,,Homework 3,TRUE,,,,,assignment/03-vector,
-Spatial Data Operations in R,Session 9,2023-09-18,,Areal Data: Rasters,,,content/09-content,,,,
-Spatial Data Operations in R,Session 10,2023-09-20,,Mapping Geographic Data,,,content/10-content,,example/mapping-intro,,
-Spatial Data Operations in R,Session 10,2023-09-21,,Homework 4,TRUE,,,,,assignment/04-maps,
-Spatial Data Operations in R,Session 11,2023-09-25,,Operations With Vectors I,,,content/11-content,,,,(remote)
-Spatial Data Operations in R,Session 12,2023-09-27,,Operations With Vectors II,,,content/12-content,,,,(remote)
-Spatial Data Operations in R,Assignment Revision,2023-09-28,,Assignment Revision 1,TRUE,11:59 PM,,,,assignment/05-firstrevision,
-Spatial Data Operations in R,Session 13,2023-10-02,,Operations With Rasters I,,,content/13-content,,example/combining-data,,
-Spatial Data Operations in R,Session 14,2023-10-04,,Operations With Rasters II,,,content/14-content,,example/intro-analysis,,
-Spatial Data Operations in R,Homework 5,2023-10-05,,Homework 5,TRUE,11:59 PM,,,,assignment/06-vectorops,
-Spatial Data Operations in R,Session 15,2023-10-09,,Combining Tabular Data and Spatial Data,,,content/15-content,,,,
-Spatial Data Operations in R,Session 16,2023-10-11,,Combining Vectors and Continuous Rasters,,,content/16-content,,,,(remote)
-Spatial Data Operations in R,Homework 6,2023-10-15,,Homework 6,TRUE,11:59 PM,,,,assignment/07-rasterops,
-Spatial Data Operations in R,Session 17,2023-10-16,,Combining Vectors and Categorical Rasters,,,content/17-content,,,,
-Statistical Workflows for Spatial Data,Session 18,2023-10-18,,Point Patterns,,,content/18-content,,,,
-Statistical Workflows for Spatial Data,Session 18,2023-10-19,,Homework 7,TRUE,11:59 PM,,,,assignment/08-combinations,
-Statistical Workflows for Spatial Data,Session 19,2023-10-23,,Interpolation,,,content/19-content,,example/pattern-analysis,,
-Statistical Workflows for Spatial Data,Session 20,2023-10-25,,Proximity and Areal Data,,,content/20-content,,example/stat-analysis,,
-Statistical Workflows for Spatial Data,Session 20,2023-10-26,,Homework 8,TRUE,11:59 PM,,,,assignment/09-pointpatterns,
-Statistical Workflows for Spatial Data,Session 21,2023-10-30,,Spatial Autocorrelation,,,content/21-content,,,,
-Statistical Workflows for Spatial Data,Session 22,2023-11-01,,Statistical Modelling I,,,content/22-content,,,,
-Statistical Workflows for Spatial Data,Session 22,2023-11-02,,Assignment Revision 2,TRUE,11:59 PM,,,,assignment/10-secondrevision,
-Statistical Workflows for Spatial Data,Session 23,2023-11-06,,Statistical Modelling II,,,content/23-content,,,,
-Statistical Workflows for Spatial Data,Session 24,2023-11-08,,Statistical Modelling III,,,content/24-content,,example/intro-ggplot,,
-Statistical Workflows for Spatial Data,Session 24,2023-11-09,,Homework 9,TRUE,11:59 PM,,,,assignment/11-statmod,
-Statistical Workflows for Spatial Data,Session 25,2023-11-13,,Movement and Networks I,,,content/25-content,,,,
-Statistical Workflows for Spatial Data,Session 26,2023-11-15,,Movement and Networks II,,,content/26-content,,,,
-Statistical Workflows for Spatial Data,Session 26,2023-11-16,,Homework 10,TRUE,11:59 PM,,,,assignment/12-nets,
-Statistical Workflows for Spatial Data,Session 27,2023-11-20,,No Class,,,,,,,(Fall Break)
-Statistical Workflows for Spatial Data,Session 28,2023-11-22,,No Class,,,,,,,(Fall Break)
-Visualizing Spatial Data,Session 29,2023-11-27,,Data Visualization and Maps I,,,content/29-content,,,,
-Visualizing Spatial Data,Session 30,2023-11-29,,Data Visualization and Maps II,,,content/30-content,,,,
-Visualizing Spatial Data,Session 30,2023-11-30,,Assignment Revision 3,TRUE,11:59 PM,,,,assignment/13-thirdrevision,
-Visualizing Spatial Data,Session 31,2023-12-04,,Introduction to Interactive Maps,,,content/31-content,,,,
-Wrapup,Session 31,2023-12-05,,Draft Final Project Due,TRUE,11:59 PM,,,,assignment/final-proj,
-Wrapup,Session 32,2023-12-06,,Conclusion,,,content/32-content,,,,
-Wrapup,Final Project,2023-12-07,,Final Project Draft,TRUE,11:59 PM,,,,assignment/final-proj,
-Wrapup,Session 32,2023-12-08,,Final Project Workday,,,,,,,(optional)
-Wrapup,Final Project,2023-12-14,,Final Project Due,TRUE,11:59 PM,,,,assignment/final-proj,
-Wrapup,Final Project,2023-12-15,,Final Self-Evaluation Due,TRUE,11:59 PM,,,,assignment/self-eval3,
+Getting started,Session 1,2024-08-19,,Introduction to the course,,,content/01-content,lesson/getting-setup,,,
+Getting started,Session 2,2024-08-21,,Why Geographic Analysis,,,content/02-content,,,,
+Getting started,Session 2,2024-08-23,,Self-Evaluation 1 due,TRUE,11:59 PM,,,,assignment/self-eval1,
+Getting started,Session 3,2024-08-26,,Introduction to Spatial Data,,,content/03-content,,,,
+Getting started,Session 4,2024-08-28,,Introduction to Spatial Data with R,,,content/04-content,lesson/dataclasses,,,
+Getting started,Session 4,2024-08-29,,Homework 1,TRUE,11:59 PM,,,,assignment/01-intro,
+Getting started,Session 5,2024-09-02,,No Class,,,,,,,(Labor Day)
+Getting started,Session 6,2024-09-04,,"Literate Programming, Quarto, Workflows",,,content/06-content,lesson/quarto,,,
+Getting started,Session 6,2024-09-05,,Homework 2,TRUE,11:59 PM,,,,assignment/02-introspatial,
+Spatial Data Operations in R,Session 7,2024-09-09,,Areal Data: Coordinates and Geometries,,,content/07-content,,,,(remote)
+Spatial Data Operations in R,Session 8,2024-09-11,,Areal Data: Vector Data,,,content/08-content,,example/vector-intro,,(remote)
+Spatial Data Operations in R,Session 8,2024-09-12,,Homework 3,TRUE,,,,,assignment/03-vector,
+Spatial Data Operations in R,Session 9,2024-09-16,,Areal Data: Rasters,,,content/09-content,,,,
+Spatial Data Operations in R,Session 10,2024-09-18,,Mapping Geographic Data,,,content/10-content,,example/mapping-intro,,
+Spatial Data Operations in R,Session 10,2024-09-19,,Homework 4,TRUE,,,,,assignment/04-maps,
+Spatial Data Operations in R,Session 11,2024-09-23,,Operations With Vectors I,,,content/11-content,,,,(remote)
+Spatial Data Operations in R,Session 12,2024-09-25,,Operations With Vectors II,,,content/12-content,,,,(remote)
+Spatial Data Operations in R,Assignment Revision,2024-09-26,,Assignment Revision 1,TRUE,11:59 PM,,,,assignment/05-firstrevision,
+Spatial Data Operations in R,Session 13,2024-09-30,,Operations With Rasters I,,,content/13-content,,example/combining-data,,
+Spatial Data Operations in R,Session 14,2024-10-02,,Operations With Rasters II,,,content/14-content,,example/intro-analysis,,
+Spatial Data Operations in R,Homework 5,2024-10-03,,Homework 5,TRUE,11:59 PM,,,,assignment/06-vectorops,
+Spatial Data Operations in R,Session 15,2024-10-07,,Combining Tabular Data and Spatial Data,,,content/15-content,,,,
+Spatial Data Operations in R,Session 16,2024-10-09,,Combining Vectors and Continuous Rasters,,,content/16-content,,,,(remote)
+Spatial Data Operations in R,Homework 6,2024-10-13,,Homework 6,TRUE,11:59 PM,,,,assignment/07-rasterops,
+Spatial Data Operations in R,Session 17,2024-10-14,,Combining Vectors and Categorical Rasters,,,content/17-content,,,,
+Statistical Workflows for Spatial Data,Session 18,2024-10-16,,Point Patterns,,,content/18-content,,,,
+Statistical Workflows for Spatial Data,Session 18,2024-10-18,,Homework 7,TRUE,11:59 PM,,,,assignment/08-combinations,
+Statistical Workflows for Spatial Data,Session 19,2024-10-21,,Interpolation,,,content/19-content,,example/pattern-analysis,,
+Statistical Workflows for Spatial Data,Session 20,2024-10-23,,Proximity and Areal Data,,,content/20-content,,example/stat-analysis,,
+Statistical Workflows for Spatial Data,Session 20,2024-10-24,,Homework 8,TRUE,11:59 PM,,,,assignment/09-pointpatterns,
+Statistical Workflows for Spatial Data,Session 21,2024-10-28,,Spatial Autocorrelation,,,content/21-content,,,,
+Statistical Workflows for Spatial Data,Session 22,2024-10-30,,Statistical Modelling I,,,content/22-content,,,,
+Statistical Workflows for Spatial Data,Session 22,2024-10-31,,Assignment Revision 2,TRUE,11:59 PM,,,,assignment/10-secondrevision,
+Statistical Workflows for Spatial Data,Session 23,2024-11-04,,Statistical Modelling II,,,content/23-content,,,,
+Statistical Workflows for Spatial Data,Session 24,2024-11-06,,Statistical Modelling III,,,content/24-content,,example/intro-ggplot,,
+Statistical Workflows for Spatial Data,Session 24,2024-11-07,,Homework 9,TRUE,11:59 PM,,,,assignment/11-statmod,
+Statistical Workflows for Spatial Data,Session 25,2024-11-11,,Movement and Networks I,,,content/25-content,,,,
+Statistical Workflows for Spatial Data,Session 26,2024-11-13,,Movement and Networks II,,,content/26-content,,,,
+Statistical Workflows for Spatial Data,Session 26,2024-11-14,,Homework 10,TRUE,11:59 PM,,,,assignment/12-nets,
+Visualizing Spatial Data,Session 27,2024-11-18,,Data Visualization and Maps I,,,content/29-content,,,,
+Visualizing Spatial Data,Session 28,2024-11-20,,Data Visualization and Maps II,,,content/30-content,,,,
+Visualizing Spatial Data,Session 28,2024-11-21,,Assignment Revision 3,TRUE,11:59 PM,,,,assignment/13-thirdrevision,
+Visualizing Spatial Data,Session 28,2024-11-25,,No Class,,,,,,,(Fall Break)
+Visualizing Spatial Data,Session 28,2024-11-27,,No Class,,,,,,,(Fall Break)
+Visualizing Spatial Data,Session 29,2024-12-02,,Introduction to Interactive Maps,,,content/31-content,,,,
+Wrapup,Session 30,2024-12-04,,Conclusion,,,content/32-content,,,,
+Wrapup,Final Project,2024-12-05,,Final Project Draft,TRUE,11:59 PM,,,,assignment/final-proj,
+Wrapup,Session 30,2024-12-11,,Final Project Workday,,,,,,,(optional)
+Wrapup,Final Project,2024-12-12,,Final Project Due,TRUE,11:59 PM,,,,assignment/final-proj,
+Wrapup,Final Project,2024-12-13,,Final Self-Evaluation Due,TRUE,11:59 PM,,,,assignment/self-eval3,
