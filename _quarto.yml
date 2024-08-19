@@ -79,8 +79,8 @@ website:
           contents:
             - text: "1: Introduction to the Course"
               file: content/01-content.qmd
-            # - text: "2: Why Geographic Analysis"
-            #   file: content/02-content.qmd
+            - text: "2: Why Geographic Analysis"
+              file: content/02-content.qmd
             # - text: "3: Introduction to Spatial Data"
             #   file: content/03-content.qmd
             # - text: "4: Intro to Spatial Data with R"
