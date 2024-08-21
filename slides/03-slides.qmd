@@ -220,10 +220,7 @@ Image Source: QGIS User's manual
 
 The plot below includes examples of two of the three types of vector objects. Which ones are they?
 
-![](img/slide_3/vector_data_types.png)
-::: footer
-Image Source: [Data Carpentry: Geospatial Concepts](https://datacarpentry.org/organization-geospatial/02-intro-vector-data.html)
-:::
+![Data Carpentry: Geospatial Concepts](img/slide_3/vector_data_types.png)
 
 ## The Raster Data Model
 
