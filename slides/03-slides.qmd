@@ -216,6 +216,15 @@ Image Source: QGIS User's manual
 Image Source: QGIS User's manual
 :::
 
+## Vector Challenge!
+
+The plot below includes examples of two of the three types of vector objects. Which ones are they?
+
+![](img/slide_3/vector_data_types.png)
+::: footer
+Image Source: [Data Carpentry: Geospatial Concepts](https://datacarpentry.org/organization-geospatial/02-intro-vector-data.html)
+:::
+
 ## The Raster Data Model
 
 ::: columns
@@ -516,6 +525,29 @@ plot(b.a$geometry, main = "Lambert Conformal")
 plot(b.b$geometry, main = "Albers Equal Area")
 par(mfrow=c(1,1), cex.main=1.2)
 ```
+
+## The Orange Peel Analogy
+
+::: columns
+::: {.column width="50%"}
+
+A datum is the choice of fruit to use. Is the earth an orange, a lemon, a lime, a grapefruit?
+
+![](img/slide_3/citrus.jpg)
+:::
+::: {.column width="50%"}
+
+A projection is how you peel your orange and then flatten the peel.
+
+![](img/slide_3/orange-peel-earth.jpg)
+
+:::
+:::
+
+::: footer
+Source: [Data Carpentry: Geospatial Concepts](https://datacarpentry.org/organization-geospatial/03-crs.html)
+:::
+
 ## Choosing Projections
 ::: columns
 ::: {.column width="40%"}
