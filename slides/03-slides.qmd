@@ -85,6 +85,10 @@ $$
 $$
 :::
 
+There is some attribute ($Z(\mathbf{s})$) that we observe at a location ($s$). That location ($s$) is an element of a domain of data ($D$), which is a subset of real coordinate numbers ($\mathbb{R}^d$, $d$ = 2).
+
+Three types of spatial data are defined by the differences in domain ($D$).
+
 ## Areal Data
 :::{style="font-size: 1.4em; text-align: middle; margin-top: 1em"}
 $$
@@ -299,7 +303,7 @@ par(mfrow = c(1,1), mar= c(5.1, 4.1, 4.1, 2.1))
 
 * __Rotated__: constant cell size; axes not aligned with Easting and Northing
 
-* __Sheared__: constant cell size; axes not parallel
+* __Sheared__: constant cell size; axes not perpendicular
 
 * __Rectilinear__: cell size varies along a dimension
 
@@ -570,7 +574,7 @@ Geometries, support, and spatial messiness
 
 ::: columns
 ::: {.column width="40%"}
--   Vectors store aggregate the locations of a feature into a geometry
+-   Vectors store and aggregate the locations of a feature into a geometry
 -   Most vector operations require simple, valid geometries
 :::
 ::: {.column width="60%"}
@@ -628,13 +632,39 @@ par(mfrow = c(1,1))
 
 ::: incremental
 
-*   For vectors, the attribute-geometry-relationship can be:
+*   For vectors, the attribute-geometry relationship can be:
   *   __constant__ = applies to every point in the geometry (lines and polygons are just lots of points)
   *   __identity__ = a value unique to a geometry
   *   __aggregate__ = a single value that integrates data across the geometry
 
 *   Rasters can have __point__ (attribute refers to the cell center) or __cell__ (attribute refers to an area similar to the pixel) support
 
+:::
+
+## Types of support for vectors
+
+::: columns
+::: {.column width="40%"}
+Give an example of:
+
+- constant support
+- identity support
+- aggregate support
+
+:::
+::: {.column width="60%"}
+```{r, message=FALSE}
+library(tigris)
+library(sf)
+library(dplyr)
+
+idaho <- states(progress_bar=FALSE) %>%
+  filter(NAME == "Idaho")
+
+plot(st_geometry(idaho))
+```
+
+:::
 :::
 
 ## Spatial Messiness
