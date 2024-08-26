@@ -102,8 +102,6 @@ We'll spend a bit of time on asking better questions and getting better answers 
 
 ### R and RStudio
 
-<!-- RStudio server needs update -->
-
 `R` is free, but it can sometimes be a pain to install and configure especially when dealing with spatial packages (we'll talk more about why this is during class). To make life easier, I have set up an online [RStudio server](https://rstudio-lxp-01.boisestate.edu) service, which lets you run a full instance of RStudio in your web browser. This means you won't have to install anything on your computer and we should be able to avoid a number of the machine-specific issues that pop-up when 20 students have 20 different computers, operating systems (OS), etc. If you haven't installed R on your local machine and would like some help getting that set up, there' a useful set of [instructions for installing R, RStudio, and all the tidyverse packages here.](/resource/install/)
 
 
@@ -139,7 +137,7 @@ I teach this course because I believe that a) we can learn a lot about social an
 
 **Self-assessment (12.5 pts x 2): ** During the first week of the course, I'm going to ask you to reflect on what you want out of this course (concepts, skills, practice, etc.). This assessment will help me do a better job of aligning the content of the course to your specific needs. Grading for the self-assessment is described on the [assignments page](/assignment/index.html).
 
-**Exercises (5pts x 10):** There are ten homework assignments. These exercises are designed to reinforce the material we cover in lecture, give you practice designing and implementing your own workflows, and build habits that promote reproducibility in science. They also allow me get a sense for your engagement in the course. **Exercises are due at 11:59PM on their due date (generally Thursdays). I will post the "key" within 3 days of the due date and will not accept submissions after the key is posted.** <!-- check due dates --> If you turn the assignment in on-time with the required number of commits, you'll receive full credit.
+**Exercises (5pts x 10):** There are ten homework assignments. These exercises are designed to reinforce the material we cover in lecture, give you practice designing and implementing your own workflows, and build habits that promote reproducibility in science. They also allow me get a sense for your engagement in the course. **Exercises are due at 11:59PM on their due date (generally Thursdays). I will post the "key" within 3 days of the due date and will not accept submissions after the key is posted.** If you turn the assignment in on-time with the required number of commits, you'll receive full credit.
 
 **Assignment Revisions (25pts x 3):** We will have three "assignment revisions" due during the course. These provide an opportunity for me to check in and see how things are going. You'll be able to update your responses to the homeworks based on the keys and reflect on what you've learned throughout the course of the assignments. You'll also be able to provide additional feedback on how the course is going for you. Rather than assign arbitrary points to each assignment, I'm going to grade your assignment revisions using the following 'levels' (inspired by Sarah K. Johnson's [description](https://sites.tufts.edu/teaching/2022/03/10/ungrading-a-graduate-data-analysis-course/) of her graduate data analysis course at Tufts):
 
@@ -149,7 +147,7 @@ I teach this course because I believe that a) we can learn a lot about social an
 
 * **Good To Go:** All of your code works, you completed the necessary Git steps, and all of the pieces are there and polished. I may have some minor comments, but I don't need you to address them for this assignment. 
 
-**Final Project (50pts): ** The final project asks you to conduct an entire spatial analysis from layout to results. Grades on the final project are based on your objectives and your self-assessment of whether or not you achieved those objectives. Your first draft of the final project will be due __December 5__. I'll make comments based on the same categories for the homework revision and you'll have time to revise your submission prior to the final deadline of __December 14__. <!-- check dates -->
+**Final Project (50pts): ** The final project asks you to conduct an entire spatial analysis from layout to results. Grades on the final project are based on your objectives and your self-assessment of whether or not you achieved those objectives. Your first draft of the final project will be due __December 5__. I'll make comments based on the same categories for the homework revision and you'll have time to revise your submission prior to the final deadline of __December 12__. 
 
 You can find descriptions for all the assignments on the [assignments page](/assignment/index.html).
 
