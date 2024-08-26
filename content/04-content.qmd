@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Spatial Data in R"
-date: "2023-08-30"
+date: "2024-08-28"
 ---
 ```{r slides-videos, echo=FALSE, include=FALSE}
 source(here::here("R", "slide-things.R"))
