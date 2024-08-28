@@ -1,0 +1,222 @@
+---
+title: "Literate Programming, Quarto, and Workflows"
+subtitle: "HES 505 Fall 2024: Session 5"
+author: "Carolyn Koehn"
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+## For today
+
+1. Introduce literate programming
+
+2. Describe pseudocode and its utility for designing an analysis
+
+3. Introduce `Quarto` as a means of documenting your work
+
+4. Practice workflow
+
+# Reproducibility
+
+#
+
+> Science is a social process!!
+
+## Why Do We Need Reproducibility?
+
+::: columns
+::: {.column width="30%"}
+
+- Noise!!
+
+- Confirmation bias
+
+- Hindsight bias
+:::
+::: {.column width="70%"}
+![Munafo et al. 2017. Nat Hum Beh.](img/slide_6/Munafo_et_al_nathumbeh2017.png)
+:::
+:::
+
+## Reproducibility and your code
+
+- Scripts: may make your code reproducible (but not your analysis)
+
+- Commenting and [formatting](https://style.tidyverse.org/index.html) can help!
+
+```{r}
+#| echo: fenced
+#| eval: false
+#| 
+## load the packages necessary
+library(tidyverse)
+## read in the data
+landmarks.csv <- read_csv("/Users/mattwilliamson/Google Drive/My Drive/TEACHING/Intro_Spatial_Data_R/Data/2023/assignment01/landmarks_ID.csv")
+
+## How many in each feature class
+table(landmarks.csv$MTFCC)
+```
+
+## Reproducible scripts
+
+- Comments explain what the code is doing
+
+- Operations are ordered logically
+
+- Only relevant commands are presented
+
+- Useful object and function names
+
+- Script runs without errors (on your machine and someone else's)
+
+# Literate Programming {background="#9F281A"}
+
+## Toward Efficient Reproducible Analyses
+
+- Scripts can document what you did, but not why you did it!
+
+- Scripts separate your analysis products from your report/manuscript
+
+## 
+{{< video https://www.youtube.com/watch?v=s3JldKoA0zw width="100%" height="100%" >}}
+
+## What is literate programming?
+
+>Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
+`r tufte::quote_footer('--- Donald Knuth, CSLI, 1984')`
+
+## What is literate programming?
+
+- Documentation containing code (not vice versa!)
+
+- Direct connection between code and explanation
+
+- Convey meaning to humans rather than telling computer what to do!
+
+- Multiple "scales" possible
+
+## Why literate programming?
+
+- Your analysis scripts **are** computer software
+
+- Integrate math, figures, code, and narrative in one place
+
+- Explaining something helps you learn it
+
+## Planning an analysis
+
+::: columns
+::: {.column width="35%"}
+- Outline your project
+
+- Write pseudocode
+
+- Identify potential packages
+
+- Borrow (and attribute) code from others (including yourself!)
+:::
+::: {.column width="65%"}
+
+![](img/slide_6/tast_view.png)
+
+:::
+:::
+
+# Pseudocode {background="#9F281A"}
+
+## Pseudocode and literate programming
+
+- An informal way of writing the 'logic' of your program
+
+- Balance between readability and precision
+
+- Avoid _syntactic drift_ 
+
+## Writing pseudocode
+::: columns
+::: {.column width="40%"}
+- Focus on statements
+- Mathematical operations
+- Conditionals
+- Iteration
+- Exceptions
+:::
+::: {.column width="60%"}
+![](img/slide_6/keywords.png)
+:::
+:::
+
+## Pseudocode
+
+```{r}
+#| eval: false
+#| echo: true
+Start function
+Input information
+Logical test: if TRUE
+  (what to do if TRUE)
+else
+  (what to do if FALSE)
+End function
+```
+
+
+# Introducing Quarto {background="#9F281A"}
+
+## What is Quarto?
+
+- A multi-language platform for developing reproducible documents
+
+- A 'lab notebook' for your analyses
+
+- Allows transparent, reproducible scientific reports and presentations
+
+## Key components
+
+1. Metadata and global options: YAML
+
+2. Text, figures, and tables: Markdown and LaTeX
+
+3. Code: `knitr` (or `jupyter` if you're into that sort of thing)
+
+## YAML - Yet Another Markup Language
+
+1. Allows you to set (or change) output format
+
+2. Provide options that apply to the entire document
+
+3. Spacing matters!
+
+![](img/slide_6/yaml_ex.png)
+
+## Formatting Text
+
+- Basic formatting via Markdown
+
+- Fancier options using [Divs and spans](https://pandoc.org/MANUAL.html#divs-and-spans) via Pandoc
+
+- Fenced Divs start and end with `:::` (can be any number `>3` but must match)
+
+## Adding Code Chunks
+
+- Use 3x ` ``` ` on each end
+
+- Include the engine `{r}` (or python or Julia)
+
+- Include options beneath the "fence" using a hashpipe (`#|`)
+
+![](img/slide_6/cod_chunk.png)
+
+# Let's Try It!! {background="#9F281A"}
+
+## Additional considerations
+
+- File locations and Quarto
+
+- Caching for slow operations
+
+- Modularizing code and functional programming

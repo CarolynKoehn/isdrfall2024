@@ -85,8 +85,8 @@ website:
               file: content/03-content.qmd
             - text: "4: Intro to Spatial Data with R"
               file: content/04-content.qmd
-            # - text: "6: Literate Programming, Quarto, Workflows"
-            #   file: content/06-content.qmd
+            - text: "5: Literate Programming, Quarto, Workflows"
+              file: content/05-content.qmd
             # - text: "7: Areal Data - Coordinates and Geometries"
             #   file: content/07-content.qmd
             # - text: "8: Areal Data - Vector Data"
