@@ -2,7 +2,7 @@
 title: "Assignment 2: Intro to Spatial Data"
 ---
 
-This is the [second assignment](https://classroom.github.com/a/w7BOMafq) of the semester for HES 505.
+This is the [second assignment](https://classroom.github.com/a/NVVt2WSk) of the semester for HES 505.
 
 For the rest of the course, I'll be asking you to use pseudocode to plan your analysis steps before you start using any functions (or writing your own). Pseudocode allows you to think about the important steps of your process and identify your desired results before your start down the path of coding. You can think of pseudocode as an outline for syntax, much like the one you might use for writing an manuscript or report. Quarto documents are designed to let you both outline your report and plan your analysis all in the same place! This assingment is meant to give you some practice setting up your outlines before you start coding. By the end of this assignment you should be able to:
 
@@ -29,7 +29,7 @@ For the rest of the course, I'll be asking you to use pseudocode to plan your an
 
 ## The Assignment
 
-Find a figure that you'd like to mimic with your research. The figure should be from a manuscript or report and present the results of a quantitative aaalysis (i.e., not a conceptual model or an image). Once you've found one you should:
+Find a figure that you'd like to mimic with your research. The figure should be from a manuscript or report and present the results of a quantitative analysis (i.e., not a conceptual model or an image). Once you've found one you should:
 
 1. Create a section called "Introduction" in your Quarto document. In that section, you should give me the citation for the article and a brief description (similar to the caption) of the figure.
 
@@ -40,7 +40,8 @@ Find a figure that you'd like to mimic with your research. The figure should be 
 4. Based on the webpage linked above and the "Execution Options" section linked there, add execution options to each block that ensure that the code block will be printed, but not evaluated.
 
 5. Add a "Results" section and use the markdown command to include an image of the figure from the manuscript you chose. 
-
+<!--
 :::{.callout-note}
 Solutions are [here](02-introspatialsolutions.qmd)
 :::
+-->
