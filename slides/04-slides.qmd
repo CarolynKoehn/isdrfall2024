@@ -20,7 +20,18 @@ format:
 
 4. Learn to read and explore spatial objects in `R`
 
-## Describing Absolute Locations
+## Questions from Monday
+
+- Why do we need a projection for calculations on a computer?
+- What does it mean that a raster's geometry is implicit?
+
+## Reviewing Spatial Data
+
+Let's Kahoot!
+
+[https://create.kahoot.it/share/isdr-session-4/888711f4-50a3-4732-a707-cbf68d9ae9dc](https://create.kahoot.it/share/isdr-session-4/888711f4-50a3-4732-a707-cbf68d9ae9dc)
+
+<!-- ## Describing Absolute Locations
 
 - **Coordinates:** 2 or more measurements that specify location relative to a _reference system_
 
@@ -262,7 +273,7 @@ par(mfrow = c(1,1))
 * Achieving alignment is part of reproducible workflows
 
 * Making principled decisions about projections, resolution, extent, etc
-
+-->
 
 # Mapping Location in `R` {background="#9F281A"}
 
@@ -354,8 +365,7 @@ file.as.sf <- st_as_sf(file.to.read,
 #| eval: false
 #| echo: true
 library(sf)
-shapefile.inR <- read_sf(dsn = "path/to/file.shp", 
-                         layer=NULL, geometry_column=...)
+shapefile.inR <- read_sf(dsn = "path/to/file.shp")
 
 ```
 :::
