@@ -182,9 +182,9 @@ website:
           contents:
             - example/index.qmd
         - section: "Getting started"
-        #   contents:
-        #     - text: "Setup"
-        #       file: example/getting-setup.qmd
+          contents:
+            - text: "Introducing yourself to spatial data"
+              file: example/session-4-example.qmd
         - section: "Spatial operations in R"
         #   contents:
         #     - text: "Vector data"

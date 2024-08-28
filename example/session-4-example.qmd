@@ -1,0 +1,135 @@
+---
+title: "Session 4 Live Code"
+author: "Carolyn Koehn"
+format: html
+---
+
+## Reading in the data
+
+Read spreadsheet into R:
+
+```{r, eval=FALSE}
+library(sf)
+library(tidyverse)
+
+file.to.read <- read_csv(file = "/opt/data/data/assignment01/landmarks_ID.csv", col_names = TRUE, col_type = NULL, na = c("", NA))
+
+file.as.sf <- st_as_sf(file.to.read, coords = c("longitude", "lattitude"), crs=4326)
+```
+```{r, echo=FALSE}
+library(sf)
+library(tidyverse)
+
+file.to.read <- read_csv(file = "C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/landmarks_ID.csv", col_names = TRUE, col_type = NULL, na = c("", NA))
+
+file.as.sf <- st_as_sf(file.to.read, coords = c("longitude", "lattitude"), crs=4326)
+```
+
+
+Read in a shapefile:
+
+```{r, eval=FALSE}
+shapefile.inR <- read_sf(dsn = "/opt/data/data/assignment01/cejst_nw.shp")
+```
+```{r, echo=FALSE}
+shapefile.inR <- read_sf(dsn = "C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/cejst_nw.shp")
+```
+
+Read in a raster:
+
+```{r, eval=FALSE}
+library(terra)
+raster.inR <- rast(x = "/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+```
+```{r, echo=FALSE}
+library(terra)
+raster.inR <- rast(x = "C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+```
+
+## Introducing yourself to vector data
+
+Structure of the data:
+
+```{r}
+str(shapefile.inR)
+```
+
+Number of rows and columns:
+
+```{r}
+nrow(shapefile.inR)
+ncol(shapefile.inR)
+```
+
+Column names:
+
+```{r}
+colnames(shapefile.inR)
+```
+
+First few rows of data:
+
+```{r}
+head(file.as.sf, n = 6)
+```
+
+Simple plotting:
+
+```{r}
+plot(st_geometry(shapefile.inR))
+```
+```{r}
+plot(shapefile.inR["AGE_10"])
+```
+
+CRS of vector:
+
+```{r}
+st_crs(shapefile.inR)
+```
+
+
+## Introducing yourself to raster data
+
+Describe raster before reading it in:
+
+```{r, eval=FALSE}
+describe("/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+```
+```{r, echo=FALSE}
+describe("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+```
+
+Basic object info:
+
+```{r}
+raster.inR
+```
+
+Summary of values:
+
+```{r}
+# Summary of all values
+summary(values(raster.inR))
+
+# Summary of some values
+summary(raster.inR)
+```
+
+Basic plot:
+
+```{r}
+plot(raster.inR)
+#Change color of NA
+plot(raster.inR, colNA = "black")
+```
+
+CRS of raster:
+
+```{r}
+crs(raster.inR)
+
+# You can also use st_crs!
+st_crs(raster.inR)
+```
+
