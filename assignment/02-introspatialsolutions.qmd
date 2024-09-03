@@ -2,7 +2,7 @@
 title: "Assignment 2 Solutions: Intro to Spatial Data"
 ---
 
-Find a figure that you'd like to mimic with your research. The figure should be from a manuscript or report and present the results of a quantitative aaalysis (i.e., not a conceptual model or an image). Once you've found one you should:
+Find a figure that you'd like to mimic with your research. The figure should be from a manuscript or report and present the results of a quantitative analysis (i.e., not a conceptual model or an image). Once you've found one you should:
 
 <span style="color:#9F281A;">1. Create a section called "Introduction" in your Quarto document. In that section, you should give me the citation for the article and a brief description (similar to the caption) of the figure.</span>
 
