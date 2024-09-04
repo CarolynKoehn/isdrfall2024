@@ -87,8 +87,8 @@ website:
               file: content/04-content.qmd
             - text: "5: Literate Programming, Quarto, Workflows"
               file: content/05-content.qmd
-            # - text: "7: Areal Data - Coordinates and Geometries"
-            #   file: content/07-content.qmd
+            - text: "6: Areal Data - Coordinates and Geometries"
+              file: content/06-content.qmd
             # - text: "8: Areal Data - Vector Data"
             #   file: content/08-content.qmd
             # - text: "9: Areal Data - Raster Data"
@@ -156,8 +156,8 @@ website:
               file: assignment/01-intro.qmd
             - text: "Spatial Data and Quarto"
               file: assignment/02-introspatial.qmd
-            # - text: "Vector Data" 
-            #   file: assignment/03-vector.qmd
+            - text: "Vector Data"
+              file: assignment/03-vector.qmd
             # - text: "Rasters and Maps" 
             #   file: assignment/04-maps.qmd
             # - text: "Vector Operations" 
