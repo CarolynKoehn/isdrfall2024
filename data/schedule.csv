@@ -3,10 +3,10 @@ Getting started,Session 1,2024-08-19,,Introduction to the course,,,content/01-co
 Getting started,Session 2,2024-08-21,,Why Geographic Analysis,,,content/02-content,,,,
 Getting started,Session 2,2024-08-23,,Self-Evaluation 1 due,TRUE,11:59 PM,,,,assignment/self-eval1,
 Getting started,Session 3,2024-08-26,,Introduction to Spatial Data,,,content/03-content,,,,
-Getting started,Session 4,2024-08-28,,Introduction to Spatial Data with R,,,content/04-content,lesson/dataclasses,,,
+Getting started,Session 4,2024-08-28,,Introduction to Spatial Data with R,,,content/04-content,lesson/dataclasses,example/session-4-example,,
 Getting started,Session 4,2024-08-29,,Homework 1,TRUE,11:59 PM,,,,assignment/01-intro,
 Getting started,Session 5,2024-09-02,,No Class,,,,,,,(Labor Day)
-Getting started,Session 6,2024-09-04,,"Literate Programming, Quarto, Workflows",,,content/05-content,lesson/quarto,,,
+Getting started,Session 6,2024-09-04,,"Literate Programming, Quarto, Workflows",,,content/05-content,lesson/quarto,example/session-5-example,,
 Getting started,Session 6,2024-09-05,,Homework 2,TRUE,11:59 PM,,,,assignment/02-introspatial,
 Spatial Data Operations in R,Session 7,2024-09-09,,Areal Data: Coordinates and Geometries,,,content/06-content,,,,
 Spatial Data Operations in R,Session 8,2024-09-11,,Areal Data: Vector Data,,,content/08-content,lesson/vector_intro,,,

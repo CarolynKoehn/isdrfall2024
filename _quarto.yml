@@ -185,6 +185,8 @@ website:
           contents:
             - text: "Introducing yourself to spatial data"
               file: example/session-4-example.qmd
+            - text: "Quarto formatting"
+              file: example/session-5-example.qmd
         - section: "Spatial operations in R"
         #   contents:
         #     - text: "Vector data"
