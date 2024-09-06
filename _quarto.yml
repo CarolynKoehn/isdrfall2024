@@ -57,7 +57,7 @@ website:
       - text: "Resources"
         file: resource/index.qmd
       - icon: slack
-        href: "https://ecostatsbsu.slack.com/archives/CV4DEJ8M7"
+        href: "https://ecostatsbsu.slack.com/archives/C07DGC07AMB"
         aria-label: Slack
       - icon: github
         href: "https://github.com/BSU-Spatial-Data-in-R-Fall2024"
