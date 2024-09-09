@@ -188,9 +188,9 @@ website:
             - text: "Quarto formatting"
               file: example/session-5-example.qmd
         - section: "Spatial operations in R"
-        #   contents:
-        #     - text: "Vector data"
-        #       file: example/vector-intro.qmd
+          contents:
+            - text: "CRS and Geometries"
+              file: example/session-06-example.qmd
         #     - text: "Raster data"
         #       file: example/raster-intro.qmd
         #     - text: "Integrating vector and raster data"
