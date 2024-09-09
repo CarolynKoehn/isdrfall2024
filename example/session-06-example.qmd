@@ -1,0 +1,135 @@
+---
+title: "Session 6 Live Code"
+author: "Carolyn Koehn"
+format: html
+---
+
+This code and a few more examples can also be found on the session 6 slides.
+
+### Access vector data:
+
+```{r}
+#| eval: false
+
+vector.data <- sf::st_read("/opt/data/data/assignment01/cejst_nw.shp")
+```
+```{r}
+#| include: false
+
+vector.data <- sf::st_read("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/cejst_nw.shp")
+```
+
+### Check the CRS:
+
+- input
+- proj4string
+- wkt
+
+```{r}
+sf::st_crs(vector.data)$input
+sf::st_crs(vector.data)$proj4string
+sf::st_crs(vector.data)$wkt
+```
+
+### Read in raster data:
+
+```{r}
+#| eval: false
+
+raster.data <- terra::rast("/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+```
+```{r}
+#| include: false
+
+raster.data <- terra::rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+```
+
+### Check raster CRS:
+
+```{r}
+terra::crs(raster.data, describe=TRUE, proj=TRUE)
+```
+
+### Guess the CRS:
+
+```{r}
+library(sf)
+#library(mapview)
+locations <- data.frame(
+  X = c(1200822.97857801, 1205015.51644983, 1202297.44383987, 1205877.68696743, 
+        1194763.21511923, 1195463.42403192, 1199836.01037452, 1207081.96500368, 
+        1201924.15986897),
+  Y = c(1246476.31475063, 1248612.72571423, 1241479.45996392, 1243898.58428024, 
+        1246033.7550009, 1241827.7730307, 1234691.50899912, 1251125.67808482, 
+        1252188.4333016),
+  id = 1:9
+)
+
+locations_sf <- st_as_sf(locations, coords = c("X", "Y"))
+```
+
+We stopped this example short because of confusion with the `mapview` library. Feel free to try the code from the slides on your own time!
+
+### Plot vector data:
+
+```{r}
+plot(st_geometry(vector.data))
+```
+
+### Re-project a vector:
+
+```{r}
+vector.data.proj <- vector.data %>%
+  st_transform(., crs = 3083)
+
+st_crs(vector.data.proj)$input
+
+plot(st_geometry(vector.data.proj))
+```
+
+### Plot a raster:
+
+```{r}
+library(terra)
+
+plot(raster.data)
+```
+
+
+### Changing the CRS of a raster:
+
+```{r}
+raster.data.proj <- project(raster.data, "epsg:3083")
+
+crs(raster.data.proj, describe=TRUE)
+
+plot(raster.data.proj)
+```
+
+### Project based on another dataset:
+
+```{r}
+vector.data.proj.raster <- vector.data %>%
+  st_transform(., crs = crs(raster.data))
+
+st_crs(vector.data.proj.raster)$input
+```
+
+### Manually create polygon:
+
+```{r}
+outer = matrix(c(0,0,10,0,10,10,0,10,0,0),ncol=2, byrow=TRUE)
+hole1 = matrix(c(1,1,1,2,2,2,2,1,1,1),ncol=2, byrow=TRUE)
+hole2 = matrix(c(5,5,5,6,6,6,6,5,5,5),ncol=2, byrow=TRUE)
+coords = list(outer, hole1, hole2)
+pl1 = st_polygon(coords)
+```
+
+### Check polygon validity
+
+```{r}
+st_is_valid(vector.data)
+
+table(st_is_valid(vector.data))
+```
+
