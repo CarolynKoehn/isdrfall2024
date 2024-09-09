@@ -89,8 +89,8 @@ website:
               file: content/05-content.qmd
             - text: "6: Areal Data - Coordinates and Geometries"
               file: content/06-content.qmd
-            # - text: "8: Areal Data - Vector Data"
-            #   file: content/08-content.qmd
+            - text: "7: Areal Data - Vector Data"
+              file: content/07-content.qmd
             # - text: "9: Areal Data - Raster Data"
             #   file: content/09-content.qmd
             # - text: "10: Intro to Mapping Geographic Data"

@@ -1,6 +1,6 @@
 ---
 title: "Areal Data: Vectors"
-date: "2023-09-13"
+date: "2024-09-11"
 ---
 
 ```{r slides-videos, echo=FALSE, include=FALSE}
@@ -24,7 +24,7 @@ Same as last class really, but hopefully you'll begin to understand them better.
 
 By the end of today, you should be able to: 
 
-* Implement approaches for checking and reparing geometries in R
+* Implement approaches for checking and repairing geometries in R
 
 * Understand `predicates` and `measures` in the context of spatial operations in sf
 
@@ -33,7 +33,7 @@ By the end of today, you should be able to:
 
 
 
-
+<!--
 ## Slides
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
@@ -50,3 +50,4 @@ slide_buttons("/slides/08-slides")
 </div>
 
 [Link to Panopto Recording](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=41b7cbdb-2590-453c-8fe9-b07c011c9f29)
+-->
