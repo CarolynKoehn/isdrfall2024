@@ -358,3 +358,10 @@ We'll use `st_is_valid()` to check this, but fixing can be tricky
 
 > Moving forward we will rely primarily on the `sf` package for vector manipulation. Some packages require objects to be a different class. `terra`, for example, relies on `SpatVectors`. You can use `as()` to coerce objects from one type to another (assuming a method exists). You can also explore other packages. Many packages provide access to the 'spatial' backbones of `R` (like `geos` and `gdal`), they just differ in how the "verbs" are specified. For `sf` operations the `st_` prefix is typical. For `rgeos` operations, the `g` prefix is common.
 
+## I want your feedback!
+
+Please give me feedback on my live coding approach so I can adjust for this class's preferences!
+
+[https://forms.gle/U2acJcRABiF1TCRF7](https://forms.gle/U2acJcRABiF1TCRF7)
+
+![](img/slide_7/session6_livecode_poll.png)
