@@ -1,7 +1,7 @@
 ---
 title: "Areal Data: Vector Data"
 subtitle: "HES 505 Fall 2024: Session 7"
-author: "Matt Williamson"
+author: "Carolyn Koehn"
 format: 
   revealjs:
     theme: mytheme.scss
