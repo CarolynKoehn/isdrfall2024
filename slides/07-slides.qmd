@@ -362,3 +362,15 @@ kootenai.cty <- id.cty %>%
 st_distance(kootenai.cty, ada.cty)
 st_distance(id.cty)[1:5, 1:5]
 ```
+
+## Practice!
+
+1. Create a vector object for Owyhee county in Idaho (hint: use `filter`).
+2. Owyhee county is in Idaho and borders Oregon. Which two predicates communicate this information? Show your code and output.
+3. Print the bounding box information for Oregon and Owyhee county. Which part of this output could clue you in that they border each other?
+
+If you finish early, try the challenge on the next slide!
+
+## Challenge
+
+Which two counties in Idaho are furthest from each other? You will need to use spatial measures from this class as well as data navigation methods that you may need to look up!
