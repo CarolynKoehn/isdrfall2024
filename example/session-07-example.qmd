@@ -1,0 +1,152 @@
+---
+title: "Session 7 Live Code"
+author: "Carolyn Koehn"
+format: html
+---
+
+### Read in the libraries we need
+
+```{r}
+#| eval: false
+
+library(sf)
+library(tigris)
+```
+```{r}
+#| include: false
+
+library(sf)
+library(tigris)
+```
+
+### Get a sf object of ID counties (from the `tigris` package)
+
+```{r}
+#| eval: false
+
+id.cty <- counties(state = "ID")
+```
+```{r}
+#| include: false
+
+id.cty <- counties(state = "ID", progress_bar = FALSE)
+```
+
+### Check CRS of object
+
+```{r}
+st_crs(id.cty)$input
+```
+
+### Unary predicates
+
+```{r}
+st_is_longlat(id.cty)
+
+st_is_valid(id.cty)[1:5]
+
+all(st_is_valid(id.cty))
+```
+
+### Get some data for binary operations
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+
+id <- states(progress_bar=FALSE) %>% 
+  filter(STUSPS == "ID")
+or <- states(progress_bar=FALSE) %>% 
+  filter(STUSPS == "OR")
+ada.cty <- id.cty %>% 
+  filter(NAME == "Ada")
+```
+```{r}
+#| include: false
+
+library(tidyverse)
+
+id <- states(progress_bar=FALSE) %>% 
+  filter(STUSPS == "ID")
+or <- states(progress_bar=FALSE) %>% 
+  filter(STUSPS == "OR")
+ada.cty <- id.cty %>% 
+  filter(NAME == "Ada")
+```
+
+### Try some predicates
+
+```{r}
+st_covers(id, ada.cty)
+
+st_covers(id, ada.cty, sparse = FALSE)
+```
+
+```{r}
+st_within(ada.cty, or)
+
+st_within(ada.cty, or, sparse=FALSE)
+```
+
+### Unary measures
+
+```{r}
+st_area(id)
+
+st_area(id.cty)[1:5]
+```
+
+```{r}
+st_dimension(id.cty)[1:5]
+```
+
+### Binary measure (distance)
+
+```{r}
+kootenai.cty <- id.cty %>% 
+  filter(NAME == "Kootenai")
+st_distance(kootenai.cty, ada.cty)
+```
+
+```{r}
+st_distance(id.cty)[1:5, 1:5]
+```
+
+### Practice exercise code:
+
+```{r}
+# Part 1
+owyhee.cty <- id.cty %>% 
+  filter(NAME == "Owyhee")
+
+# Part 2
+st_within(owyhee.cty, id)
+st_touches(owyhee.cty, or)
+
+# Part 3
+st_bbox(owyhee.cty)
+st_bbox(or)
+```
+
+### Challenge code:
+
+```{r}
+# Calculate distances between all counties
+cty.dist <- st_distance(id.cty)
+
+# Label rows and columns of matrix
+colnames(cty.dist) <- id.cty$NAME
+rownames(cty.dist) <- id.cty$NAME
+
+# Find where the maximum value is
+which(cty.dist == max(cty.dist), arr.ind = TRUE)
+
+# Locate the counties at the row numbers returned by which
+# Needed if you don't label the rows and columns
+id.cty$NAME[c(4, 40)]
+```
+
+### Whiteboard notes
+
+![](img/session_07_whiteboard.jpg)

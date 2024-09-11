@@ -9,7 +9,7 @@ Getting started,Session 5,2024-09-02,,No Class,,,,,,,(Labor Day)
 Getting started,Session 5,2024-09-04,,"Literate Programming, Quarto, Workflows",,,content/05-content,lesson/quarto,example/session-5-example,,
 Getting started,Session 5,2024-09-05,,Homework 2,TRUE,11:59 PM,,,,assignment/02-introspatial,
 Spatial Data Operations in R,Session 6,2024-09-09,,Areal Data: Coordinates and Geometries,,,content/06-content,,example/session-06-example,,
-Spatial Data Operations in R,Session 7,2024-09-11,,Areal Data: Vector Data,,,content/07-content,lesson/vector_intro,,,
+Spatial Data Operations in R,Session 7,2024-09-11,,Areal Data: Vector Data,,,content/07-content,lesson/vector_intro,example/session-07-example,,
 Spatial Data Operations in R,Session 7,2024-09-12,,Homework 3,TRUE,,,,,assignment/03-vector,
 Spatial Data Operations in R,Session 8,2024-09-16,,Areal Data: Rasters,,,content/08-content,,,,
 Spatial Data Operations in R,Session 9,2024-09-18,,Mapping Geographic Data,,,content/10-content,,,,
