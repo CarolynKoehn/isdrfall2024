@@ -254,14 +254,14 @@ website:
 
   page-footer:
     left: |
-      Content {{< fa brands creative-commons >}} 2023 by [Matt Williamson](www.spaseslab.com) <br>
+      Content {{< fa brands creative-commons >}} 2024 by [Carolyn Koehn](https://scholar.google.com/citations?user=nscXWkcAAAAJ) <br>
       All content licensed under a {{< fa brands creative-commons >}}
       {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
       [Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
     right: |
       Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)<br>
-      [View the source at {{< fa brands github >}} GitHub]({{< var course.github >}})
-      Based on websites designed by [Andrew Heiss](https://github.com/andrewheiss/evalf22.classes.andrewheiss.com)
+      [View the source at {{< fa brands github >}} GitHub](https://github.com/CarolynKoehn/isdrfall2024.git)<br>
+      Based on websites designed by [Andrew Heiss](https://github.com/andrewheiss/evalf22.classes.andrewheiss.com) and [Matt Williamson](https://github.com/mattwilliamson13/isdrfall2023)
 format:
   html:
     theme:
