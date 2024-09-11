@@ -91,8 +91,8 @@ website:
               file: content/06-content.qmd
             - text: "7: Areal Data - Vector Data"
               file: content/07-content.qmd
-            # - text: "9: Areal Data - Raster Data"
-            #   file: content/09-content.qmd
+            - text: "8: Areal Data - Raster Data"
+              file: content/08-content.qmd
             # - text: "10: Intro to Mapping Geographic Data"
             #   file: content/10-content.qmd
             # - text: "11: Operations with Vector Data I"
@@ -158,8 +158,8 @@ website:
               file: assignment/02-introspatial.qmd
             - text: "Vector Data"
               file: assignment/03-vector.qmd
-            # - text: "Rasters and Maps" 
-            #   file: assignment/04-maps.qmd
+            - text: "Predicates and Measures"
+              file: assignment/04-maps.qmd
             # - text: "Vector Operations" 
             #   file: assignment/06-vectorops.qmd
             # - text: "Raster Operations" 
