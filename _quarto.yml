@@ -193,6 +193,8 @@ website:
               file: example/session-06-example.qmd
             - text: "Predicates and Measures"
               file: example/session-07-example.qmd
+            - text: "Raster Predicates and Measures"
+              file: example/session-08-example.qmd
         #     - text: "Raster data"
         #       file: example/raster-intro.qmd
         #     - text: "Integrating vector and raster data"

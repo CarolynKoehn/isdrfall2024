@@ -1,0 +1,94 @@
+---
+title: "Session 8 Code"
+author: "Carolyn Koehn"
+format: html
+---
+
+### Playing with resolution:
+
+```{r}
+library(terra)
+
+r <- rast(xmin=-4, xmax=9,
+          ncols=10)
+res(r)
+```
+
+```{r}
+r2 <- rast(xmin=-4, xmax=9,
+           resolution = c(1.3, 1))
+ncol(r2)
+```
+
+```{r}
+r3 <- rast(xmin=-4, xmax=5,
+           ncols=10)
+res(r3)
+```
+
+```{r}
+empty_rast <- rast()
+```
+
+### Practice questions
+
+```{r}
+# Question 1
+rr <- rast(xmin=-5, xmax=5, ymin=-5, ymax=5, res=2)
+
+# By looking at the help file, we realized that res overrides nrows/ncols
+# This code uses the default global extent
+rr2 <- rast(nrows=5, ncols=5, res=2)
+```
+
+```{r}
+# Question 2
+values(rr) <- runif(25)
+
+# The "values were recycled" error clues us in that we don't have 25 cells
+values(rr2) <- runif(25)
+```
+
+```{r}
+# Question 3
+origin(rr)
+```
+
+```{r}
+# Question 4
+values(rr)[adjacent(rr, cells=12)] <- NA
+plot(rr)
+
+# You can do this in two steps 
+# by making an object to hold the adjacent cell numbers
+adj <- adjacent(rr, cells=12)
+values(rr)[adj] <- NA
+```
+
+For more information on subsetting, see the [Software Carpentries R for Reproducible Data Analysis: Subsetting Data lesson](https://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting.html).
+
+```{r}
+# Question 5
+plot(distance(rr))
+```
+
+### Extra practice
+
+To run examples of functions, go to the help file and scroll down to the "Examples" section. You can either copy-paste the code into your file or click the link that says "run examples."
+
+```{r}
+#| eval: false
+
+# Question 2
+
+fire_rast <- rast("/opt/data/data/assignment03/wildfire_hazard_agg.tif")
+plot(distance(fire_rast))
+```
+```{r}
+#| include: false
+
+# Question 2
+
+fire_rast <- terra::rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment03/wildfire_hazard_agg.tif")
+plot(distance(fire_rast))
+```
