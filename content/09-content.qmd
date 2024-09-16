@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Mapping Geographic Data"
-date: "2023-09-20"
+date: "2024-09-18"
 ---
 
 ```{r slides-videos, echo=FALSE, include=FALSE}
@@ -29,6 +29,7 @@ By the end of today, you should be able to:
 
 *   Make basic plots of multiple spatial data objects
 
+<!--
 ## Slides
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
@@ -45,3 +46,4 @@ slide_buttons("/slides/10-slides")
 </div>
 
 [Link to today's Panopto Slides](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=fb4619f1-cd01-49ee-920e-b0830142b65f)
+-->
