@@ -28,7 +28,7 @@ Image Source: USGS
   
 # Using `plot` {background="#9F281A"}
 
-## Which packages have `plot` methods?
+## Packages with `plot` methods
 
 ::: columns
 ::: {.column width="40%"}
@@ -46,7 +46,7 @@ Image Source: USGS
 
 ## `plot` for `sf` objects
 
-* Can plot outlines using `plot(st_geometry(your.shapfile))` or `plot(your.shapefile$geometry)`
+* Can plot outlines using `plot(st_geometry(your.shapefile))` or `plot(your.shapefile$geometry)`
 
 * Plotting attributes requires "extracting" the attributes (using `plot(your.shapefile["ATTRIBUTE"])`)
 
@@ -245,3 +245,13 @@ pt <- tm_shape(rast.data["category"]) +
 ```{r}
 pt
 ```
+
+## Today's Objectives
+
+You should be able to:
+
+*   Describe the basic components of data visualization as a foundation for mapping syntax
+
+*   Understand layering in both base `plot` and `tmap`
+
+*   Make basic plots of multiple spatial data objects

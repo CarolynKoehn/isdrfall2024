@@ -8,7 +8,7 @@ source(here::here("R", "slide-things.R"))
 
 ```
 
-Now that we're getting into actual operations on spatial data and beginning to actually modify the geometries and attributes of spatial data, it'll be important for you to be able to visualize the results. At this point, we'll be focusing on rough visualization as a way of "gut-checking" the outcomes of your code. We'll focus more on creating informative, aesthetically pleasing, publication quality visualizations.
+Now that we're getting into actual operations on spatial data and beginning to actually modify the geometries and attributes of spatial data, it'll be important for you to be able to visualize the results. At this point, we'll be focusing on rough visualization as a way of "gut-checking" the outcomes of your code. We'll focus more on creating informative, aesthetically pleasing, publication quality visualizations in section 4 of this course.
 
 
 ## Readings
