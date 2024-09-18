@@ -95,8 +95,8 @@ website:
               file: content/08-content.qmd
             - text: "9: Intro to Mapping Geographic Data"
               file: content/09-content.qmd
-            # - text: "11: Operations with Vector Data I"
-            #   file: content/11-content.qmd
+            - text: "10: Operations with Vector Data I"
+              file: content/10-content.qmd
             # - text: "12: Operations with Vector Data II"
             #   file: content/12-content.qmd
             # - text: "13: Operations with Raster Data I"
@@ -144,8 +144,8 @@ website:
           contents:
             - text: "Self-reflection 1" 
               file: assignment/self-eval1.qmd
-            # - text: "Assignment Revision 1" 
-            #   file: assignment/05-firstrevision.qmd
+            - text: "Assignment Revision 1"
+              file: assignment/05-firstrevision.qmd
             # - text: "Assignment Revision 2" 
             #   file: assignment/10-secondrevision.qmd
             # - text: "Assignment Revision 3" 
