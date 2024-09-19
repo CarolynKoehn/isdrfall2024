@@ -1,0 +1,140 @@
+---
+title: "Intro to Mapping"
+author: "Carolyn Koehn"
+format: html
+---
+
+### Base `plot` methods:
+
+Load library and vector data:
+
+```{r}
+#| eval: false
+
+library(sf)
+
+cejst <- st_read("/opt/data/data/assignment04/cejst_nw.shp")
+```
+```{r}
+#| include: false
+
+library(sf)
+
+cejst <- st_read("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment04/cejst_nw.shp")
+```
+
+Plot vector data:
+
+```{r}
+plot(st_geometry(cejst))
+
+plot(cejst$geometry)
+
+plot(cejst["EALR_PFS"])
+```
+
+See column name meanings:
+
+```{r}
+#| eval: false
+
+View(read.csv("/opt/data/data/assignment04/columns.csv"))
+```
+
+Read in library and raster data:
+
+```{r}
+#| eval: false
+
+library(terra)
+
+rast.data <- rast("/opt/data/data/assignment03/wildfire_hazard_agg.tif")
+```
+```{r}
+#| include: false
+
+library(terra)
+
+rast.data <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment03/wildfire_hazard_agg.tif")
+```
+
+Plot raster:
+
+```{r}
+plot(rast.data)
+
+plot(rast.data, col=heat.colors(24, rev=TRUE))
+```
+
+Combine raster and vector data:
+
+```{r}
+plot(rast.data, col=heat.colors(24, rev=TRUE))
+plot(st_geometry(st_transform(cejst, crs=crs(rast.data))), add=TRUE)
+```
+
+Combining two vectors:
+
+In class, we could not get the bounding box to appear. The fix is to plot the bounding box before the census tracts. Why would this be? `plot` will only plot a geometry if the entire shape fits in the current plot window. Because of rounding error introduced in `st_as_sfc` and `st_transform`, the `bounding_box` polygon is slightly larger than the plot window. Because `plot` couldn't fit all its vertices, the bounding box did not appear.
+
+```{r}
+bounding_box <- st_as_sfc(st_bbox(cejst))
+
+plot(st_geometry(st_transform(bounding_box, crs=st_crs(cejst))), col="red")
+plot(cejst["EALR_PFS"], add=TRUE)
+
+# note how xmax of the bounding_box object is slightly higher than the true xmax
+st_bbox(cejst)
+st_coordinates(st_geometry(st_transform(bounding_box, crs=st_crs(cejst))))
+```
+
+### `tmap` methods:
+
+```{r}
+library(tmap)
+library(tidyverse)
+library(viridis)
+
+cejst_filt <- cejst %>%
+  filter(!st_is_empty(.))
+
+pt <- tm_shape(cejst_filt) +
+  tm_polygons(col = "EALR_PFS", n=10, palette=viridis(10),
+              border.col = "white") +
+  tm_legend(outside = TRUE)
+```
+
+Layering in tmap:
+
+```{r}
+st <- tigris::states(progress_bar=FALSE) %>% 
+  filter(STUSPS %in% c("ID", "WA", "OR")) %>% 
+  st_transform(., crs = st_crs(cejst))
+
+pt2 <- tm_shape(cejst_filt) +
+  tm_polygons(col = "EALR_PFS", n=10, palette=viridis(10),
+              border.col="white") +
+  tm_shape(st) +
+  tm_borders(col="red") +
+  tm_legend(outside = TRUE)
+```
+
+Layering a raster in tmap:
+
+```{r}
+cejst.proj <- st_transform(cejst, crs=crs(rast.data)) %>% filter(!st_is_empty(.))
+states.proj <- st_transform(st, crs=crs(rast.data))
+
+pal8 <- c("#33A02C", "#B2DF8A", "#FDBF6F", "#1F78B4", "#999999", "#E31A1C", "#E6E6E6", "#A6CEE3")
+
+pt3 <- tm_shape(rast.data) +
+  tm_raster() +
+  # tm_shape(cejst.proj) + 
+  # tm_polygons(col = "EALR_PFS", n=10,palette=viridis(10),
+  #             border.col = "white") + 
+  tm_shape(states.proj) +
+  tm_borders("red") +
+  tm_legend(outside = TRUE)
+```
+
+You can use `tmap_mode("view")` to enable zoom on your maps.
