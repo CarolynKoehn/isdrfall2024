@@ -97,8 +97,8 @@ website:
               file: content/09-content.qmd
             - text: "10: Operations with Vector Data I"
               file: content/10-content.qmd
-            # - text: "12: Operations with Vector Data II"
-            #   file: content/12-content.qmd
+            - text: "11: Operations with Vector Data II"
+              file: content/11-content.qmd
             # - text: "13: Operations with Raster Data I"
             #   file: content/13-content.qmd
             # - text: "14: Operations with Raster Data II"
