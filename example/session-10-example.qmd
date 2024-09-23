@@ -1,0 +1,112 @@
+---
+title: "Session 10 Code"
+author: "Carolyn Koehn"
+format: html
+---
+
+### Load libraries
+
+```{r}
+#| message: false
+
+library(sf)
+library(tidyverse)
+```
+
+### Centroids vs Point on Surface
+
+```{r}
+#| message: false
+#| warning: false
+
+id.counties <- tigris::counties(state = "ID", progress_bar=FALSE)
+id.centroid <- st_centroid(id.counties)
+id.pointonsurf <- st_point_on_surface(id.counties)
+```
+
+```{r}
+plot(st_geometry(id.counties))
+plot(st_geometry(id.centroid), col="blue", add=TRUE)
+plot(st_geometry(id.pointonsurf), col="red", add=TRUE)
+```
+
+### Practice Example 1: Distance on Points and Polygons
+
+```{r}
+system.time(poly_dist <- st_distance(id.counties))
+system.time(cent_dist <- st_distance(id.centroid))
+system.time(pos_dist <- st_distance(id.pointonsurf))
+```
+
+### Practice Example 2: Intersections and Buffers
+
+```{r}
+#| message: false
+#| warning: false
+
+# get roads data
+roads <- tigris::primary_secondary_roads("ID", progress_bar=FALSE)
+
+# get a polygon of Ada county
+ada.cty <- filter(id.counties, NAME == "Ada")
+
+# find all road sections within Ada county
+ada.roads <- st_intersection(roads, ada.cty)
+```
+
+```{r}
+# plot result
+plot(st_geometry(ada.cty))
+plot(st_geometry(ada.roads), col="purple", add=TRUE)
+```
+
+
+
+```{r}
+# check the units of the CRS
+st_crs(id.centroid)
+
+# create a 50km buffer around the centroid of Ada county
+ada.cent <- filter(id.centroid, NAME == "Ada")
+ada.buff <- st_buffer(ada.cent, dist = 50000)
+```
+
+```{r}
+#| warning: false
+
+# get roads within buffer zone
+roads.buff <- st_intersection(roads, ada.buff)
+```
+
+```{r}
+# plot result
+plot(st_geometry(roads.buff))
+```
+
+If we want to plot county boundaries, `st_intersection` won't work. We'll only get parts of each county polygon:
+
+```{r}
+#| warning: false
+
+cty.buff <- st_intersection(id.counties, ada.buff)
+plot(st_geometry(cty.buff))
+```
+
+Back to predicates!
+
+```{r}
+# find counties that intersect with buffer
+cty.50 <- st_intersects(id.counties, ada.buff, sparse = FALSE)
+# convert to vector so filter is happy
+cty.50 <- as.vector(cty.50)
+
+# get counties that intersect buffer
+map.counties <- filter(id.counties, cty.50)
+```
+
+```{r}
+# plot result
+plot(map.counties$geometry)
+plot(st_geometry(roads.buff), col="purple", add=TRUE)
+```
+

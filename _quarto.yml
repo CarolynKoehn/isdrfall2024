@@ -197,6 +197,8 @@ website:
               file: example/session-08-example.qmd
             - text: "Intro to Mapping"
               file: example/session-09-example.qmd
+            - text: "Vector Operations I"
+              file: example/session-10-example.qmd
         #     - text: "Raster data"
         #       file: example/raster-intro.qmd
         #     - text: "Integrating vector and raster data"
