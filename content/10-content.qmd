@@ -30,7 +30,6 @@ By the end of today, you should be able to:
 
 * Implement common binary transformers to align and combine data
 
-<!--
 ## Slides
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
@@ -45,5 +44,3 @@ slide_buttons("/slides/10-slides")
 ```
 
 </div>
-
-![Panopto Vidoe Here](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e53c74b0-c0b4-48f8-b9d1-b0880140f55c) -->
