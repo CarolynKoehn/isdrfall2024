@@ -47,7 +47,7 @@ cejst.nw[which(st_is_empty(cejst.nw)),]
 hospitals.id <- read_csv("opt/data/data/assignment04/landmarks_ID.csv") %>% 
   st_as_sf(., coords = c("longitude", "lattitude")) %>% 
   filter(., MTFCC == "K1231")
-st_crs(hospitals.id) <- 4269
+st_crs(hospitals.id) <- 4326
 
 dist.hospital <- st_distance(hospitals.id)
 
@@ -59,7 +59,7 @@ dist.hospital[1:5, 1:5]
 hospitals.id <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment04/landmarks_ID.csv") %>% 
   st_as_sf(., coords = c("longitude", "lattitude")) %>% 
   filter(., MTFCC == "K1231")
-st_crs(hospitals.id) <- 4269
+st_crs(hospitals.id) <- 4326
 
 dist.hospital <- st_distance(hospitals.id)
 
@@ -85,7 +85,7 @@ ada.max.EALR[, c("SF", "CF", "EALR_PFS")]
 
 <span style="color:#9F281A;"> 4. Finally, look at the helpfile for the `terra::adjacent` command. How do you specify which cells you'd like to get the adjacency matrix for? How do you return only the cells touching your cells of interest? Use the example in the helpfile to illustrate how you'd do this on a toy dataset - this will help you learn to ask minimally reproducible examples.</span>
 
-> We can access the helpfile for `adjacent` by using `?terra::adjacent` (I won't do that here because I don't want to print the entire helpfile). From that we can see that the `cells` argument is the place to specify which cells we are interested in. also see that the `directions` argument allows us to specify whether we want "rook", "bishop", or "queen" neighbors. Finally, we see that if we want to exclude the focal cell itself, we have to set `include` to FALSE. By plotting the map with the cell numbers, we can see that cells 1 and 5 are on th top row of the raster and thus do not have any neighbors for for the upper 3 categories whereas cell 55 hase all 8 neighbors. If you choose cells that are in the center of the raster, you get all neighbors
+> We can access the helpfile for `adjacent` by using `?terra::adjacent` (I won't do that here because I don't want to print the entire helpfile). From that we can see that the `cells` argument is the place to specify which cells we are interested in. also see that the `directions` argument allows us to specify whether we want "rook", "bishop", or "queen" neighbors. Finally, we see that if we want to exclude the focal cell itself, we have to set `include` to FALSE. By plotting the map with the cell numbers, we can see that cells 1 and 5 are on th top row of the raster and thus do not have any neighbors for for the upper 3 categories whereas cell 55 has all 8 neighbors. If you choose cells that are in the center of the raster, you get all neighbors
 
 ```{r}
 #| echo: true
