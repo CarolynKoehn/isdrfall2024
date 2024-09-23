@@ -12,7 +12,7 @@ format:
 
 ## Announcements
 
-- Due this week: assignment revision 1
+Due this week: assignment revision 1
 
 # Today's Plan {background="#43464B" background-image="img/slide_10/NEDUS.gif" background-opacity="0.7"}
 
@@ -88,7 +88,7 @@ par(mfrow=c(1,1))
 |`line_merge`|after merging connecting `LINESTRING` elements of a `MULTILINESTRING` into longer `LINESTRING`s.|
 |`make_valid`|that is valid |
 |`node`|with added nodes to linear geometries at intersections without a node; only works on individual linear geometries|
-|`point_on_surface`|with a (arbitrary) point on a surface|
+|`point_on_surface`|with an arbitrary point on a surface|
 |`polygonize`|of type polygon, created from lines that form a closed ring|
 :::
 
@@ -148,7 +148,7 @@ st_is_valid(y)
 
 ::: columns
 :::{.column width=60%}
--`st_buffer` enforces valid geometries as an output
+- `st_buffer` enforces valid geometries as an output
 
 - Setting a 0 distance buffer leaves most geometries unchanged
 
@@ -288,9 +288,9 @@ par(mfrow=c(1,1), cex.main=1.2)
 |`segmentize`|a (linear) geometry with nodes at a given density or minimal distance|
 |`simplify`|simplified by removing vertices/nodes (lines or polygons)|
 |`split`|that has been split with a splitting linestring|
-|`transform`|transformed or convert to a new coordinate reference system (chapter \@ref(cs))|
-|`triangulate`|with Delauney triangulated polygon(s) (figure \@ref(fig:vor))|
-|`voronoi`|with the Voronoi tessellation of an input geometry (figure \@ref(fig:vor))|
+|`transform`|transformed or convert to a new coordinate reference system |
+|`triangulate`|with Delauney triangulated polygon(s)|
+|`voronoi`|with the Voronoi tessellation of an input geometry|
 |`zm`|with removed or added `Z` and/or `M` coordinates|
 |`collection_extract`|with subgeometries from a `GEOMETRYCOLLECTION` of a particular type|
 |`cast`|that is converted to another type|
@@ -335,15 +335,17 @@ but operate (sequentially) on all pairs, triples, quadruples, etc.
 
 ## Centroids and Distances
 
-For this exercise, you may want to refer to our [session 7 example code](https://isdrfall24.classes.spaseslab.com/example/session-07-example.html).
-
 The function `system.time` tells you how long a function takes to run:
 
 ```{r}
+#| echo: true
+
 system.time(id.counties <- tigris::counties(state = "ID", progress_bar=FALSE))
 ```
 
 Find the counties that are the furthest distance from each other in Idaho using the polygons, centroids, and point on surface objects we created earlier. Which distance calculation is the fastest?
+
+(You may want to refer to our [session 7 example code](https://isdrfall24.classes.spaseslab.com/example/session-07-example.html).)
 
 ## Intersections and Buffers
 
