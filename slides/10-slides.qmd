@@ -10,6 +10,10 @@ format:
     self-contained: true  
 ---
 
+## Announcements
+
+- Due this week: assignment revision 1
+
 # Today's Plan {background="#43464B" background-image="img/slide_10/NEDUS.gif" background-opacity="0.7"}
 
 ::: footer
@@ -327,5 +331,26 @@ geometrical union
 * `intersection` and `difference` take a single argument,
 but operate (sequentially) on all pairs, triples, quadruples, etc.
 
+# Practice
 
-  
+## Centroids and Distances
+
+For this exercise, you may want to refer to our [session 7 example code](https://isdrfall24.classes.spaseslab.com/example/session-07-example.html).
+
+The function `system.time` tells you how long a function takes to run:
+
+```{r}
+system.time(id.counties <- tigris::counties(state = "ID", progress_bar=FALSE))
+```
+
+Find the counties that are the furthest distance from each other in Idaho using the polygons, centroids, and point on surface objects we created earlier. Which distance calculation is the fastest?
+
+## Intersections and Buffers
+
+`tigris::primary_secondary_roads()` retrieves shapefiles for major roads in each state of the US. 
+
+1. Plot just Ada county and the major roads within.
+
+2. Map the portion of major roads that are within 50 km (as the crow flies) of the center of Ada county. (Remember to check the units of your CRS.)
+
+3. Challenge: Include county borders in your plot for part 2.
