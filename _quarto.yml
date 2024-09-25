@@ -99,8 +99,8 @@ website:
               file: content/10-content.qmd
             - text: "11: Operations with Vector Data II"
               file: content/11-content.qmd
-            # - text: "13: Operations with Raster Data I"
-            #   file: content/13-content.qmd
+            - text: "12: Operations with Raster Data I"
+              file: content/12-content.qmd
             # - text: "14: Operations with Raster Data II"
             #   file: content/14-content.qmd
             # - text: "15: Combining Tabular and Spatial Data"
