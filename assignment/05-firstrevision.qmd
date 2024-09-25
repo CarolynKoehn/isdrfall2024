@@ -10,7 +10,7 @@ Now that you've had some practice with `R` and the format of the course, it's ti
 
 2. Once you've verified that you've correctly cloned the assignment repository, create a new Quarto document. Name this file ar1_xxx.qmd and give it a title (like M Williamson Assignment Revision 1). Make sure that you select the html output option (Quarto can do a lot of cool things, but the html format is the least-likely to cause you additional headaches). We'll be using Quarto throughout the course so it's worth checking out the other tutorials in the getting started section.
 
-3. Copy the questions [in the assignment](https://classroom.github.com/a/WXzib4tL) into your document and change the color of their text.
+3. Copy the questions [in the assignment](https://classroom.github.com/a/niVSeHuF) into your document and change the color of their text.
 
 4. Save the changes and make your first commit!
 
