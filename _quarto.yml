@@ -199,6 +199,8 @@ website:
               file: example/session-09-example.qmd
             - text: "Vector Operations I"
               file: example/session-10-example.qmd
+            - text: "Vector Operations II"
+              file: example/session-11-example.qmd
         #     - text: "Raster data"
         #       file: example/raster-intro.qmd
         #     - text: "Integrating vector and raster data"
