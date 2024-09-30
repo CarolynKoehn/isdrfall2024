@@ -1,0 +1,365 @@
+---
+title: "Operations on Raster Data I"
+subtitle: "HES 505 Fall 2023: Session 12"
+author: "Carolyn Koehn"
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+```{r}
+#| include: false
+
+terra::terraOptions(progress=0)
+```
+
+
+# Today's Plan {background="#43464B" background-image="img/slide_10/NEDUS.gif" background-opacity="0.7"}
+
+::: footer
+Image Source: USGS
+:::
+
+## Objectives
+
+- By the end of today, you should be able to:
+
+  - Align rasters for spatial processing
+
+  - Adjust the resolution of raster data
+
+  - Combine (or reduce) rasters to match the extent of your analysis
+
+# Aligning rasters for spatial processing {background="#9F281A"}
+## Projecting raster data
+
+::: columns
+:::{.column width="50%"}
+::: {style="font-size: 0.7em"}
+* Transformation from lat/long to planar CRS involves some loss of precision
+* New cell values estimated using overlap with original cells
+* Interpolation for continuous data, nearest neighbor for categorical data
+* Equal-area projections are preferred; especially for large areas
+
+:::
+:::
+::: {.column width="50%"}
+::: {style="font-size: 0.7em"}
+
+```{r}
+#| echo: true
+library(sf)
+library(terra)
+library(spDataLarge)
+r <- rast(xmin=-110, xmax=-90, ymin=40, ymax=60, ncols=40, nrows=40)
+values(r) <- 1:ncell(r)
+plot(r)
+```
+
+:::
+:::
+:::
+
+## Projecting raster data
+
+::: columns
+:::{.column width="50%"}
+* simple method; alignment not guaranteed
+
+```{r newproj1, fig.height=4, fig.width=4}
+#| echo: true
+newcrs <- "+proj=robin +datum=WGS84"
+pr1 <- terra::project(r, newcrs)
+plot(pr1)
+```
+:::
+:::{.column width="50%"}
+* providing a template to ensure alignment
+```{r newproj2,  fig.height=4, fig.width=4}
+#| echo: true
+x <- rast(pr1)
+# Set the cell size
+res(x) <- 200000
+pr3 <- terra::project(r, x)
+plot(pr3)
+```
+:::
+:::
+
+## Aligning Data: `resample`
+
+```{r resamp}
+#| echo: true
+r <- rast(nrow=3, ncol=3, xmin=0, xmax=10, ymin=0, ymax=10)
+values(r) <- 1:ncell(r)
+s <- rast(nrow=25, ncol=30, xmin=1, xmax=11, ymin=-1, ymax=11)
+x <- resample(r, s, method="bilinear")
+```
+
+```{r resampplot, echo=FALSE}
+opar <- par(no.readonly =TRUE)
+par(mfrow=c(1,2))
+plot(r)
+plot(x)
+par(opar)
+```
+
+# Adjusting resolution {background="#9F281A"}
+
+## Downscaling and Upscaling
+
+- Aligning data for later analysis
+
+- Remembering _scale_
+
+- Thinking about support
+
+## Changing resolutions
+* `aggregate`, `disaggregate`, `resample` allow changes in cell size
+* `aggregate` requires a function (e.g., `mean()` or `min()`) to determine what to do with the grouped values
+
+* `resample` allows changes in cell size __and__ shifting of cell centers (slower)
+
+## Changing resolutions: aggregate
+
+::: columns
+:::{.column width="50%"}
+```{r agg1}
+#| echo: true
+r <- rast()
+r
+values(r) <- 1:ncell(r)
+plot(r)
+```
+:::
+:::{.column width="50%"}
+```{r agg2}
+#| echo: true
+ra <- aggregate(r, 20)
+ra
+plot(ra)
+```
+:::
+:::
+
+## Changing resolutions: disagg
+
+::: columns
+:::{.column width="50%"}
+```{r agg3}
+#| echo: true
+ra <- aggregate(r, 20)
+plot(ra)
+```
+:::
+:::{.column width="50%"}
+```{r agg4}
+#| include: false
+rd <- disagg(r, 20)
+rd
+plot(rd)
+```
+```{r}
+#| eval: false
+#| echo: true
+
+rd <- disagg(r, 20)
+```
+```{r agg4plot}
+#| echo: true
+rd
+plot(rd)
+```
+:::
+:::
+
+
+# Modifying the Extent {background="#9F281A"}
+
+## Dealing with Different Extents
+
+::: columns
+::: {.column width="50%"}
+- Raster extents often larger than our analysis
+
+- Reducing memory and computational resources
+
+- Making attractive maps
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
+zion = st_transform(zion, crs(srtm))
+plot(srtm)
+plot(st_geometry(zion), add=TRUE, col="blue")
+```
+:::
+:::
+
+## Using `terra::crop()`
+
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+plot(srtm)
+plot(ext(zion), add=TRUE, border="red")
+plot(zion, add=TRUE, col="blue")
+
+```
+:::
+::: {.column width="50%"}
+::: {style="font-size: 0.7em"}
+- Coordinate Reference System must be the same for both objects
+
+- Crop is based on the (converted) `SpatExtent` of the 2nd object
+
+- `snap` describes how `y` will be aligned to the raster
+
+- Returns all data within the extent
+:::
+:::
+:::
+
+## Using `terra::crop()`
+
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+```{r}
+#| echo: true
+library(sf)
+library(terra)
+library(spDataLarge)
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
+zion = st_transform(zion, crs(srtm))
+
+crs(srtm) == crs(zion)
+srtm.crop <- crop(x=srtm, y=zion, snap="near")
+```
+:::
+:::
+::: {.column width="40%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+plot(srtm.crop)
+plot(zion, add=TRUE, col="blue")
+```
+:::
+:::
+
+## Using `mask()`
+::: {style="font-size: 0.7em"}
+
+* Often want to get rid of all values outside of vector
+
+* Can set `mask=TRUE` in `crop()` (`y` must be `SpatVector`)
+
+* Or use `mask()`
+
+:::
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: true
+srtm.crop.msk <- crop(x=srtm, y=vect(zion), snap="near", mask=TRUE)
+plot(srtm.crop.msk)
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| echo: true
+srtm.msk <- mask(srtm.crop, vect(zion))
+plot(srtm.msk)
+```
+:::
+:::
+
+## Using `mask()`
+::: {style="font-size: 0.7em"}
+
+* Allows more control over what the mask does
+
+* Can set `maskvalues` and `updatevalues` to change the resulting raster
+
+* Can also use `inverse` to mask out the vector
+
+:::
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: true
+srtm.msk <- mask(srtm.crop, vect(zion), updatevalue=-1000)
+plot(srtm.msk)
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| echo: true
+srtm.msk <- mask(srtm.crop, vect(zion), inverse=TRUE, updatevalue=0)
+plot(srtm.msk)
+```
+:::
+:::
+
+## Extending boundaries
+::: {style="font-size: 0.7em"}
+* Vector slightly larger than raster
+
+* Especially when using buffered datasets
+
+* Can use `extend`
+
+* Not exact; depends on `snap()`
+
+:::
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: true
+
+zion.buff <-  zion %>% 
+  st_buffer(., 10000)
+srtm.ext <- extend(srtm, vect(zion.buff))
+ext(srtm.ext)
+ext(vect(zion.buff))
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-width: 4.5
+#| fig-height: 4.5
+plot(ext(zion.buff))
+plot(srtm, add=TRUE)
+```
+:::
+:::
+
+## Practice
+::: {style="font-size: 0.7em"}
+`mosaic` is a funciton that combines adjacent rasters, but they need to have the same origin and resolution. Let's practice preparing some rasters for a mosaic.
+
+1. Load wildfire hazard data from the `rasterexample` folder for OR and ID: `Copy of CRPS_OR.tif` and `Copy of CRPS_ID.tif`.
+
+2. These rasters have a fine resolution that will make our calculations slow. Transform them to have a resolution of 900 km.
+
+3. Do the rasters have the same CRS, origin, resolution, and extent? Check this with `==`.
+
+4. Use new functions from this lecture to align the properties mentioned in #3 (plot often to check your work). Why not use `project`?
+
+5. `mosaic` the two rasters together.
+:::
