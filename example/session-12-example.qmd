@@ -1,0 +1,331 @@
+---
+title: "Session 12 Code"
+format: html
+---
+
+## Read in packages:
+
+```{r}
+library(sf)
+library(terra)
+library(spDataLarge)
+library(tigris)
+library(tidyverse)
+```
+
+## Changing resolution:
+
+```{r}
+r <- rast()
+r
+```
+
+```{r}
+values(r) <- 1:ncell(r)
+plot(r)
+```
+
+```{r}
+ra <- aggregate(r, 20)
+ra
+```
+
+```{r}
+# rarely used
+rd <- disagg(r, 20)
+
+plot(rd)
+```
+
+## Crop and Mask
+
+```{r}
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
+zion = st_transform(zion, crs(srtm))
+
+crs(srtm) == crs(zion)
+```
+
+```{r}
+srtm.crop <- crop(x=srtm, y=zion, snap="near")
+```
+
+```{r}
+srtm.crop.msk <- crop(x=srtm, y=vect(zion), snap="near", mask=TRUE)
+plot(srtm.crop.msk)
+```
+
+```{r}
+srtm.msk <- mask(srtm.crop, vect(zion), updatevalue=-1000)
+plot(srtm.msk)
+```
+
+```{r}
+srtm.msk2 <- mask(srtm.crop, vect(zion), inverse=TRUE, updatevalue=-1000)
+```
+
+## Extend
+
+```{r}
+zion.buff <-  zion %>% 
+  st_buffer(., 10000)
+srtm.ext <- extend(srtm, vect(zion.buff))
+ext(srtm.ext)
+
+plot(srtm.ext)
+plot(st_geometry(zion.buff), add=TRUE)
+```
+
+## Practice
+
+Load data:
+
+```{r}
+#| eval: false
+
+id <- rast("/opt/data/data/rasterexample/Copy of CRPS_ID.tif")
+or <- rast("/opt/data/data/rasterexample/Copy of CRPS_OR.tif")
+```
+```{r}
+#| include: false
+
+id <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/rasterexample/Copy of CRPS_ID.tif")
+or <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/rasterexample/Copy of CRPS_OR.tif")
+```
+
+### Aggregate
+
+```{r}
+id_agg <- aggregate(id, fact = 30)
+or_agg <- aggregate(or, fact = 30)
+```
+
+### Check for alignment
+
+```{r}
+crs(id_agg) == crs(or_agg)
+origin(id_agg) == origin(or_agg)
+ext(id_agg) == ext(or_agg)
+```
+
+### Align the origins
+
+Both `project` and `resample` don't give the intended results.
+
+```{r}
+id_proj <- project(id_agg, or_agg)
+
+id_resamp <- resample(id_agg, or_agg)
+
+par(mfrow = c(1,2))
+plot(id_proj)
+plot(id_resamp)
+```
+
+We need to extend, then resample. Resample is the faster choice because the CRS's of the the two rasters already match.
+
+```{r}
+id_ext <- extend(id_agg, or_agg)
+or_ext <- extend(or_agg, id_ext)
+
+id_resamp <- resample(id_ext, or_ext)
+```
+
+```{r}
+crs(id_resamp) == crs(or_ext)
+origin(id_resamp) == origin(or_ext)
+ext(id_resamp) == ext(or_ext)
+```
+
+### Mosaic
+
+```{r}
+idor <- mosaic(id_resamp, or_ext)
+```
+
+### Crops and Masks
+
+```{r}
+idor_counties <- counties(state = c("ID", "OR"))
+
+east_id <- idor_counties %>%
+  filter(NAME %in% c("Teton", "Jefferson", "Madison"))
+plot(st_geometry(east_id))
+```
+
+`mask` without `crop` leaves a lot of white space.
+
+```{r}
+east_id_proj <- st_transform(east_id, crs(idor))
+
+east_id_fire <- mask(x = idor, mask = east_id_proj)
+
+east_id_fire2 <- crop(idor, east_id_proj, mask=TRUE)
+```
+
+---
+title: "Session 12 Code"
+format: html
+---
+
+## Read in packages:
+
+```{r}
+library(sf)
+library(terra)
+library(spDataLarge)
+library(tigris)
+library(tidyverse)
+```
+
+## Changing resolution:
+
+```{r}
+r <- rast()
+r
+```
+
+```{r}
+values(r) <- 1:ncell(r)
+plot(r)
+```
+
+```{r}
+ra <- aggregate(r, 20)
+ra
+```
+
+```{r}
+# rarely used
+rd <- disagg(r, 20)
+
+plot(rd)
+```
+
+## Crop and Mask
+
+```{r}
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
+zion = st_transform(zion, crs(srtm))
+
+crs(srtm) == crs(zion)
+```
+
+```{r}
+srtm.crop <- crop(x=srtm, y=zion, snap="near")
+```
+
+```{r}
+srtm.crop.msk <- crop(x=srtm, y=vect(zion), snap="near", mask=TRUE)
+plot(srtm.crop.msk)
+```
+
+```{r}
+srtm.msk <- mask(srtm.crop, vect(zion), updatevalue=-1000)
+plot(srtm.msk)
+```
+
+```{r}
+srtm.msk2 <- mask(srtm.crop, vect(zion), inverse=TRUE, updatevalue=-1000)
+```
+
+## Extend
+
+```{r}
+zion.buff <-  zion %>% 
+  st_buffer(., 10000)
+srtm.ext <- extend(srtm, vect(zion.buff))
+ext(srtm.ext)
+
+plot(srtm.ext)
+plot(st_geometry(zion.buff), add=TRUE)
+```
+
+## Practice
+
+Load data:
+
+```{r}
+#| eval: false
+
+id <- rast("/opt/data/data/rasterexample/Copy of CRPS_ID.tif")
+or <- rast("/opt/data/data/rasterexample/Copy of CRPS_OR.tif")
+```
+```{r}
+#| include: false
+
+id <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/rasterexample/Copy of CRPS_ID.tif")
+or <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/rasterexample/Copy of CRPS_OR.tif")
+```
+
+### Aggregate
+
+```{r}
+id_agg <- aggregate(id, fact = 30)
+or_agg <- aggregate(or, fact = 30)
+```
+
+### Check for alignment
+
+```{r}
+crs(id_agg) == crs(or_agg)
+origin(id_agg) == origin(or_agg)
+ext(id_agg) == ext(or_agg)
+```
+
+### Align the origins
+
+Both `project` and `resample` don't give the intended results.
+
+```{r}
+id_proj <- project(id_agg, or_agg)
+
+id_resamp <- resample(id_agg, or_agg)
+
+par(mfrow = c(1,2))
+plot(id_proj)
+plot(id_resamp)
+```
+
+We need to extend, then resample. Resample is the faster choice because the CRS's of the the two rasters already match.
+
+```{r}
+id_ext <- extend(id_agg, or_agg)
+or_ext <- extend(or_agg, id_ext)
+
+id_resamp <- resample(id_ext, or_ext)
+```
+
+```{r}
+crs(id_resamp) == crs(or_ext)
+origin(id_resamp) == origin(or_ext)
+ext(id_resamp) == ext(or_ext)
+```
+
+### Mosaic
+
+```{r}
+idor <- mosaic(id_resamp, or_ext)
+```
+
+### Crops and Masks
+
+```{r}
+idor_counties <- counties(state = c("ID", "OR"))
+
+east_id <- idor_counties %>%
+  filter(NAME %in% c("Teton", "Jefferson", "Madison"))
+plot(st_geometry(east_id))
+```
+
+`mask` without `crop` leaves a lot of white space.
+
+```{r}
+east_id_proj <- st_transform(east_id, crs(idor))
+
+east_id_fire <- mask(x = idor, mask = east_id_proj)
+
+east_id_fire2 <- crop(idor, east_id_proj, mask=TRUE)
+```
