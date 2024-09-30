@@ -1,6 +1,6 @@
 ---
 title: "Operations on Raster Data I"
-subtitle: "HES 505 Fall 2023: Session 12"
+subtitle: "HES 505 Fall 2024: Session 12"
 author: "Carolyn Koehn"
 format: 
   revealjs:
@@ -355,7 +355,7 @@ plot(srtm, add=TRUE)
 
 1. Load wildfire hazard data from the `rasterexample` folder for OR and ID: `Copy of CRPS_OR.tif` and `Copy of CRPS_ID.tif`.
 
-2. These rasters have a fine resolution that will make our calculations slow. Transform them to have a resolution of 900 km.
+2. These rasters have a fine resolution that will make our calculations slow. Transform them to have a resolution of 900 m.
 
 3. Do the rasters have the same CRS, origin, resolution, and extent? Check this with `==`.
 
