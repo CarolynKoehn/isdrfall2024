@@ -1,0 +1,220 @@
+---
+title: "Raster Data: II"
+subtitle: "HES 505 Fall 2024: Session 13"
+author: "Carolyn Koehn"
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+# Today's Plan {background="#43464B" background-image="img/slide_14/bison.png"}
+
+
+## Objectives
+
+- By the end of today, you should be able to:
+
+  * Use moving windows as a means of smoothing raster data
+
+  * Reclassify data using conditional statements and reclassification tables
+
+  * Use raster math as a means of creating new data based on an existing dataset.
+
+# Moving Windows
+
+## Why use moving windows?
+
+  * To create new data that reflects "neighborhood" data
+  
+  * To smooth out values
+  
+  * To detect (and fill) holes or edges
+  
+  * Change the thematic scale of your data (without changing resolution)
+  
+## What is a moving window?
+
+![](img/slide_14/raster_sliding_window.jpg)
+
+## Implementing Moving Windows in `R`
+
+- Use the `focal` function in `terra`
+
+`focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, 
+		expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) `
+
+## `focal` for Continuous Rasters
+
+```{r}
+#| echo: true
+library(tidyverse)
+library(terra)
+library(spData)
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+srtm3  <-  focal(x = srtm, w = 3)
+srtm9  <-  focal(x = srtm, w = 9)
+srtm21  <-  focal(x = srtm, w = 21)
+```
+
+## `focal` for Continuous Rasters
+```{r}
+rasts <- c(srtm, srtm3, srtm9, srtm21)
+names(rasts) <- c("base", "3 by 3", "9 by 9", "21 by 21")
+plot(rasts)
+```
+
+## `focal` for Continuous Rasters
+
+```{r}
+#| echo: true
+
+srtmsum  <-  focal(x = srtm, w = 3, fun="sum")
+srtmmax  <-  focal(x = srtm, w = 9, fun="mean")
+srtmmin  <-  focal(x = srtm, w = 21, fun="min")
+```
+
+## `focal` for Continuous Rasters
+
+```{r}
+rasts <- c(srtm, srtmsum, srtmmax, srtmmin)
+names(rasts) <- c("base", "Sum", "Max", "Min")
+plot(rasts)
+```
+
+## `focal` for Continous Rasters
+
+* can alter the size and shape of window by providing a weights matrix for `w`
+
+* Can create different custom functions for `fun` (see the help file)
+
+* `na.policy` for filling holes or avoiding them
+
+# Reclassification
+
+## Reclassification
+
+* Create new data based on the presence of a particular class(es) of interest
+
+* Combine classes in a categorical map
+
+* Useful as inputs for overlay analyses
+
+## Reclassifying rasters in `R`
+
+* Using `[]` and conditionals
+
+```{r}
+#| echo: true
+
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+srtm.lowelev <- srtm
+srtm.lowelev[srtm.lowelev > 2500] <- 1
+plot(srtm.lowelev)
+```
+
+## Reclassifying rasters in `R`
+
+* Using `[]` and conditionals
+```{r}
+#| echo: true
+
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+
+
+srtm.na <- srtm
+srtm.na[200:300, 200:300] <- NA
+srtm.na[is.na(srtm.na)] <- 8000
+plot(srtm.na)
+```
+## Reclassifying Categorical Rasters
+
+* Need a classification matrix
+* Use `classify`
+
+```{r}
+#| echo: true
+
+mintemp <- rast("ftp://ftp.hafro.is/pub/data/rasters/Iceland_minbtemp.tif")
+cm <- matrix(c(
+  -2, 2, 0,
+  2, 4, 1,
+  4, 10, 2), ncol = 3, byrow = TRUE)
+
+# Create a raster with integers
+temp_reclass <- classify(mintemp, cm)
+tempcats <- c("cold", "mild", "warm")
+levels(temp_reclass) <- tempcats
+
+```
+
+## Reclassifying Categorical Rasters
+```{r}
+par(mfrow=c(1,2))
+plot(mintemp, main="original")
+plot(temp_reclass, main="reclassified")
+```
+
+## Raster Math
+
+* Performs cell-wise calculations on 1 (or more) `SpatRasters`
+* Generally works the same as matrix operations 
+* All layers must be aligned
+
+## Raster Math
+
+```{r}
+#| echo: true
+r <- rast(ncol=5, nrow=5)
+values(r) <- 1:ncell(r)
+r2 <- r*2
+r3 <- t(r)
+r4 <- r + r2
+```
+
+```{r}
+opar <- par(no.readonly =TRUE)
+par(mfrow=c(1,4))
+plot(r, main = "r")
+plot(r2, main = "r2")
+plot(r3, main = "r3")
+plot(r4, main = "r4")
+par(opar)
+```
+
+## Cell-wise operations
+
+* `terra` has a special set of `apply` functions
+
+* `app`, `lapp`, `tapp`
+
+* `app` applies a function to the values of each cell
+
+* `lapp` applies a function using the layer as the value
+
+* `tapp` applies the function to a subset of layers
+
+
+## Context-specific Functions
+
+* `distance` and relatives are based on relationships between cells
+
+* `terrain` allows calculation of slope, ruggedness, aspect using elevation rasters
+
+* `shade` calculates hillshade based on terrain
+
+## Practice
+
+You are tasked with the following (admittedly silly) analysis by the "Wildfire for Insurance Agents" group. They would like a map of wildfire risk in Idaho with these categories: "No worries," "A little bit risky," "Moderate risk," and "Very risky," and "Don't move here." They don't want any stakeholders to feel that their properties stand out unfairly, so they don't want pixels that are different from the pixels around them. Choose a county to present this analysis to and make a map for that audience as well as the state map.
+
+## Objectives
+
+- You should be able to:
+
+  * Use moving windows as a means of smoothing raster data
+
+  * Reclassify data using conditional statements and reclassification tables
+
+  * Use raster math as a means of creating new data based on an existing dataset.
