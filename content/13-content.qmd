@@ -26,7 +26,6 @@ By the end of today, you should be able to:
 
 * Use raster math as a means of creating new data based on an existing dataset.
 
-<!--
 ## Slides
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
@@ -41,5 +40,5 @@ slide_buttons("/slides/13-slides")
 ```
 
 </div>
-
+<!--
 [Link to today's Panopto Slides](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d67a2be8-3df8-40a7-a205-b0910143dee4) -->
