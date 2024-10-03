@@ -203,8 +203,8 @@ website:
               file: example/session-11-example.qmd
             - text: "Raster Operations I"
               file: example/session-12-example.qmd
-        #     - text: "Raster data"
-        #       file: example/raster-intro.qmd
+            - text: "Raster Operations II"
+              file: example/session-13-example.qmd
         #     - text: "Integrating vector and raster data"
         #       file: example/combining-data.qmd
         - section: "Statistical Workflows"
