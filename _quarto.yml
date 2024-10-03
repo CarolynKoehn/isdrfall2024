@@ -162,8 +162,8 @@ website:
               file: assignment/04-maps.qmd
             - text: "Vector Operations"
               file: assignment/06-vectorops.qmd
-            # - text: "Raster Operations" 
-            #   file: assignment/07-rasterops.qmd
+            - text: "Spatial Databases"
+              file: assignment/07-rasterops.qmd
             # - text: "Spatial Databases" 
             #   file: assignment/08-combinations.qmd
             # - text: "Point Patterns and Interpolation" 
