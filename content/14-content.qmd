@@ -36,7 +36,7 @@ By the end of today, you should be able to:
 
 - Join data based on attributes and location
 
-<!--
+
 ## Slides
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
@@ -51,4 +51,3 @@ slide_buttons("/slides/14-slides")
 ```
 
 </div>
--->
