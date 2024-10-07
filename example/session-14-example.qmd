@@ -135,7 +135,6 @@ plot(cejst_id_join["pop_dens"])
 
 library(tmap)
 
-tmap_mode("view")
 tm_shape(cejst_id_join) +
   tm_polygons(col = "pop_dens")
 ```
