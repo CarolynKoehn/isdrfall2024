@@ -1,5 +1,5 @@
 ---
-title: "Combining Spatial and Tabular Data"
+title: "Building Spatial Databases with Attributes"
 date: "2024-10-7"
 ---
 
@@ -8,9 +8,9 @@ source(here::here("R", "slide-things.R"))
 
 ```
 
-Today we'll begin exploring typical workflows for spatial analysis by working with attribute data. Attributes generally provide additional information about a location that we can use for visualization and analysis. Unlike spatial operations that we'll explore next week, attribute data do not all require geographic information (but they do need some means of relating to a geography). These chapters are not 'prerequisite' reading for the week, but provide a lot of helpful background for attribute operations in R.
-
 ## Resources
+
+Today we'll begin exploring typical workflows for spatial analysis by working with attribute data. Attributes generally provide additional information about a location that we can use for visualization and analysis. Unlike spatial operations that we'll explore next week, attribute data do not all require geographic information (but they do need some means of relating to a geography). These chapters are not 'prerequisite' reading for the week, but provide a lot of helpful background for attribute operations in R.
 
 - <i class="fas fa-book"></i> The [Tidy Data](https://r4ds.had.co.nz/tidy-data.html) and [Relational Data](https://r4ds.had.co.nz/relational-data.html) sections from __R For Data Science__ [@wickham2016r] provide a great overview to data cleaning and manipulation functions available in the `tidyverse`.
 
@@ -18,7 +18,6 @@ Today we'll begin exploring typical workflows for spatial analysis by working wi
 
 - <i class="fas fa-book"></i> This [article](https://www.cell.com/trends/ecology-evolution/fulltext/S0169-5347(21)00227-5) [@di2021conservation] provides a recent recap of a variety of reasons why we may need to combine data from multiple, often disparate, sources. 
 
-- <i class="fas fa-book"></i> The [Spatial Data Operations Chapter](https://geocompr.robinlovelace.net/spatial-operations.html) in [@lovelace_geocomputation_2019] makes the concepts of a network concrete (literally) by using a transportation route example to illustrate the various components of a network analysis in `R`.
 
 ## Objectives
 
@@ -30,11 +29,7 @@ By the end of today, you should be able to:
 
 - Understand the structure of relational databases
 
-- Use attributes and topology to subset data
-
-- Generate new features using geographic data
-
-- Join data based on attributes and location
+- Begin building a database for spatial analysis
 
 
 ## Slides
