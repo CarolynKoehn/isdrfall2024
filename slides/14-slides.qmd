@@ -238,10 +238,10 @@ plot(world2[c("dens", "totGDP")])
 
 ## Revisiting the `tidyverse` 
 
-* Aggregating data
-
 ::: columns
 ::: {.column width="50%"}
+
+* Aggregating data
 
 ```{r}
 #| echo: true
@@ -363,4 +363,4 @@ plot(world_coffee_inner["coffee_production_2017"])
 
 * `right_`, `outer_`, and `anti_`
 
-* Spatial Joins (next week)
+* Spatial Joins (Wednesday)
