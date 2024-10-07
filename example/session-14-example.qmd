@@ -1,0 +1,146 @@
+---
+title: "Session 14 code"
+author: "Carolyn Koehn"
+format: html
+---
+
+Libraries for today:
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse, quietly = TRUE)
+library(spData)
+library(sf)
+```
+
+## Subsetting Data:
+
+```{r}
+colnames(world)
+```
+
+```{r}
+head(world)[,1:3] %>% 
+  st_drop_geometry()
+```
+
+```{r}
+world %>%
+  dplyr::select(name_long, continent) %>%
+  st_drop_geometry() %>% 
+  head(.) 
+```
+
+```{r}
+head(world)[1:3, 1:3] %>% 
+  st_drop_geometry()
+```
+
+```{r}
+world %>%
+  filter(continent == "Asia") %>% 
+  select(name_long, continent) %>%
+  st_drop_geometry() %>% 
+  head(.)
+```
+
+## Create new columns
+
+```{r}
+world_dens <- world %>%
+  filter(continent == "Asia") %>% 
+  select(name_long, continent, pop, gdpPercap ,area_km2) %>%
+  mutate(., dens = pop/area_km2,
+         totGDP = gdpPercap * pop) %>%
+  st_drop_geometry() %>% 
+  head(.)
+```
+
+## Aggregate / Summarise
+
+```{r}
+world %>%
+  st_drop_geometry(.) %>% 
+  group_by(continent) %>%
+  summarize(pop = sum(pop, na.rm = TRUE))
+```
+
+## Joins
+
+```{r}
+head(coffee_data)
+```
+
+```{r}
+world_coffee = left_join(world, coffee_data)
+nrow(world_coffee)
+```
+
+```{r}
+plot(world_coffee["coffee_production_2016"])
+```
+
+```{r}
+world_coffee_inner = inner_join(world, coffee_data)
+nrow(world_coffee_inner)
+```
+
+## Practice:
+
+What is the population density for the tracts in the cejst data? Our data sources are:
+
+- Total population in each tract (`cejst$TPF`)
+- Area in $m^2$ of each tract (`tigris::tracts()`, column `ALAND`)
+
+```{r}
+#| eval: false
+
+cejst <- st_read("/opt/data/data/assignment06/cejst_pnw.shp")
+
+id_tracts <- tigris::tracts(state = "ID", year = 2015)
+```
+```{r}
+#| include: false
+
+cejst <- st_read("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment06/cejst_pnw.shp")
+
+id_tracts <- tigris::tracts(state = "ID", year = 2015)
+```
+
+```{r}
+cejst_id <- cejst %>%
+  filter(SF == "Idaho")
+```
+
+```{r}
+id_tracts <- id_tracts %>%
+  mutate(ALAND_sqmi = ALAND/2589988.11)
+head(id_tracts)
+```
+
+```{r}
+id_tracts <- st_drop_geometry(id_tracts)
+```
+
+```{r}
+cejst_id_join <- inner_join(cejst_id, id_tracts,
+                            by = c("GEOID10" = "GEOID")) %>%
+  mutate(pop_dens = TPF/ALAND_sqmi)
+```
+
+```{r}
+plot(cejst_id_join["pop_dens"])
+
+library(tmap)
+
+tmap_mode("view")
+tm_shape(cejst_id_join) +
+  tm_polygons(col = "pop_dens")
+```
+
+```{r}
+ggplot(cejst_id_join, aes(x=pop_dens, y=IS_PFS)) +
+  geom_point()
+```
