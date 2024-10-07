@@ -37,5 +37,6 @@ We want to begin to assess the role of distance from schools in determining the 
 2. Translate the pseudocode into code chunks and create the necessary code (You'll need to use things like `st_distance`, `st_buffer`, `st_sym_difference`)
 3. Make a map for both the percentage of individuals with less than a high school degree in counties within 50km and beyond 50km (i.e. make 2 maps)
 
-<!--
-Solutions are [here](06-vectoropssolutions.qmd) -->
+:::{.callout-note}
+Solutions are [here](06-vectoropssolutions.qmd)
+:::
