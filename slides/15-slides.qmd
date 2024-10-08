@@ -1,0 +1,536 @@
+---
+title: "Building Spatial Databases based on Location"
+subtitle: "HES 505 Fall 2024: Session 15"
+author: "Carolyn Koehn"
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(sf)
+library(igraph)
+library(terra)
+library(spData)
+library(units)
+library(tigris)
+library(tmap)
+```
+
+## Objectives
+
+By the end of today you should be able to:
+
+- Create new features based on topological relationships
+
+- Use topological subsetting to reduce features
+
+- Use spatial joins to add attributes based on location
+
+# Revisiting Spatial Analysis {background="#0033A0"}
+
+## What is spatial analysis?
+
+> "The process of examining the locations, attributes, and relationships of features in spatial data through overlay and other analytical techniques in order to address a question or gain useful knowledge. Spatial analysis extracts or creates new information from spatial data".
+`r tufte::quote_footer('--- ESRI Dictionary')`
+
+## Workflows for spatial analysis
+
+::: columns
+::: {.column width="40%"}
+![courtesy of [Humboldt State University](http://gsp.humboldt.edu/olm/Lessons/GIS/06%20Vector%20Analysis%20Attributes/00_SpatialAnalysis.html)](img/slide_15/Process.png)
+:::
+::: {.column width="60%"}
+
+- Align processing with objectives
+
+- Imagining the visualizations and analysis clarifies file formats and variables
+
+- Helps build reproducibility 
+:::
+:::
+
+## Databases and Attributes
+
+::: columns
+::: {.column width="40%"}
+![courtesy of [Giscommons](https://giscommons.org/data-tables-and-data-preprocessing/)](img/slide_14/4.1.png)
+:::
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+- Attributes: Information that further describes a spatial feature
+
+- Attributes &rightarrow; predictors for analysis 
+
+- Monday's focus on thematic relations between datasets
+  - Shared 'keys' help define linkages between objects
+
+- Sometimes we are interested in attributes that describe location (overlaps, contains, distance)
+
+- Sometimes we want to join based on location rather than thematic connections
+  - __Must have the same CRS__
+:::
+:::
+:::
+
+# Calculating New Attributes {background="#0033A0"}
+
+## Attributes based on geometry and location (`measures`)
+
+- Attributes like area and length can be useful for a number of analyses
+  - Estimates of 'effort' in sampling designs
+  - Offsets for modeling rates (e.g., Poisson regression)
+  
+- Need to assign the result of the function to a column in data frame (e.g., `$`, `mutate`, and `summarize`)
+
+- Often useful to test before assigning
+
+## Estimating area
+
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+- `sf` bases area (and length) calculations on the map units of the CRS
+
+- the `units` library allows conversion into a variety of units
+
+:::
+:::
+::: {.column width="40%"}
+```{r}
+#| echo: true
+nz.sf <- nz %>% 
+  mutate(area = st_area(nz))
+head(nz.sf$area, 3)
+```
+
+
+```{r}
+#| echo: true
+nz.sf$areakm <- units::set_units(st_area(nz), km^2)
+head(nz.sf$areakm, 3)
+```
+:::
+:::
+
+## Estimating Density in Polygons
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+random_long_lat <- 
+  data.frame(
+    long = sample(runif(2000, min = 1090144, max = 2089533), replace = F),
+    lat = sample(runif(2000, min = 4748537, max = 6191874), replace = F)
+  )
+
+random_long_lat_sf <- random_long_lat %>% 
+  st_as_sf(coords = c("long", "lat"), crs = st_crs(nz))
+
+random_nz <- random_long_lat_sf[nz.sf,]
+plot(st_geometry(random_nz), cex=0.1, col="red")
+plot(st_geometry(nz.sf), add=TRUE)
+```
+:::
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+- Creating new features based on the frequency of occurrence
+
+- Clarifying graphics
+
+- Underlies quadrat sampling for point patterns
+
+- Two steps: count and area
+:::
+:::
+:::
+
+
+## Estimating Density in Polygons
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+random_long_lat <- 
+  data.frame(
+    long = sample(runif(2000, min = 1090144, max = 2089533), replace = F),
+    lat = sample(runif(2000, min = 4748537, max = 6191874), replace = F)
+  )
+
+random_long_lat_sf <- random_long_lat %>% 
+  st_as_sf(coords = c("long", "lat"), crs = st_crs(nz))
+
+random_nz <- random_long_lat_sf[nz.sf,]
+plot(st_geometry(random_nz), cex=0.1, col="red")
+plot(st_geometry(nz.sf), add=TRUE)
+```
+:::
+::: {.column width="60%"}
+```{r}
+#| echo: true
+nz.df <- nz %>% 
+mutate(counts = lengths(st_intersects(., random_nz)),
+       area = st_area(nz),
+       density = counts/area)
+head(st_drop_geometry(nz.df[,7:10]))
+```
+:::
+:::
+
+## Estimating Density in Polygons
+
+::: columns
+::: {.column width="50%"}
+
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+plot(nz.df["counts"], main="Counts")
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+plot(nz.df["density"], main="Density")
+```
+:::
+:::
+## Estimating Distance
+
+- As a covariate
+
+- For use in covariance matrices
+
+- As a means of assigning connections in networks
+
+
+## Estimating Single Point Distance
+
+::: columns
+::: {.column width="40%"}
+- `st_distance` returns distances between all features in `x` and all features in `y`
+
+- One-to-One relationship requires choosing a single point for `y`
+:::
+::: {.column width="40%"}
+![](img/slide_14/types-of-relationship-in-Database.png) 
+:::
+:::
+
+## Estimating Single Point Distance
+
+- Subsetting `y` into a single feature
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| echo: true
+canterbury = nz %>% filter(Name == "Canterbury")
+canterbury_height = nz_height[canterbury, ]
+co = filter(nz, grepl("Canter|Otag", Name))
+st_distance(nz_height[1:3, ], co)
+```
+:::
+::: {.column width="30%"}
+```{r}
+#| fig-width: 4.5
+#| fig-height: 4.5
+plot(st_geometry(co)[2], col="red") 
+plot(st_geometry(nz_height)[1], col="blue", add=TRUE)
+plot(st_geometry(nz_height)[2:3], add = TRUE, col="black")
+```
+:::
+:::
+
+## Estimating Single Point Distance
+
+- Using nearest neighbor distances
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+ua <- urban_areas(cb = FALSE, progress_bar = FALSE) %>% 
+  filter(., UATYP10 == "U") %>% 
+  filter(., str_detect(NAME10, "ID")) %>% 
+  st_transform(., crs=2163)
+
+#get index of nearest ID city
+nearest <-  st_nearest_feature(ua)
+#estimate distance
+(dist = st_distance(ua, ua[nearest,], by_element=TRUE))
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 5
+#| fig-height: 5
+id <- states(cb = FALSE, progress_bar = FALSE) %>% 
+  filter(., STUSPS == "ID")%>% 
+  st_transform(., crs=2163)
+
+plot(st_geometry(id))
+plot(st_geometry(ua), add=TRUE)
+```
+:::
+:::
+
+# Topological Subsetting {background="#0033A0"}
+
+## Topological Subsetting
+::: {style="font-size: 0.7em"}
+- Topological relations describe the spatial relationships between objects
+
+- We can use the overlap (or not) of vector data to subset the data based on topology
+
+- Need _valid_ geometries
+
+- Easiest way is to use `[` notation, but also most restrictive
+:::
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| echo: true
+ctby_height <-  nz_height[canterbury, ]
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+plot(st_geometry(canterbury))
+plot(st_geometry(nz_height), col="red", add=TRUE)
+plot(st_geometry(canterbury_height), col="blue", add=TRUE)
+```
+:::
+:::
+
+## Topological Subsetting
+
+::: columns
+::: {.column width="50%"}
+
+::: {style="font-size: 0.7em"}
+
+- Lots of verbs in `sf` for doing this (e.g., `st_intersects`, `st_contains`, `st_touches`)
+
+- see `?geos_binary_pred` for a full list
+
+- Creates an __implicit__ attribute (the _records_ in `x` that are "in" `y`)
+
+:::
+:::
+::: {.column width="50%"}
+__Using `sparse=TRUE`__
+```{r}
+#| echo: true
+st_intersects(nz_height, co, 
+              sparse = TRUE)[1:3] 
+
+lengths(st_intersects(nz_height, 
+                      co, sparse = TRUE))[1:3] > 0
+```
+:::
+:::
+
+## Topological Subsetting
+
+- The `sparse` option controls how the results are returned
+- We can then find out if one or more elements satisfies the criteria
+
+__Using `sparse=FALSE`__
+```{r top2}
+#| echo: true
+st_intersects(nz_height, co, sparse = FALSE)[1:3,] 
+
+apply(st_intersects(nz_height, co, sparse = FALSE), 1,any)[1:3]
+```
+
+## Topological Subsetting
+
+::: columns
+::: {.column width="60%"}
+```{r subset}
+#| echo: true
+canterbury_height3 = nz_height %>%
+  filter(st_intersects(x = ., y = canterbury, sparse = FALSE))
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 4
+plot(st_geometry(nz))
+plot(st_geometry(canterbury_height3), add=TRUE)
+```
+:::
+:::
+
+# Spatial Joins {background="#0033A0"}
+
+## Spatial Joins
+
+- `sf` package provides `st_join` for vectors
+
+- Allows joins based on the predicates (`st_intersects`, `st_touches`, `st_within_distance`, etc.)
+
+- Default is a left join
+
+## Spatial Joins
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: true
+set.seed(2018)
+(bb = st_bbox(world)) # the world's bounds
+#>   xmin   ymin   xmax   ymax 
+#> -180.0  -89.9  180.0   83.6
+random_df = data.frame(
+  x = runif(n = 10, min = bb[1], max = bb[3]),
+  y = runif(n = 10, min = bb[2], max = bb[4])
+)
+random_points <- random_df %>% 
+  st_as_sf(coords = c("x", "y")) %>% # set coordinates
+  st_set_crs("EPSG:4326") # set geographic CRS
+
+random_joined = st_join(random_points, world["name_long"])
+```
+:::
+::: {.column width="50%"}
+```{r}
+random_joined$name_long = as.character(random_joined$name_long)
+
+jm0 <- tm_shape(world) + tm_borders(lwd = 0.5) + tm_format("World")
+jm1 <- jm0 +
+  tm_shape(shp = random_joined, bbox = bb) +
+  tm_symbols(col = "name_long", shape = 4, border.lwd = 2, palette = "Dark2")+
+  tm_layout(scale = 1, legend.bg.color = "white", legend.bg.alpha = 0.3, legend.position = c("right", "bottom"))
+jm1
+```
+:::
+:::
+
+## Spatial Joins
+
+- Sometimes we may want to be less restrictive
+
+- Just because objects don't touch doesn't mean they don't relate to each other
+
+- Can use `predicates` in `st_join`
+
+- Remember that default is `left_join` (so the number of records can grow if multiple matches)
+
+## Spatial Joins
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| echo: true
+any(st_touches(cycle_hire, cycle_hire_osm, sparse = FALSE))
+z = st_join(cycle_hire, cycle_hire_osm, st_is_within_distance, dist = 20)
+nrow(cycle_hire)
+nrow(z)
+```
+:::
+::: {.column width="30%"}
+```{r}
+plot(st_geometry(cycle_hire), col = "blue")
+plot(st_geometry(cycle_hire_osm), add = TRUE, pch = 3, col = "red")
+```
+:::
+:::
+
+# Extending Joins {background="#0033A0"}
+
+## Extending Joins 
+::: {style="font-size: 0.6em"}
+- Sometimes we are interested in analyzing locations that contain the overlap between two vectors
+  - How much of home range _a_ occurs on soil type _b_
+  - How much of each Census tract is contained with a service provision area?
+- `st_intersection`, `st_union`, and `st_difference` return new geometries that we can use as records in our spatial database
+:::
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| message: false
+#| warning: false
+#| fig-pos: "t"
+transmitters <-
+  data.frame(
+    ID = 1:2,
+    longitude = c(-80.631974, -77.808488),
+    latitude = c(35.838583, 35.526252),
+    radius = c(50, 100))
+
+### Turn transmitters df into an sf object
+tr_wgs <- 
+  st_as_sf(transmitters, 
+           coords = c("longitude", "latitude"), 
+           crs = 4326, 
+           dim = "XY")
+
+### Set units (a projection that preserves area in NC)
+tr_wgs <- 
+  st_transform(tr_wgs, 
+               "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD27 +units=km")
+
+### Create a buffer (not sure of the original km measurements, so right now it is just making a 100km buffer)
+tr_buff <- 
+  st_buffer(tr_wgs, c(transmitters$radius))
+
+### Read North Carolina (and coerce to be same projection as tr_buff)
+nc <-
+  st_read(system.file("shape/nc.shp", package="sf"), quiet = TRUE) %>%
+  st_transform(., "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD27 +units=km")
+
+### Plot
+ggplot() +
+  geom_sf(data = nc) +
+  geom_sf(data = tr_buff, color="red")
+
+```
+:::  
+::: {.column width="50%"}
+```{r}
+#| echo: true
+intersect_pct <- st_intersection(nc, tr_buff) %>% 
+   mutate(intersect_area = st_area(.)) %>%   # create new column with shape area
+   dplyr::select(NAME, intersect_area) %>%   # only select columns needed to merge
+   st_drop_geometry()
+
+nc <- mutate(nc, county_area = st_area(nc))
+
+# Merge by county name
+nc <- merge(nc, intersect_pct, by = "NAME", all.x = TRUE)
+
+# Calculate coverage
+nc <- nc %>% 
+   mutate(coverage = as.numeric(intersect_area/county_area))
+```
+:::
+:::
+
+## Extending Joins
+
+```{r}
+ggplot() +
+  geom_sf(data = nc, aes(fill=coverage)) +
+  geom_sf(data = tr_buff, fill=NA, color="red")
+```
