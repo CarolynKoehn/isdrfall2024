@@ -107,8 +107,8 @@ website:
               file: content/14-content.qmd
             - text: "15: Building Databases with Location"
               file: content/15-content.qmd
-            # - text: "17: Combining Vectors and Categorical Rasters"
-            #   file: content/17-content.qmd
+            - text: "16: Combining Vectors and Rasters"
+              file: content/16-content.qmd
             # - text: "18: Point Patterns"
             #   file: content/18-content.qmd
             # - text: "19: Interpolation"
