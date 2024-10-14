@@ -20,9 +20,9 @@ This is your second opportunity to reconsider your answers to the previous two a
 
 ## Questions
 
-1.
+1. Imagine you have a spatial analysis planned that uses one tabular dataset, 2 vector datasets, and 2 raster datasets. What are the basic steps that you need to do before you can build a spatial database from all the data sources in R? You can write the steps in pseudocode, bullet point, or paragraph form.
 
-2.
+2. What are your strategies for checking that an operation resulted in the output you expected? How do you identify syntax errors and semantic errors (see [session 6](https://isdrfall24.classes.spaseslab.com/content/06-content.html) for definitions) in your work?
 
 3.
 
