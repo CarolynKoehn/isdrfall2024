@@ -1,6 +1,6 @@
 ---
 title: "Combining Data and Point Patterns"
-date: "2023-10-18"
+date: "2024-10-16"
 ---
 
 ```{r slides-videos, echo=FALSE, include=FALSE}
@@ -26,29 +26,27 @@ Today we'll finish up our example of combining data for analysis and introduce p
 
 By the end of today you should be able to:
 
-- Complete the creation of a dataset for analysis using vector and raster data
-
 - Define a point process and their utility for ecological applications
 
 - Define first and second-order Complete Spatial Randomness
 
 - Use several common functions to explore point patterns
 
-
+<!--
 ## Slides
 
 The slides for today's lesson are available online as an HTML file. Use the buttons below to open the slides either as an interactive website or as a static PDF (for printing or storing for later). You can also click in the slides below and navigate through them with your left and right arrow keys.
 
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
-slide_buttons("/slides/18-slides")
+slide_buttons("/slides/17-slides")
 ```
 
 <div>
 
 ```{=html}
-<iframe class="slide-deck" src="/slides/18-slides.html"></iframe>
+<iframe class="slide-deck" src="/slides/17-slides.html"></iframe>
 ```
 
 </div>
 
-[Link to Panopto Video](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=82b8f511-330a-474d-9393-b09f014188de)
+[Link to Panopto Video](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=82b8f511-330a-474d-9393-b09f014188de) -->
