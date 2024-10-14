@@ -209,8 +209,8 @@ website:
               file: example/session-14-example.qmd
             - text: "Combining Databases with Location"
               file: example/session-15-example.qmd
-        #     - text: "Integrating vector and raster data"
-        #       file: example/combining-data.qmd
+            - text: "Integrating vector and raster data"
+              file: example/session-16-example.qmd
         - section: "Statistical Workflows"
         #   contents:
         #     - text: "Building dataframes"
