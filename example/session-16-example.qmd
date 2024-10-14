@@ -1,0 +1,257 @@
+---
+title: "Session 16 code"
+author: "Carolyn Koehn"
+format: html
+---
+
+Load libraries:
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(sf)
+library(terra)
+```
+
+Load data:
+
+```{r}
+#| eval: false
+hospitals_pnw <- read_csv("/opt/data/data/assignment06/landmarks_pnw.csv") %>%
+  filter(., MTFCC == "K2543") %>%
+  st_as_sf(., coords = c("longitude", "latitude"), crs=4269) %>%
+  st_transform(crs = 5070)
+```
+```{r}
+#| include: false
+hospitals_pnw <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment06/landmarks_pnw.csv") %>%
+  filter(., MTFCC == "K2543") %>%
+  st_as_sf(., coords = c("longitude", "latitude"), crs=4269) %>%
+  st_transform(crs = 5070)
+```
+
+
+## Rasterize
+
+```{r}
+raster_template = rast(ext(hospitals_pnw), resolution = 10000,
+                       crs = st_crs(hospitals_pnw)$wkt)
+
+hosp_raster1 = rasterize(hospitals_pnw, raster_template,
+                         field = 1)
+
+plot(hosp_raster1, colNA = "navy")
+```
+
+```{r}
+# add dummy numeric data
+hospitals_pnw$rand_capacity <- rnorm(n = nrow(hospitals_pnw),
+                                     mean = 5000,
+                                     sd = 2000)
+
+hosp_raster3 = rasterize(hospitals_pnw, raster_template, 
+                         field = "rand_capacity", fun = sum)
+
+plot(hosp_raster3)
+```
+
+## Raster to Vector
+
+```{r}
+dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
+cl = as.contour(dem)
+```
+
+## Creating New Data
+
+### Distance
+
+```{r}
+raster_template = rast(ext(hospitals_pnw), resolution = 1000,
+                       crs = st_crs(hospitals_pnw)$wkt)
+hosp_raster1 = rasterize(hospitals_pnw, raster_template,
+                       field = 1)
+
+hosp_dist_rast <- distance(hosp_raster1)
+plot(hosp_dist_rast)
+```
+
+### Attributes
+
+```{r}
+#| eval: false
+wildfire_haz <- rast("/opt/data/data/assignment07/wildfire_hazard_agg.tif")
+```
+```{r}
+#| include: false
+
+wildfire_haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/wildfire_hazard_agg.tif")
+```
+
+
+```{r}
+hospitals_pnw_proj <- st_transform(hospitals_pnw, crs(wildfire_haz))
+
+hosp_fire_haz <- terra::extract(wildfire_haz, hospitals_pnw_proj)
+head(hosp_fire_haz)
+
+hospitals_pnw_proj$wildfire <- hosp_fire_haz$WHP_ID
+```
+
+```{r}
+#| eval: false
+cejst <- st_read("/opt/data/data/assignment06/cejst_pnw.shp") %>%
+  st_transform(crs = crs(wildfire_haz)) %>%
+  filter(!st_is_empty(.))
+```
+```{r}
+#| include: false
+cejst <- st_read("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment06/cejst_pnw.shp") %>%
+  st_transform(crs = crs(wildfire_haz)) %>%
+  filter(!st_is_empty(.))
+```
+
+
+```{r}
+wildfire.zones <- terra::zonal(wildfire_haz, vect(cejst), fun="mean", na.rm=TRUE)
+
+head(wildfire.zones)
+```
+
+## Practice
+
+### Step 1: Load libraries
+
+```{r}
+#| message: false
+#| warning: false
+
+library(sf)
+library(terra)
+library(tidyverse)
+library(tmap)
+```
+
+### Step 2: Load in data
+
+We loaded the wildfire hazard data and the cejst data earlier in the example.
+
+```{r}
+# custom function to download and load Forest Service data
+download_unzip_read <- function(link){
+  tmp <- tempfile()
+  download.file(link, tmp)
+  tmp2 <- tempfile()
+  unzip(zipfile=tmp, exdir=tmp2)
+  shapefile.sf <- read_sf(tmp2)
+}
+
+### FS Boundaries
+fs.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.AdministrativeForest.zip"
+fs.bdry <- download_unzip_read(link = fs.url)
+
+### CFLRP Data
+cflrp.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.CFLR_HPRP_ProjectBoundary.zip"
+cflrp.bdry <- download_unzip_read(link = cflrp.url)
+```
+
+### Step 3: Check validity
+
+```{r}
+all(st_is_valid(fs.bdry))
+
+all(st_is_valid(cflrp.bdry))
+```
+
+```{r}
+fs.bdry <- st_make_valid(fs.bdry)
+
+cflrp.bdry <- st_make_valid(cflrp.bdry)
+```
+
+```{r}
+all(st_is_valid(fs.bdry))
+
+all(st_is_valid(cflrp.bdry))
+```
+
+### Step 3: Check alignment
+
+```{r}
+st_crs(fs.bdry)
+st_crs(wildfire_haz)
+st_crs(cflrp.bdry)
+st_crs(cejst)
+
+st_crs(wildfire_haz) == st_crs(cejst)
+st_crs(wildfire_haz) == st_crs(fs.bdry)
+
+target_crs <- st_crs(wildfire_haz)
+```
+
+```{r}
+fs.bdry_proj <- st_transform(fs.bdry, crs = target_crs)
+st_crs(fs.bdry_proj) == target_crs
+st_crs(fs.bdry_proj) == st_crs(wildfire_haz)
+
+cflrp.bdry_proj <- st_transform(cflrp.bdry, crs = st_crs(wildfire_haz))
+```
+
+### Step 4: Subset to geographies
+
+cejst is our study area (the Pacific Northwest) to subset to.
+
+```{r}
+fs.subset <- fs.bdry_proj[cejst, ]
+cflrp.subset <- cflrp.bdry_proj[cejst, ]
+
+# keep only tracts that intersect Forest Service land
+cejst.subset <- cejst[fs.subset, ]
+```
+
+### Step 5: Select attributes of interest
+
+```{r}
+cejst.df <- cejst.subset %>% 
+  select(GEOID10, LMI_PFS, LHE, HBF_PFS)
+head(cejst.df)
+```
+
+### Step 6: Extract wildfire hazard
+
+```{r}
+cejst.fire <- terra::extract(wildfire_haz, vect(cejst.df), fun=mean, na.rm=TRUE)
+head(cejst.fire)
+```
+
+```{r}
+cejst.df$WHP_ID <- cejst.fire$WHP_ID
+```
+
+### Step 7: Does each tract intersect a CFLRP boundary?
+
+```{r}
+cejst.cflrp <- apply(st_intersects(cejst.df, cflrp.subset, sparse=FALSE), 1, any)
+```
+
+```{r}
+cejst.df <- cejst.df %>%
+  mutate(CFLRP = cejst.cflrp)
+```
+
+### Step 8: Compare areas
+
+Many comparisons are possible! Here are some examples.
+
+```{r}
+cflrp.summ <- cejst.df %>%
+  st_drop_geometry() %>%
+  group_by(CFLRP) %>%
+  summarise(across(LMI_PFS:WHP_ID, ~ mean(.x, na.rm=TRUE)))
+
+ggplot(data = cejst.df, aes(x=CFLRP, y=WHP_ID)) +
+  geom_boxplot()
+```
+
