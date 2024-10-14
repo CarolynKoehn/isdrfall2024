@@ -109,8 +109,8 @@ website:
               file: content/15-content.qmd
             - text: "16: Combining Vectors and Rasters"
               file: content/16-content.qmd
-            # - text: "18: Point Patterns"
-            #   file: content/18-content.qmd
+            - text: "17: Point Patterns"
+              file: content/17-content.qmd
             # - text: "19: Interpolation"
             #   file: content/19-content.qmd
             # - text: "20: Proximity and Areal Data"
