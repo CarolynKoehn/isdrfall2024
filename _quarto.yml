@@ -212,9 +212,9 @@ website:
             - text: "Integrating vector and raster data"
               file: example/session-16-example.qmd
         - section: "Statistical Workflows"
-        #   contents:
-        #     - text: "Building dataframes"
-        #       file: example/intro-analysis.qmd
+          contents:
+            - text: "Point Patterns"
+              file: example/session-17-example.qmd
         #     - text: "Analyzing patterns"
         #       file: example/pattern-analysis.qmd
         #     - text: "Spatial Models"
