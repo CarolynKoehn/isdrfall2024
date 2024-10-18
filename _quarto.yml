@@ -146,8 +146,8 @@ website:
               file: assignment/self-eval1.qmd
             - text: "Assignment Revision 1"
               file: assignment/05-firstrevision.qmd
-            # - text: "Assignment Revision 2" 
-            #   file: assignment/10-secondrevision.qmd
+            - text: "Assignment Revision 2"
+              file: assignment/10-secondrevision.qmd
             # - text: "Assignment Revision 3" 
             #   file: assignment/13-thirdrevision.qmd
         - section: "Homework"
