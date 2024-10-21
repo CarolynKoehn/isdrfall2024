@@ -33,7 +33,6 @@ It's time to put together the various vector, raster, and tabular code we've lea
 5. Next join 3 attributes of your choosing from the CEJST and the extracted fire and land cover values to your dataframe.
 6. Make a set of maps that shows the Forest-level values for all of your selected variables.
 
-<!--
 :::{.callout-note}
-Solutions are[here](07-rasteropssolutions.qmd)
-::: -->
+Solutions are [here](07-rasteropssolutions.qmd)
+:::
