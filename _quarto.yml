@@ -215,6 +215,8 @@ website:
           contents:
             - text: "Point Patterns"
               file: example/session-17-example.qmd
+            - text: "Interpolation I"
+              file: example/session-18-example.qmd
         #     - text: "Analyzing patterns"
         #       file: example/pattern-analysis.qmd
         #     - text: "Spatial Models"

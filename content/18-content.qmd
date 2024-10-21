@@ -33,7 +33,7 @@ By the end of today you should be able to:
 
 *   Leverage point patterns and autocorrelation to interpolate missing data
 
-<!--
+
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
 slide_buttons("/slides/18-slides")
 ```
@@ -45,5 +45,5 @@ slide_buttons("/slides/18-slides")
 ```
 
 </div>
-
+<!--
 [Link to Panopto Recording](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=9b0b208a-44fc-4c86-bab5-b0a4014222c9) -->

@@ -1,0 +1,612 @@
+---
+title: "Interpolation"
+subtitle: "HES 505 Fall 2024: Session 18"
+author: "Carolyn Koehn"
+execute: 
+  eval: true
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+```{r}
+#| include: false
+library(sf)
+library(tidyverse)
+library(terra)
+library(gstat)
+library(spdep)
+library(spatstat)
+```
+
+# Assignment Revision 2...
+
+- Chance to revise assignments 6-7 - please note why you made changes/what the new code does
+
+- Switching projects in RStudio
+
+# Objectives {background="#9F281A"}
+
+By the end of today you should be able to:
+
+- Distinguish deterministic and stochastic processes
+
+- Define autocorrelation and describe its estimation
+
+- Articulate the benefits and drawbacks of autocorrelation
+
+- Leverage point patterns and autocorrelation to interpolate missing data
+
+
+# But first... {background="#9F281A"}
+
+
+## Patterns as realizations of spatial processes
+
+* A __spatial process__ is a description of how a spatial pattern might be _generated_
+
+* __Generative models__ 
+
+* An observed pattern as a _possible realization_ of an hypothesized process
+
+:::{.notes}
+- Biometry/experiments -- the way you collect your data gives you some right to say something about how the broader universe works
+- Geostatistical -- model the process that gives rise to the data or the spatial variation underlying the data to expand from our observations to a continuous field
+
+- Frequentist vs generative: 
+  - freqentist = there is a true model where many thousands of datasets may be collected from and our model tries to capture the true model
+  - generative = we aren't privy to the underlying process, our data is a random function of the process. We can't know everything, so does the model we chose give plausible estimates based on our data and model estimates.
+:::
+
+
+## Deterministic vs. stochastic processes
+
+
+* Deterministic processes: always produce the same outcome
+
+$$
+z = 2x + 3y
+$$
+
+* Results in a spatially continuous field
+
+:::{.notes}
+Example: old population ecology models: if you know the carrying capacity and rate of growth, you can predict how many animals there will be without error
+:::
+
+## Deterministic vs. stochastic processes
+
+```{r}
+#| echo: true
+x <- rast(nrows = 10, ncols=10, xmin = 0, xmax=10, ymin = 0, ymax=10)
+values(x) <- 1
+z <- x
+values(z) <- 2 * crds(x)[,1] + 3*crds(x)[,2]
+```
+
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+
+plot(z)
+```
+
+
+
+## Deterministic vs. stochastic processes
+
+::: columns
+::: {.column width="40%"}
+::: {style="font-size: 0.7em"}
+* Stochastic processes: variation makes each realization difficult to predict
+
+$$
+z = 2x + 3y + d
+$$
+
+* The _process_ is random, not the result (!!)
+* Measurement error makes deterministic processes appear stochastic
+:::
+:::
+::: {.column width="60%"}
+```{r}
+#| echo: true
+x <- rast(nrows = 10, ncols=10, xmin = 0, xmax=10, ymin = 0, ymax=10)
+values(x) <- 1
+fun <- function(z){
+a <- z
+d <- runif(ncell(z), -50,50)
+values(a) <- 2 * crds(x)[,1] + 3*crds(x)[,2] + d
+return(a)
+}
+
+b <- replicate(n=6, fun(z=x), simplify=FALSE)
+d <- do.call(c, b)
+```
+:::
+:::
+
+:::{.notes}
+- Stochasticity can come from measurement error or un-modeled terms
+- Importance of simulation for model testing
+:::
+
+## Deterministic vs. stochastic processes
+
+```{r stocproc2, echo=FALSE}
+
+plot(d)
+```
+
+:::{.notes}
+Six realizations of the same process
+
+What do we care about? (1) We acre a lot about d, the stochastic term in the model. (2)  Multiple difference versions give you very different outcomes. You have to ask how often you would come up with the data in your hand
+:::
+
+## Expected values and hypothesis testing
+
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+
+* Considering each outcome as the realization of a process allows us to generate expected values
+
+* The simplest spatial process is Completely Spatial Random (CSR) process
+
+* __First Order__ effects: any event has an equal probability of occurring in a location
+
+* __Second Order__ effects: the location of one event is independent of the other events
+:::
+:::
+::: {.column width="40%"}
+![From Manuel Gimond](img/slide_17/IRP_CSR.png)
+:::
+:::
+
+## Generating expactations for CSR
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+load(url("https://github.com/mgimond/Spatial/raw/main/Data/ppa.RData"))
+
+library(spatstat)
+marks(starbucks)  <- NULL
+Window(starbucks) <- ma
+pop.lg <- log(pop)
+Q <- quadratcount(starbucks, nx= 6, ny=3)
+par(mfrow=c(2,1), mar=c(2,2,2,2))
+plot(starbucks, main=NULL, cols=rgb(0,0,0,.2), pch=20)
+plot(starbucks, pch=20, cols="grey70", main=NULL)  # Plot points
+plot(Q, add=TRUE)
+par(mfrow=c(1,1), mar=c(5.1,4.1,4.1,2.1))
+```
+
+:::
+::: {.column width="60%"}
+
+::: {style="font-size: 0.7em"}
+* We can use quadrat counts to estimate the expected number of events in a given area
+
+* The probability of each possible count is given by:
+
+$$
+P(n,k) = {n \choose x}p^k(1-p)^{n-k}
+$$
+
+* Given total coverage of quadrats, then $p=\frac{\frac{a}{x}}{a}$ and
+
+$$
+\begin{equation}
+P(k,n,x) = {n \choose k}\bigg(\frac{1}{x}\bigg)^k\bigg(\frac{x-1}{x}\bigg)^{n-k}
+\end{equation}
+$$
+
+:::   
+:::
+:::
+
+:::{.notes}
+Second equation is a weighted average given size of quadrats
+:::
+
+
+## Revisiting Ripley's $K$
+
+::: {style="font-size: 0.7em"}
+* Probability is tied to quadrat size -- we can improve estimates with a moving window
+
+* If points have independent, fixed marginal densities, then they exhibit _complete, spatial randomness_ (CSR)
+
+* The _K_ function is an alternative, based on a series of circles with increasing radius
+
+$$
+\begin{equation}
+K(d) = \lambda^{-1}E(N_d)
+\end{equation}
+$$
+
+* We can test for clustering by comparing to the expectation:
+
+$$
+\begin{equation}
+K_{CSR}(d) = \pi d^2
+\end{equation}
+$$
+
+* if $k(d) > K_{CSR}(d)$ then there is clustering at the scale defined by $d$
+
+:::
+
+:::{.notes}
+Carpet example for various scales of randomness
+K is the rate of the point process, which we may not entirely know, times how many points in a given distance
+:::
+
+## Ripley's $K$ Function
+
+* When working with a sample the distribution of $K$ is unknown
+
+* Estimate with
+
+$$
+\begin{equation}
+\hat{K}(d) = \hat{\lambda}^{-1}\sum_{i=1}^n\sum_{j=1}^n\frac{I(d_{ij} <d)}{n(n-1)}
+\end{equation}
+$$
+
+where:
+
+$$
+\begin{equation}
+\hat{\lambda} = \frac{n}{|A|}
+\end{equation}
+$$
+
+
+## Ripley's $K$ Function
+
+Using the `spatstat` package
+
+
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+data(bramblecanes)
+plot(bramblecanes)
+```
+
+
+## Ripley's $K$ Function
+
+```{r}
+#| echo: true
+kf <- Kest(bramblecanes, correction-"border")
+plot(kf)
+```
+
+
+
+## Ripley's $K$ Function
+* accounting for variation in $d$
+
+```{r}
+#| echo: true
+kf.env <- envelope(bramblecanes, correction="border", envelope = FALSE, verbose = FALSE)
+plot(kf.env)
+```
+
+## Other functions
+
+::: columns
+::: {.column width="60%"}
+
+* $L$ function: square root transformation of $K$
+
+* $G$ function: the cumulative frequency distribution of the nearest neighbor distances
+
+* $F$ function: similar to $G$ but based on randomly located points
+
+
+:::
+::: {.column width="40%"}
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+gf.env <- envelope(bramblecanes, Gest, correction="border", verbose = FALSE)
+plot(gf.env)
+```
+
+:::
+:::
+
+
+
+
+# Tobler's Law {background="#9F281A"}
+
+> ‘everything is usually related to all else but those which are near to each other
+>are more related when compared to those that are further away’.
+> `r tufte::quote_footer('Waldo Tobler')`
+
+:::{.notes}
+Shouldn't we just assume spatial autocorrelation? Ripley's K or Moran's I help you ask if your study design was able to break that
+:::
+
+---
+## Spatial autocorrelation
+
+![From Manuel Gimond](img/slide_17/Random_maps.png)
+ 
+:::{.notes}
+Moving from point patterns to areal data
+:::
+ 
+ 
+## (One) Measure of autocorrelation
+
+::: columns
+::: {.column width="50%"}
+* Moran's I
+
+![](img/slide_17/MI.png)
+:::
+::: {.column width="50%"}
+
+![](img/slide_17/mI2.png)
+:::
+:::
+
+:::{.notes}
+Difference between x at i and mean for x, x at j and mean for j, times spatial weights matrix (how many nearest neighbors to consider)
+:::
+
+## Moran's I: An example
+
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+
+* Use `spdep` package
+
+* Estimate neighbors
+
+* Generate weighted average
+
+```{r}
+#| echo: true
+
+set.seed(2354)
+# Load the shapefile
+s <- readRDS(url("https://github.com/mgimond/Data/raw/gh-pages/Exercises/fl_hr80.rds"))
+
+# Define the neighbors (use queen case)
+nb <- poly2nb(s, queen=TRUE)
+
+# Compute the neighboring average homicide rates
+lw <- nb2listw(nb, style="W", zero.policy=TRUE)
+#estimate Moran's I
+moran.test(s$HR80,lw, alternative="greater")
+
+```
+:::
+:::
+::: {.column width="40%"}
+![](img/slide_17/florida.png)
+
+:::
+:::
+
+:::{.notes}
+Just getting a Moran's I value for housing prices in Florida in 1980
+:::
+
+## Moran's I: An example
+::: columns
+::: {.column width="60%"}
+```{r}
+#| echo: true
+ 
+M1 <- moran.mc(s$HR80, lw, nsim=9999, alternative="greater")
+
+
+
+# Display the resulting statistics
+M1
+```
+
+:::
+::: {.column width="40%"}
+
+```{r}
+#| fig-height: 6
+#| fig-width: 6
+# Plot the results
+plot(M1)
+```
+:::
+:::
+
+:::{.notes}
+Simulations under CSR
+:::
+
+## The challenge of areal data
+
+* Spatial autocorrelation threatens _second order_ randomness
+
+* Areal data means an infinite number of potential distances
+
+* Neighbor matrices, $\boldsymbol W$, allow different characterizations
+
+:::{.notes}
+Simple detection of autocorrelation, level of a linear regression
+:::
+
+
+# Interpolation {background="#0033A0"}
+
+## Interpolation
+
+* Goal: estimate the value of $z$ at new points in $\mathbf{x_i}$
+
+* Most useful for continuous values
+
+* Nearest-neighbor, Inverse Distance Weighting, Kriging
+
+:::{.notes}
+Sometimes gaps are function of sampling, not process
+:::
+
+## Nearest neighbor
+
+* find $i$ such that $| \mathbf{x_i} - \mathbf{x}|$ is minimized
+
+* The estimate of $z$ is $z_i$
+
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 0.7em"}
+
+```{r}
+#| include: false
+
+aq <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/isdrfall2024/data/ad_viz_plotval_data_PM25_2024_ID.csv") %>% 
+  st_as_sf(., coords = c("Site Longitude", "Site Latitude"), crs = "EPSG:4326") %>% 
+  st_transform(., crs = "EPSG:8826") %>% 
+  mutate(date = as_date(parse_datetime(Date, "%m/%d/%Y"))) %>% 
+  filter(., date >= 2024-07-01) %>% 
+  filter(., date > "2024-07-01" & date < "2024-07-31")
+aq.sum <- aq %>% 
+  group_by(., `Site ID`) %>% 
+  summarise(., meanpm25 = mean(`Daily AQI Value`))
+
+nodes <- st_make_grid(aq.sum,
+                      what = "centers")
+
+dist <- distance(vect(nodes), vect(aq.sum))
+nearest <- apply(dist, 1, function(x) which(x == min(x)))
+aq.nn <- aq.sum$meanpm25[nearest]
+preds <- st_as_sf(nodes)
+preds$aq <- aq.nn
+
+preds <- as(preds, "Spatial")
+sp::gridded(preds) <- TRUE
+preds.rast <- rast(preds)
+```
+
+```{r}
+#| echo: true
+#| eval: false
+
+# data retrieved from https://www.epa.gov/outdoor-air-quality-data/download-daily-data
+
+aq <- read_csv("/opt/data/data/classexamples/ad_viz_plotval_data_PM25_2024_ID.csv") %>% 
+  st_as_sf(., coords = c("Site Longitude", "Site Latitude"), crs = "EPSG:4326") %>% 
+  st_transform(., crs = "EPSG:8826") %>% 
+  mutate(date = as_date(parse_datetime(Date, "%m/%d/%Y"))) %>% 
+  filter(., date >= 2024-07-01) %>% 
+  filter(., date > "2024-07-01" & date < "2024-07-31")
+aq.sum <- aq %>% 
+  group_by(., `Site ID`) %>% 
+  summarise(., meanpm25 = mean(`Daily AQI Value`))
+
+nodes <- st_make_grid(aq.sum,
+                      what = "centers")
+
+dist <- distance(vect(nodes), vect(aq.sum))
+nearest <- apply(dist, 1, function(x) which(x == min(x)))
+aq.nn <- aq.sum$meanpm25[nearest]
+preds <- st_as_sf(nodes)
+preds$aq <- aq.nn
+
+preds <- as(preds, "Spatial")
+sp::gridded(preds) <- TRUE
+preds.rast <- rast(preds)
+
+```
+:::
+:::
+::: {.column width="40%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+plot_cells <- st_make_grid(aq.sum,
+                      what = "polygons")
+
+plot(preds.rast, col=heat.colors(8, rev=TRUE))
+plot(st_geometry(aq.sum), add=TRUE)
+plot(plot_cells, add=TRUE)
+```
+:::
+:::
+
+## Inverse-Distance Weighting
+
+* Weight closer observations more heavily
+
+$$
+\begin{equation}
+\hat{z}(\mathbf{x}) = \frac{\sum_{i=1}w_iz_i}{\sum_{i=1}w_i}
+\end{equation}
+$$
+where
+
+$$
+\begin{equation}
+w_i = | \mathbf{x} - \mathbf{x}_i |^{-\alpha}
+\end{equation}
+$$
+and $\alpha > 0$ ($\alpha  = 1$ is inverse; $\alpha = 2$ is inverse square)
+
+## Inverse-Distance Weighting
+
+* `terra::interpolate` provides flexible interpolation methods
+
+* Use the `gstat` package to develop the formula
+
+```{r}
+#| echo: true
+mgsf05 <- gstat(id = "meanpm25", formula = meanpm25~1, data=aq.sum,  nmax=7, set=list(idp = 0.5))
+mgsf2 <- gstat(id = "meanpm25", formula = meanpm25~1, data=aq.sum,  nmax=7, set=list(idp = 2))
+interpolate_gstat <- function(model, x, crs, ...) {
+	v <- st_as_sf(x, coords=c("x", "y"), crs=crs)
+	p <- predict(model, v, ...)
+	as.data.frame(p)[,1:2]
+}
+zsf05 <- interpolate(preds.rast, mgsf05, debug.level=0, fun=interpolate_gstat, crs=crs(preds.rast), index=1)
+zsf2 <- interpolate(preds.rast, mgsf2, debug.level=0, fun=interpolate_gstat, crs=crs(preds.rast), index=1)
+```
+
+:::{.notes}
+No covariate effect!
+:::
+
+## Inverse-Distance Weighting
+
+```{r}
+zsf05msk <- mask(zsf05, preds.rast)
+zsf2msk <- mask(zsf2, preds.rast)
+par(mfrow=c(1,2))
+plot(zsf05msk, main="idp=0.5")
+plot(zsf2msk, main="idp=2")
+par(mfrow=c(1,1))
+```
+
+## Inverse-Distance Weighting
+
+```{r}
+par(mfrow=c(1,2))
+persp(zsf05msk,box=FALSE, main="idp=0.5")
+persp(zsf2msk, box=FALSE,main="idp=2")
+par(mfrow=c(1,1))
+```
+
