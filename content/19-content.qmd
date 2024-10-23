@@ -14,6 +14,9 @@ Last class we started to explore ways to leverage spatial autocorrelation as a m
 
 ## Resources
 
+- <i class="fas fa-external-link-square-alt"></i> [Ch. 14: Spatial Interpolation](https://mgimond.github.io/Spatial/spatial-interpolation.html) in
+Manuel Gimond's Introduction to GIS and Spatial Analysis `bookdown` project provides more examples of interpolation, trend surfaces, and kriging.
+
 - <i class="fas fa-external-link-square-alt"></i> [Ch. 7: Spatial Neighborhood Matrices](https://www.paulamoraga.com/book-spatial/spatial-neighborhood-matrices.html) in
 from Paula Moraga's new book Spatial Statistics for Data Science: Theory and Practice with `R` gives a little gentler introduction to spatial neighbors specifically in the context of statistical models.
 
@@ -32,7 +35,7 @@ By the end of today you should be able to:
 * Implement graph-based neighborhood detection approaches
 
 
-<!--
+
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
 slide_buttons("/slides/19-slides")
 ```
@@ -45,4 +48,5 @@ slide_buttons("/slides/19-slides")
 
 </div>
 
+<!--
 [Panopto Recording](https://boisestate.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=976ea29f-b083-4c97-a25d-b0a601435034) -->
