@@ -113,10 +113,10 @@ website:
               file: content/17-content.qmd
             - text: "18: Interpolation"
               file: content/18-content.qmd
-            - text: "19: Proximity and Areal Data"
+            - text: "19: Interpolation II"
               file: content/19-content.qmd
-            # - text: "21: Spatial Autocorrelation"
-            #   file: content/21-content.qmd
+            - text: "20: Spatial Autocorrelation"
+              file: content/20-content.qmd
             # - text: "22: Statistical Modelling I"
             #   file: content/22-content.qmd
             # - text: "23: Statistical Modelling II"

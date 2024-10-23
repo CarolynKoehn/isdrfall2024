@@ -572,6 +572,21 @@ dat.krg <- gstat::krige( formula = res~1,
                          locations = aq.sum, 
                          newdata = grd[, c("X", "Y", "var2.pred")], 
                          model = dat.fit)
+
+dat.krg.preds <-  dat.krg %>%
+  mutate(X = st_coordinates(.)[, 1], 
+         Y = st_coordinates(.)[, 2]) %>%
+  select(X, Y, var1.pred) %>%
+  st_drop_geometry()
+
+r <- rast(dat.krg.preds, crs = crs(grd))
+r.m <- mask(r, st_as_sf(id.cty))
+
+# Plot the raster and the sampled points
+tm_shape(r.m) + 
+  tm_raster(n=10, palette="RdBu", title="Predicted residual \nair quality") +
+  tm_shape(aq.sum) + tm_dots(size=0.2) +
+  tm_legend(legend.outside=TRUE)
 ```
 
 ## Combining with the trend data
