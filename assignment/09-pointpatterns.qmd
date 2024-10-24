@@ -2,7 +2,7 @@
 title: "Assignment 8: Spatial Autocorrelation and Interpolation"
 ---
 
-Exploring and exploiting spatial autocorrelation in our data is an important tool for interpolating missing values in geographic data. It's also an important diagnostic to check before additional statistical analyses. You'll get to try some of that out here. We'll the cost of natural disasters dataset fromm 1999-2020 (described in [this paper](https://www.nature.com/articles/s41597-023-01955-0) and available at `/assignment07/ics209-plus-wf_incidents_1999to2020.csv` folder and focusing on the data describing the structures lost to natural disaster (`STR_DESTROYED_TOTAL`). [For this assignment](https://classroom.github.com/a/wlCo9WNT), we'll use this data to:
+Exploring and exploiting spatial autocorrelation in our data is an important tool for interpolating missing values in geographic data. It's also an important diagnostic to check before additional statistical analyses. You'll get to try some of that out here. We'll the cost of natural disasters dataset from 1999-2020 (described in [this paper](https://www.nature.com/articles/s41597-023-01955-0) and available at `/assignment07/ics209-plus-wf_incidents_1999to2020.csv` folder and focusing on the data describing the structures lost to natural disaster (`STR_DESTROYED_TOTAL`). [For this assignment](https://classroom.github.com/a/8kPhiDo_), we'll use this data to:
 
 * Plot the Ripley's K envelope for a point dataset
 * Use nearest-neighbors as a means of estimating Moran's I
@@ -23,4 +23,12 @@ Exploring and exploiting spatial autocorrelation in our data is an important too
 
 6. Render the document to html (you should now have at least 3 files in the repository: Readme.md, assignment-8-xx.qmd, and assignment-8-xx.html). Commit these changes and push them to the repository on GitHub. You should see the files there when you go to github.com.
 
+## The Assignment
 
+1. Read in the disasters dataset, convert it to points, filter it to those disasters in Idaho, and select any relevant columns. You'll also need to use `tigris::county()` to download a county shapefile for Idaho. Make sure your data are projected correctly
+2. Generate the Ripley's K curves for the disaster dataset. What do you think? Is there evidence that the data is spatially autocorrelated?
+3. Use the nearest-neighbor approach that we used in class to estimate the lagged values for the disaster dataset and estimate the slope of the line describing Moran's I statistic.
+4. Now use the permutation approach to compare your measured value to one generated from multiple simulations. Generate the plot of the data. Do you see more evidence of spatial autocorrelation?
+5. Generate the 0th, 1st, and 2nd order spatial trend surfaces for the data. Is there evidence for a second order trend? How can you tell?
+6. Now use the spatial trend surface to perform some ordinary kriging. You'll want to have a grid of ~15,000 points, fit 3 different experimental variogram functions (see the `vgm` function helpfile to learn more about the shapes available to you). Plot your variogram fits. Which one would you choose? Why?
+7. Using your spatial trend model and your fitted variogram, krige the data and generate a map of the interpolated value and a map of the error.
