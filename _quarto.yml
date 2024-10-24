@@ -166,8 +166,8 @@ website:
               file: assignment/07-rasterops.qmd
             # - text: "Spatial Databases" 
             #   file: assignment/08-combinations.qmd
-            # - text: "Point Patterns and Interpolation" 
-            #   file: assignment/09-pointpatterns.qmd
+            - text: "Point Patterns and Interpolation"
+              file: assignment/09-pointpatterns.qmd
             # - text: "Statistical Modelling" 
             #   file: assignment/11-statmod.qmd
             # - text: "Movement and Networks" 
@@ -217,6 +217,8 @@ website:
               file: example/session-17-example.qmd
             - text: "Interpolation I"
               file: example/session-18-example.qmd
+            - text: "Interpolation II"
+              file: example/session-19-example.qmd
         #     - text: "Analyzing patterns"
         #       file: example/pattern-analysis.qmd
         #     - text: "Spatial Models"
