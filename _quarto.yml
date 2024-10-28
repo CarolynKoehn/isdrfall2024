@@ -219,10 +219,8 @@ website:
               file: example/session-18-example.qmd
             - text: "Interpolation II"
               file: example/session-19-example.qmd
-        #     - text: "Analyzing patterns"
-        #       file: example/pattern-analysis.qmd
-        #     - text: "Spatial Models"
-        #       file: example/stat-analysis.qmd
+            - text: "Spatial Autocorrelation and Areal Data Neighbors"
+              file: example/session-20-example.qmd
         - section: "Visualizing Spatial Data"
 
     - title: "Lessons"
