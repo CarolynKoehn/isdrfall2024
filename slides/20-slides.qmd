@@ -1,0 +1,382 @@
+---
+title: "Spatial Autocorrelation and Areal Data"
+subtitle: "HES 505 Fall 2024: Session 20"
+author: "Carolyn Koehn"
+execute: 
+  eval: true
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+```{r}
+#| include: false
+library(sf)
+library(tidyverse)
+library(tmap)
+library(spdep)
+```
+
+# Objectives {background="#9F281A"}
+
+By the end of today you should be able to:
+
+- Use the `spdep` package to identify the neighbors of a given polygon based on proximity, distance, and minimum number
+
+- Understand the underlying mechanics of Moran's I and calculate it for various neighbors
+
+- Distinguish between global and local measures of spatial autocorrelation
+
+- Visualize neighbors and clusters
+
+# Revisiting Spatial Autocorrelation {background="#9F281A"}
+
+## Spatial Autocorrelation
+
+::: columns
+:::{.column width="60%"}
+
+- Attributes (features) are often non-randomly distributed
+
+- Especially true with aggregated data
+
+- Interest is in the relationship between proximity and the feature
+
+- Difference from kriging and semivariance
+:::
+:::{.column width="40%"}
+![From Manuel Gimond](img/slide_17/Random_maps.png)
+:::
+:::
+
+:::{.notes}
+- Reminder of semivariance: $y = ax + by + \epsilon$, error term is variance, semivariance is the way the error changes over space
+
+- Kriging models semivariance to adjust interpolation values
+
+4 steps of kriging:
+1. Is my process deterministic or stochastic? (deterministic - inverse distance weighting, stochastic - kriging)
+2. How can I take the data I have and move it to spaces I don't have data?
+3. Remove broad geographic trends (1st, 2nd order)
+4. How much residual autocorrelation is there (semivariance)?
+
+It is different to be interested in autocorrelation in your error and autocorrelation in your covariates.
+:::
+
+## Moran's I
+
+::: columns
+::: {.column width="30%"}
+* Moran's I
+
+![](img/slide_17/MI.png)
+:::
+::: {.column width="70%"}
+
+![](img/slide_17/mI2.png)
+:::
+:::
+
+:::{.notes}
+Three components: difference between values at a location and mean value, weight for each observation, distance - how big are the differences and how much weight do you give to the observations
+:::
+
+## Finding Neighbors - Contiguity
+
+
+- How do we define $I(d)$ for areal data?
+
+- What about $w_{ij}$?
+
+- We can use `spdep` for that!!
+
+![](img/slide_21/spatial_contiguity.png){width=110%}
+:::
+:::
+
+## Using `spdep`
+
+```{r}
+#| echo: true
+#| eval: false
+
+cdc <- read_sf("data/opt/data/2023/vectorexample/cdc_nw.shp") %>% 
+  select(stateabbr, countyname, countyfips, casthma_cr)
+
+```
+```{r}
+#| include: false
+
+cdc <- read_sf("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/vectorexample/cdc_nw.shp") %>% 
+  select(stateabbr, countyname, countyfips, casthma_cr)
+
+```
+
+```{r}
+#| echo: false
+
+tm_shape(cdc) +
+  tm_fill("casthma_cr",
+          palette="Reds",
+          style="quantile",
+          title="percent of people with chronic asthma")+
+  tm_borders(alpha = 0.4) +
+  tm_legend(legend.outside=TRUE)
+```
+:::
+:::
+
+## Finding Neighbors 
+
+
+- Queen, rook, (and bishop) cases impose neighbors by contiguity
+
+- Weights calculated as a $1/ num. of neighbors$
+
+```{r}
+#| echo: true
+#| cache: true
+
+nb.qn <- poly2nb(cdc, queen=TRUE)
+nb.rk <- poly2nb(cdc, queen=FALSE)
+
+```
+
+## Finding Neighbors
+
+```{r}
+#| cache: true
+#| warning: false
+par(mfrow=c(1,2))
+plot(st_geometry(cdc), border = 'lightgrey')
+plot(nb.qn, st_coordinates(st_centroid(cdc)), add=TRUE, col='red', main="Queen's case")
+plot(st_geometry(cdc), border = 'lightgrey')
+plot(nb.rk, st_coordinates(st_centroid(cdc)), add=TRUE, col='blue', main="Rook's case")
+par(mfrow=c(1,1))
+```
+
+## Getting Weights and Distance
+
+::: columns
+::: {.column width="60%"}
+
+```{r}
+#| echo: true
+
+# get weights
+lw.qn <- nb2listw(nb.qn, style="W", zero.policy = TRUE)
+lw.qn$weights[1:5]
+# get average neighboring asthma values
+asthma.lag <- lag.listw(lw.qn, cdc$casthma_cr)
+
+```
+:::
+::: {.column width="40%"}
+```{r}
+head(cbind(cdc$countyname, cdc$casthma_cr, asthma.lag))
+```
+:::
+:::
+
+## Fit a model
+
+* Moran's I coefficient is the slope of the regression of the _lagged_ asthma percentage vs. the asthma percentage in the tract 
+
+* More generally it is the slope of the lagged average to the measurement
+
+
+```{r}
+#| echo: true
+
+
+M <- lm(asthma.lag ~ cdc$casthma_cr)
+```
+
+```{r}
+# Plot the data
+plot( asthma.lag ~ cdc$casthma_cr, pch=20, asp=1, las=1)
+abline(a = coef(M)[1], b=coef(M)[2], col="red")
+# slope of line - and also Moran's I!
+coef(M)[2]
+```
+
+:::{.notes}
+The slope of this line can be a covariate in your model as a way to account for spatial autocorrelation
+:::
+
+## Comparing observed to expected
+
+* We can generate the expected distribution of Moran's I coefficients under a Null hypothesis of no spatial autocorrelation
+
+* Using permutation and a loop to generate simulations of Moran's I
+
+```{r}
+#| echo: true
+n <- 400L   # Define the number of simulations
+I.r <- vector(length=n)  # Create an empty vector
+
+for (i in 1:n){
+  # Randomly shuffle income values
+  x <- sample(cdc$casthma_cr, replace=FALSE)
+  # Compute new set of lagged values
+  x.lag <- lag.listw(lw.qn, x)
+  # Compute the regression slope and store its value
+  M.r    <- lm(x.lag ~ x)
+  I.r[i] <- coef(M.r)[2]
+}
+
+```
+
+## Comparing observed to expected
+
+```{r}
+#| echo: true
+
+# manual p-value
+# hist is null hypothesis of no spatial autocorrelation
+# red line is our value
+hist(I.r, main=NULL, xlab="Moran's I", las=1, xlim = c(-1, 1))
+abline(v=coef(M)[2], col="red")
+```
+
+## Compare to Moran's I test
+
+```{r}
+#| echo: true
+
+moran.test(cdc$casthma_cr, lw.qn)
+```
+
+## Finding Neighbors - Distance
+
+```{r}
+#| echo: true
+#| cache: true
+#| warning: false
+cdc.pt <- cdc %>% st_point_on_surface(.)
+# get nearest neighbor
+geog.nearnb <- knn2nb(knearneigh(cdc.pt, k = 1), row.names = cdc.pt$GEOID, sym=TRUE) 
+#estimate distance to first nearest neighbor
+nb.nearest <- dnearneigh(cdc.pt,
+                         # minimum distance to search
+                         d1 = 0,  
+                         # maximum distance to search
+                         d2 = max( unlist(nbdists(geog.nearnb, cdc.pt))))
+```
+
+:::{.notes}
+Seattle has islands - no contiguity!
+:::
+
+## Getting Weights
+
+
+```{r}
+#| cache: true
+#| warning: false
+plot(st_geometry(cdc), border = 'lightgrey')
+plot(nb.nearest, st_coordinates(st_centroid(cdc)), add=TRUE, col='red')
+```
+
+```{r}
+#| echo: true
+lw.nearest <- nb2listw(nb.nearest, style="W")
+asthma.lag <- lag.listw(lw.nearest, cdc$casthma_cr)
+```
+
+:::{.notes}
+Notice difference between queen's and rook's case. Rooks is most conservative, queen's is less conservative, neither guarantees a connected graph
+:::
+
+## Fit a model
+
+* Moran's I coefficient is the slope of the regression of the _lagged_ asthma percentage vs. the asthma percentage in the tract 
+
+* More generally it is the slope of the lagged average to the measurement
+
+## Fit a model
+
+```{r}
+#| echo: true
+
+M <- lm(asthma.lag ~ cdc$casthma_cr)
+```
+
+```{r}
+#| fig-width: 6
+
+# Plot the data
+plot( asthma.lag ~ cdc$casthma_cr, pch=20, asp=1, las=1)
+abline(a = coef(M)[1], b=coef(M)[2], col="red")
+coef(M)[2]
+```
+
+## Comparing observed to expected
+
+* We can generate the expected distribution of Moran's I coefficients under a Null hypothesis of no spatial autocorrelation
+
+* Using permutation and a loop to generate simulations of Moran's I
+
+## Comparing observed to expected
+
+```{r}
+#| echo: true
+n <- 400L   # Define the number of simulations
+I.r <- vector(length=n)  # Create an empty vector
+
+for (i in 1:n){
+  # Randomly shuffle income values
+  x <- sample(cdc$casthma_cr, replace=FALSE)
+  # Compute new set of lagged values
+  x.lag <- lag.listw(lw.nearest, x)
+  # Compute the regression slope and store its value
+  M.r    <- lm(x.lag ~ x)
+  I.r[i] <- coef(M.r)[2]
+}
+
+```
+
+```{r}
+hist(I.r, main=NULL, xlab="Moran's I", las=1, xlim = c(-1, 1))
+abline(v=coef(M)[2], col="red")
+```
+
+## Significance testing
+
+* Pseudo p-value (based on permutations)
+
+* Analytically (sensitive to deviations from assumptions)
+
+* Using Monte Carlo
+
+```{r}
+#| echo: true
+#| eval: false
+#Pseudo p-value
+N.greater <- sum(coef(M)[2] > I.r)
+# add modifiers to stay in -1 to 1 range
+(p <- min(N.greater + 1, n + 1 - N.greater) / (n + 1))
+
+# Analytically
+# Based on a normal distribution, not the distribution of your data
+moran.test(cdc$casthma_cr,lw.nearest, zero.policy = TRUE)
+
+# Monte Carlo
+moran.mc(cdc$casthma_cr, lw.nearest, zero.policy = TRUE, nsim=400)
+```
+
+## Significance testing
+```{r}
+#Pseudo p-value
+N.greater <- sum(coef(M)[2] > I.r)
+(p <- min(N.greater + 1, n + 1 - N.greater) / (n + 1))
+
+# Analytically
+moran.test(cdc$casthma_cr,lw.nearest, zero.policy = TRUE)
+
+# Monte Carlo
+moran.mc(cdc$casthma_cr, lw.nearest, zero.policy = TRUE, nsim=400)
+```
