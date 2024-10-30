@@ -168,8 +168,8 @@ website:
             #   file: assignment/08-combinations.qmd
             - text: "Point Patterns and Interpolation"
               file: assignment/09-pointpatterns.qmd
-            # - text: "Statistical Modelling" 
-            #   file: assignment/11-statmod.qmd
+            - text: "Statistical Modelling"
+              file: assignment/11-statmod.qmd
             # - text: "Movement and Networks" 
             #   file: assignment/12-nets.qmd
         - section: "Final Project"
