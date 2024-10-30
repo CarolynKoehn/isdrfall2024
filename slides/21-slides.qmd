@@ -308,8 +308,7 @@ $$
 Inputs from the `dismo` package
 
 ```{r}
-#| eval: false
-base.path <- "/Users/mattwilliamson/Google Drive/My Drive/TEACHING/Intro_Spatial_Data_R/Data/2021/session28/" #sets the path to the root directory
+base.path <- "C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/session28/session28/" #sets the path to the root directory
 
 pres.abs <- st_read(paste0(base.path, "presenceabsence.shp"), quiet = TRUE) #read the points with presence absence data
 ## OGR data source with driver: ESRI Shapefile 
@@ -324,6 +323,7 @@ plot(pred.stack)
 ```
 
 ```{r}
+#| eval: false
 set.seed(5)
 
 ac <- read.csv(paste(system.file(package="dismo"), '/ex/acaule.csv', sep='')) %>%
@@ -388,8 +388,8 @@ head(pres.abs)
 plot(pred.stack[[1]])
 pres.pts <- pres.abs[pres.abs$y == 1,]
 abs.pts <- pres.abs[pres.abs$y == 0,]
-plot(pres.pts$geometry, add=TRUE, pch=3, col="aquamarine", cex=1)
-plot(abs.pts$geometry, add=TRUE, pch ="-", col="red", cex=2)
+plot(pres.pts$geometry, add=TRUE, pch=3, col="blue")
+plot(abs.pts$geometry, add=TRUE, pch ="-", col="red")
 ```
 :::
 :::
@@ -436,7 +436,7 @@ pts.df <- cbind(pts.df, pres.abs$y)
 colnames(pts.df)[8] <- "y"
 logistic.global <- glm(y~., family=binomial(link="logit"), data=pts.df[,2:8])
 logistic.simple <- glm(y ~ MeanAnnTemp + TotalPrecip, family=binomial(link="logit"), data=pts.df[,2:8])
-logistic.rich <- glm(y ~ MeanAnnTemp + PrecipWetMonth + PrecipDryMonth, family=binomial(link="logit"), data=pts.df[,2:8])
+logistic.rich <- glm(y ~ MeanAnnTemp + PrecipWetQuarter + PrecipDryQuarter, family=binomial(link="logit"), data=pts.df[,2:8])
 ```
 
 ## An Example
@@ -475,7 +475,7 @@ Generating predictions
 preds <- predict(object=pred.stack, model=logistic.simple)
 plot(preds)
 plot(pres.pts$geometry, add=TRUE, pch=3, col="blue")
-plot(abs.pts$geometry, add=TRUE, pch ="-", col="red", cex=2)
+plot(abs.pts$geometry, add=TRUE, pch ="-", col="red")
 ```
 
 ## An Example
