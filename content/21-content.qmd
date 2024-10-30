@@ -26,8 +26,6 @@ Now that we've spent some time building dataframes and assessing the spatial cor
 
 By the end of today you should be able to:
 
-* Identify nearest neighbors based on distance
-
 * Describe and implement overlay analyses
 
 * Extend overlay analysis to statistical modeling
