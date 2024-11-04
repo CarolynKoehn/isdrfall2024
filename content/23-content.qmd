@@ -1,6 +1,6 @@
 ---
 title: "Statistical Modelling III"
-date: "2023-11-8"
+date: "2023-11-6"
 ---
 
 ```{r slides-videos, echo=FALSE, include=FALSE}
@@ -30,14 +30,18 @@ By the end of today you should be able to:
 
 - Describe and implement resampling techniques to estimate predictive performance
 
+<!--
+
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
-slide_buttons("/slides/24-slides")
+slide_buttons("/slides/23-slides")
 ```
 
 <div>
 
 ```{=html}
-<iframe class="slide-deck" src="/slides/24-slides.html"></iframe>
+<iframe class="slide-deck" src="/slides/23-slides.html"></iframe>
 ```
 
 </div>
+
+-->

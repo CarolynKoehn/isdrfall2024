@@ -121,8 +121,8 @@ website:
               file: content/21-content.qmd
             - text: "22: Statistical Modelling II"
               file: content/22-content.qmd
-            # - text: "24: Statistical Modelling III"
-            #   file: content/24-content.qmd
+            - text: "23: Statistical Modelling III"
+              file: content/23-content.qmd
             # - text: "25: Movement and Networks I"
             #   file: content/25-content.qmd
             # - text: "26: Movement and Networks II"
