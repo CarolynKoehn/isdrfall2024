@@ -1,0 +1,164 @@
+---
+title: "Session 22 code"
+author: "Carolyn Koehn"
+format: html
+---
+
+## Review from session 16
+
+Load libraries:
+
+```{r}
+#| message: false
+#| warning: false
+library(sf)
+library(terra)
+library(tidyverse)
+library(tmap)
+library(tree)
+library(randomForest)
+```
+
+Load data:
+
+```{r}
+#| eval: false
+download_unzip_read <- function(link){
+  tmp <- tempfile()
+  download.file(link, tmp)
+  tmp2 <- tempfile()
+  unzip(zipfile=tmp, exdir=tmp2)
+  shapefile.sf <- read_sf(tmp2)
+}
+
+### FS Boundaries
+fs.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.AdministrativeForest.zip"
+fs.bdry <- download_unzip_read(link = fs.url)
+
+### CFLRP Data
+cflrp.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.CFLR_HPRP_ProjectBoundary.zip"
+cflrp.bdry <- download_unzip_read(link = cflrp.url)
+
+wildfire_haz <- rast("/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+
+cejst <- st_read("/opt/data/data/assignment01/cejst_nw.shp", quiet=TRUE) %>%
+  filter(!st_is_empty(.))
+```
+```{r}
+#| include: false
+download_unzip_read <- function(link){
+  tmp <- tempfile()
+  download.file(link, tmp)
+  tmp2 <- tempfile()
+  unzip(zipfile=tmp, exdir=tmp2)
+  shapefile.sf <- read_sf(tmp2)
+}
+
+### FS Boundaries
+fs.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.AdministrativeForest.zip"
+fs.bdry <- download_unzip_read(link = fs.url)
+
+### CFLRP Data
+cflrp.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.CFLR_HPRP_ProjectBoundary.zip"
+cflrp.bdry <- download_unzip_read(link = cflrp.url)
+
+wildfire_haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+
+cejst <- st_read("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/cejst_nw.shp", quiet=TRUE) %>%
+  filter(!st_is_empty(.))
+```
+
+Check validity:
+
+```{r}
+all(st_is_valid(fs.bdry))
+all(st_is_valid(cflrp.bdry))
+
+fs.bdry <- st_make_valid(fs.bdry)
+cflrp.bdry <- st_make_valid(cflrp.bdry)
+```
+
+Check alignment:
+
+```{r}
+st_crs(wildfire_haz) == st_crs(fs.bdry)
+st_crs(wildfire_haz) == st_crs(cflrp.bdry)
+st_crs(wildfire_haz) == st_crs(cejst)
+
+fs.bdry_proj <- st_transform(fs.bdry, crs = st_crs(wildfire_haz))
+cflrp.bdry_proj <- st_transform(cflrp.bdry, crs = st_crs(wildfire_haz))
+cejst_proj <- st_transform(cejst, crs = st_crs(wildfire_haz))
+```
+
+Subset to relevant geographies:
+
+```{r}
+fs.bdry_sub <- fs.bdry_proj[cejst_proj, ]
+cflrp.bdry_sub <- cflrp.bdry_proj[cejst_proj, ]
+
+cejst_sub <- cejst_proj[fs.bdry_sub, ]
+```
+
+Select relevant attributes:
+
+```{r}
+cejst_sub <- cejst_sub %>%
+  select(GEOID10, LMI_PFS, LHE, HBF_PFS)
+```
+
+Extract wildfire risk:
+
+```{r}
+wf_risk <- terra::extract(wildfire_haz, cejst_sub, fun=mean)
+
+cejst_sub$WHP_ID <- wf_risk$WHP_ID
+```
+
+CFLRP T or F:
+
+```{r}
+cflrp <- apply(st_intersects(cejst_sub, cflrp.bdry_sub, sparse = FALSE), 1, any)
+
+cejst_sub$CFLRP <- cflrp
+```
+
+## Comparing/Predicting CFLRP tracts
+
+### Data preparation
+
+```{r}
+cejst_mod <- cejst_sub %>%
+  st_drop_geometry(.) %>%
+  na.omit(.)
+
+cejst_mod[, c("LMI_PFS", "LHE", "HBF_PFS", "WHP_ID")] <- scale(cejst_mod[, c("LMI_PFS", "LHE", "HBF_PFS", "WHP_ID")])
+```
+
+### Logistic regression
+
+```{r}
+logistic.global <- glm(CFLRP ~ LMI_PFS + LHE + HBF_PFS + WHP_ID,
+                       family = binomial(link = "logit"),
+                       data = cejst_mod)
+summary(logistic.global)
+```
+
+### Classification Tree
+
+```{r}
+library(tree)
+cejst_mod$CFLRP <- as.factor(ifelse(cejst_mod$CFLRP == 1, "Yes", "No"))
+tree.model <- tree(CFLRP ~ LMI_PFS + LHE + HBF_PFS + WHP_ID, cejst_mod)
+plot(tree.model, type = "uniform")
+text(tree.model, pretty=0)
+```
+
+### Random Forest
+
+```{r}
+library(randomForest)
+class.model <- CFLRP ~ .
+rf2 <- randomForest(formula = class.model, cejst_mod[,-1])
+varImpPlot(rf2)
+```
+

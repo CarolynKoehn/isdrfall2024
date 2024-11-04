@@ -223,6 +223,8 @@ website:
               file: example/session-20-example.qmd
             - text: "Overlays and Logistic Regression"
               file: example/session-21-example.qmd
+            - text: "Classification Trees"
+              file: example/session-22-example.qmd
         - section: "Visualizing Spatial Data"
 
     - title: "Lessons"
