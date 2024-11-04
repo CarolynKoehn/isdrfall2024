@@ -11,7 +11,7 @@ Last class we spent some time extending the idea of Favorability to build a foun
 
 ## Resources
 
-- <i class="fas fa-external-link-square-alt"></i> [An Introduction to Statistical Learning](file:///Users/mattwilliamson/Downloads/ISLRv2_corrected_June_2023.pdf) by [@James2021] is a comprehensive introduction to a number of statistical learning techniques with examples in `R`. Although these examples are not necessarily spatial, the chapters provide a lot of the background necessary for understanding what the models are doing.
+- <i class="fas fa-external-link-square-alt"></i> [An Introduction to Statistical Learning](https://www.statlearning.com/) by [@James2021] is a comprehensive introduction to a number of statistical learning techniques with examples in `R`. Although these examples are not necessarily spatial, the chapters provide a lot of the background necessary for understanding what the models are doing.
 
 - <i class="fas fa-external-link-square-alt"></i> [A statistical explanation of MaxEnt for ecologists](https://hastie.su.domains/Papers/maxent_explained.pdf) by [@elith2011statistical] provides a relatively accessible description of the details of MaxEnt species distribution modeling.
 

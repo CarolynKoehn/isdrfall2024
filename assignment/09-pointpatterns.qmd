@@ -32,3 +32,7 @@ Exploring and exploiting spatial autocorrelation in our data is an important too
 5. Generate the 0th, 1st, and 2nd order spatial trend surfaces for the data. Is there evidence for a second order trend? How can you tell?
 6. Now use the spatial trend surface to perform some ordinary kriging. You'll want to have a grid of ~15,000 points, fit 3 different experimental variogram functions (see the `vgm` function helpfile to learn more about the shapes available to you). Plot your variogram fits. Which one would you choose? Why?
 7. Using your spatial trend model and your fitted variogram, krige the data and generate a map of the interpolated value and a map of the error.
+
+:::{.callout-note}
+Solutions are [here](08-combinationssolutions.qmd)
+:::
