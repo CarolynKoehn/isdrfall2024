@@ -3,7 +3,7 @@ title: "Statistical Modelling II"
 subtitle: "HES 505 Fall 2024: Session 22"
 author: "Carolyn Koehn"
 execute: 
-  eval: false
+  eval: true
 format: 
   revealjs:
     theme: mytheme.scss
@@ -103,7 +103,7 @@ Draw a cube dimensional space
 Predictor inputs from the `dismo` package
 
 ```{r}
-#| include: false
+#| echo: false
 base.path <- "C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/session28/session28/" #sets the path to the root directory
 
 pres.abs <- st_read(paste0(base.path, "presenceabsence.shp"), quiet = TRUE) #read the points with presence absence data
@@ -124,6 +124,7 @@ Predictor inputs from the `dismo` package
 
 ```{r}
 #| eval: false
+#| echo: true
 base.path <- "/opt/data/data/presabsexample/" #sets the path to the root directory
 
 pres.abs <- st_read(paste0(base.path, "presenceabsence.shp"), quiet = TRUE) #read the points with presence absence data
@@ -244,6 +245,10 @@ Misclassification rate: depends on distribution of your data (can the model alwa
 :::
 :::
 
+:::{.notes}
+sensitive to first decisions
+:::
+
 ## Random Forests
 
 ::: columns
@@ -317,6 +322,13 @@ y_{i} \sim \text{Bern}(p_i)\\
 \end{equation}
 $$
 
+:::{.notes}
+What predictors you leave out is just as important as predictors you leave in
+
+Intercept becomes ratio of background to presence - great debate
+:::
+
+<!--
 ## MaxEnt
 
 ::: columns
@@ -335,7 +347,7 @@ $$
 
 :::
 :::
-
+-->
 
 ## Maximum Entropy models
 
@@ -376,6 +388,69 @@ $$
 
 * Neural nets, Support Vector Machines, many many more
 
+# Motivating Question {background="#9F281A"}
 
+> How do Collaborative Forest Landscape Restoration projects compare to other National Forest lands with respect to social and wildfire risks?
+
+## Thinking about the data
+
+* **Datasets** - Forest Service Boundaries, CFLRP Boundaries, Wildfire Risk Raster, CEJST shapefile
+
+* **Dependent Variable** - CFLRP (T or F)
+
+* **Independent Variables** - Wildfire hazard, income, education, housing burden
+
+## Building some Pseudocode
+
+```{r}
+#| eval: false
+#| echo: true
+
+1. Load libraries
+2. Load data
+3. Check validity and alignment
+4. Subset to relevant geographies
+5. Select relevant attributes
+6. Extract wildfire risk
+7. CFLRP T or F
+8. Compare risks
+```
+
+## Load libraries
+
+```{r}
+#| echo: true
+library(sf)
+library(terra)
+library(tidyverse)
+library(tmap)
+
+```
+
+
+## Load the data
+
+- Downloading USFS data using the function in the `code` folder
+
+```{r}
+#| echo: true
+#| cache: true
+
+download_unzip_read <- function(link){
+  tmp <- tempfile()
+  download.file(link, tmp)
+  tmp2 <- tempfile()
+  unzip(zipfile=tmp, exdir=tmp2)
+  shapefile.sf <- read_sf(tmp2)
+}
+
+### FS Boundaries
+fs.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.AdministrativeForest.zip"
+fs.bdry <- download_unzip_read(link = fs.url)
+
+### CFLRP Data
+cflrp.url <- "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.CFLR_HPRP_ProjectBoundary.zip"
+cflrp.bdry <- download_unzip_read(link = cflrp.url)
+```
 
 
