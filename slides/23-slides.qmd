@@ -613,7 +613,14 @@ plot(glm.spatial, main="Logistic Regression")
 par(mfrow=c(1,1))
 ```
 
+## Practice
+::: {style="font-size: 0.7em"}
+1. Create a training/testing split of the `cejst_mod` data from last class.
+2. Fit the logistic, tree, and random forest models with your training data, generate predictions for the testing data, and generate confusion matrices for each model. Which one seems best?
+3. Make an ROC plot for the three models (make sure to generate the correct type of predictions for the tree and rf models, code is in the slides). Which model seems best?
+4. Use the cross-validation code from the slides to create cross-validated versions of the three models (remember to use `cejst_mod` as the `train` data here). Generate ROC curves for these models. Which model seems best?
 
-
+Challenge: Generate predictions from the best model and create a map of predicted CFLRP probability with the CFLRP boundaries overlayed on top. You will need to join the `cejst_sub` geometries back to the `cejst_mod` data.
+:::
 
 

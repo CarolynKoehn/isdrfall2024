@@ -26,7 +26,7 @@ You built a dataframe for analysis in Assignment 7 using the National Forest bou
 
 1. Use the variables that you chose from assignment 7 along with the wildfire hazard and land use dataset to attribute each disaster in the disaster dataset.
 2. Fit a Poisson regression using your covariates and the cost of the incident data (using `glm` with `family=poisson()`)
-3. Fit a regression tree using your covariates and the cost of the incident data (using `caret` package `method=`rpart`)
+3. Fit a regression tree using your covariates and the cost of the incident data (using `caret` package `method='rpart'`)
 4. Fit a random forest model using your covariates and the cost of the incident data (using `caret` package `method= 'rf'`)
 5. Use cross-validation to identify the best performing model of the 3 that you fit
 6. Convert all of your predictors into rasters of the same resolution and generate a spatial prediction based on your best performing model
