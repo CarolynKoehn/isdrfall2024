@@ -1,6 +1,6 @@
 ---
 title: "Movement and Networks I"
-date: "2023-11-13"
+date: "2024-11-11"
 ---
 
 ```{r slides-videos, echo=FALSE, include=FALSE}
@@ -28,16 +28,18 @@ By the end of today you should be able to:
 
 - Identify major questions that we can address with networks
 
+<!--
+
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
-slide_buttons("/slides/25-slides")
+slide_buttons("/slides/24-slides")
 ```
 
 <div>
 
 ```{=html}
-<iframe class="slide-deck" src="/slides/25-slides.html"></iframe>
+<iframe class="slide-deck" src="/slides/24-slides.html"></iframe>
 ```
 
 </div>
 
-
+-->
