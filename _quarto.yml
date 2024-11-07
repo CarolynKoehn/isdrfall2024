@@ -123,7 +123,7 @@ website:
               file: content/22-content.qmd
             - text: "23: Statistical Modelling III"
               file: content/23-content.qmd
-            - text: "24: Movement and Networks I"
+            - text: "24: Data Visualization and Maps I"
               file: content/24-content.qmd
             # - text: "26: Movement and Networks II"
             #   file: content/26-content.qmd

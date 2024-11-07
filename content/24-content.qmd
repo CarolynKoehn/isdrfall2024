@@ -1,5 +1,5 @@
 ---
-title: "Movement and Networks I"
+title: "Data Visualization and Maps I"
 date: "2024-11-11"
 ---
 
@@ -7,26 +7,28 @@ date: "2024-11-11"
 source(here::here("R", "slide-things.R"))
 ```
 
-Today we're going to finish up some of the model evaluation and prediction pieces from last week and then take a brief detour into the use of spatial information in networks. To do that, we'll need to introduce some basic concepts of networks before getting too far down the road of the syntax.
+We’ve spent the last few weeks learning about operations to compile geographic information into databases for visualization and analysis. Because analysis requires you to know something about your data and because visualization is a great way to explore your data (especially when there’s a lot of it), we’ll turn to that next. For the next few weeks, we’ll be looking at different ways to visualize spatial data and the associated approaches in `R`. Note that this could be an entire course by itself, but hopefully you’ll get enough to get started making publication quality maps by the time we’re done
 
 ## Resources
 
-- <i class="fas fa-external-link-square-alt"></i> [Landscape connectivity: A graph-theoretic perspective](https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/0012-9658%282001%29082%5B1205%3ALCAGTP%5D2.0.CO%3B2) by [@urban] introduces the notion of using networks and graphs to understand ecological connectivity.
+- <i class="fas fa-external-link-square-alt"></i> The [Introduction](https://f0nzie.github.io/dataviz-wilke-2020/introduction.html) and [Visualizing Geospatial Data](https://f0nzie.github.io/dataviz-wilke-2020/geospatial-data.html) chapters [Principles of Figure Design](https://f0nzie.github.io/dataviz-wilke-2020/proportional-ink.html) section in [@wilke2019fundamentals] provide a useful set of general introductions to data visualization principles and practice that is “platform agnostic” (though much of Wilke’s work is done in `R`).
 
-- <i class="fas fa-external-link-square-alt"></i> [Connectivity for conservation: a framework to classify network measures](https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/09-2190.1) by [@rayfield] helps simplify the (often overwhelming nature) of terminology and network metrics.
+- <i class="fas fa-external-link-square-alt"></i> The [Look at Data](https://f0nzie.github.io/dataviz-wilke-2020/introduction.html) and [Draw Maps](https://f0nzie.github.io/dataviz-wilke-2020/geospatial-data.html) chapters in [@healy2018data] revisits many of the same ideas, but focuses specifically on `R` and `ggplot2`.
 
-- <i class="fas fa-external-link-square-alt"></i> [Graphs and network science: and introduction](https://livebook.manning.com/book/graphs-and-network-science-an-introduction/chapter-1/) provides a little simpler, but less spatially informed introduction to the tasks of network analysis.
+- <i class="fas fa-external-link-square-alt"></i> This post on [making maps people want to look at](https://www.esri.com/news/arcuser/0112/make-maps-people-want-to-look-at.html) from ESRI is a nice, concise depiction of some core principles for planning a cartographic project.
+
+- <i class="fas fa-external-link-square-alt"></i> [Making maps with `R`](https://geocompr.robinlovelace.net/adv-map.html) by [@lovelace_geocomputation_2019] introduces the `tmap` package for making nice maps with relatively minimal syntax.
 
 
 ## Objectives
 
 By the end of today you should be able to:
 
-- Use cross-validation to evaluate your models
+- Describe some basic principles of data visualization
 
-- Define a network and it's key components
+- Extend principles of data visualization to the development of maps
 
-- Identify major questions that we can address with networks
+- Distinguish between several common types of spatial data visualization
 
 <!--
 
