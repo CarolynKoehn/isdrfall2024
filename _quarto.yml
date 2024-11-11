@@ -144,8 +144,8 @@ website:
               file: assignment/05-firstrevision.qmd
             - text: "Assignment Revision 2"
               file: assignment/10-secondrevision.qmd
-            # - text: "Assignment Revision 3" 
-            #   file: assignment/13-thirdrevision.qmd
+            - text: "Assignment Revision 3"
+              file: assignment/13-thirdrevision.qmd
         - section: "Homework"
           contents:
             - text: "Introducing the course" 

@@ -24,9 +24,9 @@ This is your final opportunity to reconsider your answers to the last few assign
 
 2. When kriging, you need both a spatial trend surface and an experimental variogram. What is the role of each of these components in kriging?
 
-3.
+3. Why are confusion matrices and ROC/AUC plots only useful for categorical data?
 
-4.
+4. What is the difference between a training/testing data split and k-fold or leave-one-out cross validation?
 
 5. If you made changes to your assignment 9 during our class review time, notate those changes and push them to GitHub. 
 
