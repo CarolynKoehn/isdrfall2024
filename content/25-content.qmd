@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization and Maps II"
+title: "Data Visualization and Maps I"
 date: "2024-11-13"
 ---
 
@@ -7,48 +7,41 @@ date: "2024-11-13"
 source(here::here("R", "slide-things.R"))
 ```
 
-`R` provides a number of different packages for generating plots of your data, but `ggplot2` is probably the most common owing to its ability to use consistent syntax to produce a variety of different graphics. In addition to plots of data and model objects, `ggplot2` can also be used with `sf` objects and some raster datasets to generate publication quality maps. We’ll also take a little more time to understand some of the options for building static maps in `R` and look at a few packages that can help you build publication-quality maps without having to move into a new software.
+We’ve spent the last few weeks learning about operations to compile geographic information into databases for visualization and analysis. Because analysis requires you to know something about your data and because visualization is a great way to explore your data (especially when there’s a lot of it), we’ll turn to that next. For the next few weeks, we’ll be looking at different ways to visualize spatial data and the associated approaches in `R`. Note that this could be an entire course by itself, but hopefully you’ll get enough to get started making publication quality maps by the time we’re done
 
 ## Resources
 
-- {{< fa book >}} The [Data Visualization: A Practical Introduction](https://socviz.co/) by @healy2018data provides a lot of examples of Tufte-style graphics built with ggplot2.
+- <i class="fas fa-external-link-square-alt"></i> The [Introduction](https://f0nzie.github.io/dataviz-wilke-2020/introduction.html) and [Visualizing Geospatial Data](https://f0nzie.github.io/dataviz-wilke-2020/geospatial-data.html) chapters [Principles of Figure Design](https://f0nzie.github.io/dataviz-wilke-2020/proportional-ink.html) section in [@wilke2019fundamentals] provide a useful set of general introductions to data visualization principles and practice that is “platform agnostic” (though much of Wilke’s work is done in `R`).
 
-- {{< fa arrow-up-right-from-square >}} [Graphic design with ggplot2](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/) is an entire course devoted to making beautiful visualizations with `ggplot2`. If nothing else, check out some of the examples!
+- <i class="fas fa-external-link-square-alt"></i> The [Look at Data](https://f0nzie.github.io/dataviz-wilke-2020/introduction.html) and [Draw Maps](https://f0nzie.github.io/dataviz-wilke-2020/geospatial-data.html) chapters in [@healy2018data] revisits many of the same ideas, but focuses specifically on `R` and `ggplot2`.
 
-- {{< fa arrow-up-right-from-square >}} [The `patchwork` package website](https://patchwork.data-imaginist.com/) provides a lot of examples of building complicated layouts with `ggplot2` objects with intuitive syntax.
+- <i class="fas fa-external-link-square-alt"></i> This post on [making maps people want to look at](https://www.esri.com/news/arcuser/0112/make-maps-people-want-to-look-at.html) from ESRI is a nice, concise depiction of some core principles for planning a cartographic project.
 
-- {{< fa book >}} The [Drawing Beautiful Maps Programatically with `R`, `sf`, and `ggplot2`](https://r-spatial.org/r/2018/10/25/ggplot2-sf.html) chapter by Mel Moreno and Mathieu Basille provides a nice series of blog posts designed to help you build maps with `sf` objects.
+- <i class="fas fa-external-link-square-alt"></i> [Making maps with `R`](https://geocompr.robinlovelace.net/adv-map.html) by [@lovelace_geocomputation_2019] introduces the `tmap` package for making nice maps with relatively minimal syntax.
 
-- {{< fa arrow-up-right-from-square >}} [Creating beautiful demographic maps in `R` with the `tidycensus` and `tmap` packages](http://zevross.com/blog/2018/10/02/creating-beautiful-demographic-maps-in-r-with-the-tidycensus-and-tmap-packages/) by Zev Ross illustrates the simplicity of mapping with `tmap`.
-
-- {{< fa arrow-up-right-from-square >}} [Displaying time series, spatial and space-time data with `R`](https://oscarperpinan.github.io/bookvis/) by Oscar Perpiñán Lamigueiro has a bunch of interesting code for producing maps contained in the book by the same name.
 
 ## Objectives
 
 By the end of today you should be able to:
 
-- Understand the relationship between the Grammar of Graphics and ggplot syntax
+- Describe some basic principles of data visualization
 
-- Describe the various options for customizing ggplots and their syntactic conventions
+- Extend principles of data visualization to the development of maps
 
-- Generate complicated plot layouts without additional pre-processing
+- Distinguish between several common types of spatial data visualization
 
-- Construct a map using ggplot2 and tmap
 
-- Combine vector and raster data in the same map
-
-<!--
 
 ```{r show-slide-tabs, echo=FALSE, results="asis"}
-slide_buttons("/slides/25-slides")
+slide_buttons("/slides/24-slides")
 ```
 
 <div>
 
 ```{=html}
-<iframe class="slide-deck" src="/slides/25-slides.html"></iframe>
+<iframe class="slide-deck" src="/slides/24-slides.html"></iframe>
 ```
 
 </div>
 
--->
+

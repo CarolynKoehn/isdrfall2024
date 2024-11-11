@@ -123,10 +123,12 @@ website:
               file: content/22-content.qmd
             - text: "23: Statistical Modelling III"
               file: content/23-content.qmd
-            - text: "24: Data Visualization and Maps I"
+            - text: "24: Statisitcal Modelling Review"
               file: content/24-content.qmd
-            - text: "25: Data Visualization and Maps II"
+            - text: "25: Data Visualization and Maps I"
               file: content/25-content.qmd
+            - text: "26: Data Visualization and Maps II"
+              file: content/26-content.qmd
             # - text: "31: Introduction to Interactive Maps"
             #   file: content/31-content.qmd  
             # - text: "32: Conclusion"

@@ -18,8 +18,6 @@ library(tidyverse)
 
 ```
 
-# Homework Questions / Solutions
-
 # Objectives {background="#9F281A"}
 
 By the end of today you should be able to:
