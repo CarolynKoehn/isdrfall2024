@@ -31,3 +31,7 @@ You built a dataframe for analysis in Assignment 7 using the National Forest bou
 5. Use cross-validation to identify the best performing model of the 3 that you fit
 6. Convert all of your predictors into rasters of the same resolution and generate a spatial prediction based on your best performing model
 7. Plot your result
+
+:::{.callout-note}
+Solutions are [here](11-statmodsolutions.qmd)
+:::
