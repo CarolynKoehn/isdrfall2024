@@ -324,12 +324,14 @@ tm_shape(forest.cejst.long) +
 
 ### Predictions and Plotting for Raster Data
 
+**modified 11/12/24**
+
 ```{r}
 # using wildfire raster as a template to rasterize all other predictors
-pred.stack <- c(rasterize(cejst_sub, wildfire_haz, field = "LMI_PFS", "mean"),
-                rasterize(cejst_sub, wildfire_haz, field = "LHE", "mean"),
-                rasterize(cejst_sub, wildfire_haz, field = "HBF_PFS", "mean"),
-                scale(wildfire_haz))
+pred.stack <- c((rasterize(cejst_sub, wildfire_haz, field = "LMI_PFS", "mean") - mean(cejst_sub$LMI_PFS, na.rm=TRUE))/sd(cejst_sub$LMI_PFS, na.rm=TRUE),
+                (rasterize(cejst_sub, wildfire_haz, field = "LHE", "mean") - mean(cejst_sub$LHE, na.rm=TRUE))/sd(cejst_sub$LHE, na.rm=TRUE),
+                (rasterize(cejst_sub, wildfire_haz, field = "HBF_PFS", "mean") - mean(cejst_sub$HBF_PFS, na.rm=TRUE))/sd(cejst_sub$HBF_PFS, na.rm=TRUE),
+                (wildfire_haz - mean(cejst_sub$WHP_ID, na.rm=TRUE))/sd(cejst_sub$WHP_ID, na.rm=TRUE))
 plot(pred.stack)
 ```
 
@@ -346,6 +348,7 @@ results <- c(log.preds_r, tree.preds_r, rf.preds_r)
 names(results) <- c("Logistic", "Tree", "Random Forest")
 results <- mask(results, cejst_sub)
 
+par(mfrow=c(1,3))
 plot(results[[1]], main="Logistic")
 plot(st_geometry(cflrp.bdry_sub), add=TRUE)
 plot(results[[2]], main="Tree")
