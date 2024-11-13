@@ -1,6 +1,6 @@
 ---
 title: "Data Visualization and Maps I"
-subtitle: "HES 505 Fall 2024: Session 24"
+subtitle: "HES 505 Fall 2024: Session 25"
 author: "Carolyn Koehn"
 execute: 
   eval: true
@@ -27,6 +27,140 @@ By the end of today you should be able to:
 * Extend principles of data visualization to the development of maps
 
 * Distinguish between several common types of spatial data visualization
+
+# But first... Scaling
+
+```{r}
+#| include: false
+
+# code from assignment 9
+library(sf)
+library(tidyverse, quietly = TRUE)
+library(terra)
+library(tmap, quietly = TRUE)
+library(caret)
+
+ 
+cejst.pnw <- read_sf("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/cejst_pnw.shp")%>% 
+  filter(., !st_is_empty(.))
+
+incidents.csv <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/ics209-plus-wf_incidents_1999to2020.csv")
+
+land.use <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/land_use_pnw.tif")
+fire.haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/wildfire_hazard_agg.tif")
+
+
+fire.haz.proj <- project(fire.haz, land.use)
+
+
+cejst.proj <- cejst.pnw %>% 
+  st_transform(., crs=crs(land.use))
+
+incidents.proj <- incidents.csv %>% 
+  filter(., !is.na(POO_LONGITUDE) | !is.na(POO_LATITUDE) ) %>% 
+  st_as_sf(., coords = c("POO_LONGITUDE", "POO_LATITUDE"), crs= 4269) %>% 
+  st_transform(., crs=crs(land.use))
+incidents.pnw <- st_crop(incidents.proj, st_bbox(cejst.proj))
+
+hazard.smooth <- focal(fire.haz.proj, w=5, fun="mean")
+land.use.smooth <- focal(land.use, w=5, fun="modal")
+levels(land.use.smooth) <- levels(land.use)
+
+cejst.select <- cejst.proj %>% 
+  select(., c(TPF, HBF_PFS, P200_I_PFS))
+
+incident.cejst <- incidents.pnw %>% 
+  st_join(., y=cejst.select, join=st_within) 
+
+incident.landuse.ext <- terra::extract(x=land.use.smooth, y = vect(incident.cejst), fun="modal", na.rm=TRUE)
+
+incident.firehaz.ext <- terra::extract(x= hazard.smooth, y = vect(incident.cejst), fun="mean", na.rm=TRUE)
+
+incident.cejst.join <- cbind(incident.cejst,incident.landuse.ext$category, incident.firehaz.ext$focal_mean) %>% 
+  rename(category = "incident.landuse.ext.category", hazard = "incident.firehaz.ext.focal_mean")
+
+incident.cejst.prep <- incident.cejst.join %>% 
+  select(., PROJECTED_FINAL_IM_COST, TPF, HBF_PFS, P200_I_PFS, hazard, category,) %>% 
+  st_drop_geometry(.) %>% 
+  filter(., complete.cases(.))
+
+incident.cejst.model <- incident.cejst.prep  %>% 
+  mutate(across(TPF:hazard, ~ as.numeric(scale(.x))),
+         category=droplevels(category),
+         cost = as.integer(floor(PROJECTED_FINAL_IM_COST))) %>% 
+  select(-PROJECTED_FINAL_IM_COST)
+
+set.seed(998)
+inTraining <- createDataPartition(incident.cejst.model$category, p = .8, list = FALSE)
+training <- incident.cejst.model[ inTraining,]
+testing  <- incident.cejst.model[-inTraining,]
+
+fitControl <- trainControl(
+   method = "cv",  # k-fold cross validation
+   number = 10,  # 10 folds
+   savePredictions = "final"       # save predictions for the optimal tuning parameter
+)
+
+PoisFit <- train( cost ~ ., data = training, 
+                 method = "glm", 
+                 family = poisson,
+                 trControl = fitControl,
+                 metric="RMSE"
+                 )
+
+TPF.rast <- (rasterize(cejst.select, hazard.smooth, field="TPF") - mean(incident.cejst.prep$TPF,na.rm=TRUE))/sd(incident.cejst.prep$TPF)
+
+HBF_PFS.rast <- (rasterize(cejst.select, hazard.smooth, field="HBF_PFS")- mean(incident.cejst.prep$HBF_PFS,na.rm=TRUE))/sd(incident.cejst.prep$HBF_PFS)
+
+P200_I_PFS.rast <- (rasterize(cejst.select, hazard.smooth, field="P200_I_PFS")- mean(incident.cejst.prep$P200_I_PFS,na.rm=TRUE))/sd(incident.cejst.prep$P200_I_PFS)
+
+land.use.smooth <- subst(land.use.smooth, from=c("Non-Forest Wetland","Non-Processing Area Mask"), to=c(NA, NA))
+
+hazard.smooth.scl <- (hazard.smooth - mean(incident.cejst.prep$hazard))/sd(incident.cejst.prep$hazard)
+
+pred.rast <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl)
+names(pred.rast)[5] <- "hazard"
+```
+
+## Assignment 9: Scaling the hazard data
+
+```{r}
+#| echo: true
+
+hazard.smooth.scl <- (hazard.smooth - mean(incident.cejst.prep$hazard))/sd(incident.cejst.prep$hazard)
+#versus
+hazard.smooth.scl.nogood <- scale(hazard.smooth)
+```
+
+## Assignment 9: Scaling the hazard data
+
+```{r}
+par(mfrow=c(1,2))
+plot(hazard.smooth.scl, main="Scaling with the model data")
+plot(hazard.smooth.scl.nogood, main="Scaling with the raster data")
+```
+
+## Assignment 9: Different predictions for different scaling
+
+```{r}
+#| include: false
+
+pred.rast <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl)
+names(pred.rast)[5] <- "hazard"
+
+pred.rast.nogood <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl.nogood)
+names(pred.rast.nogood)[5] <- "hazard"
+
+pois.spatial <- terra :: predict(pred.rast, PoisFit, na.rm=TRUE)
+pois.spatial.nogood <- terra :: predict(pred.rast.nogood, PoisFit, na.rm=TRUE)
+```
+```{r}
+#| echo: false
+par(mfrow=c(1,2))
+plot(pois.spatial, main="Scaling with the model data")
+plot(pois.spatial.nogood, main="Scaling with the raster data")
+par(mfrow=c(1,1))
+```
 
 
 # Introduction to Data Visualization {background="#9F281A"}
