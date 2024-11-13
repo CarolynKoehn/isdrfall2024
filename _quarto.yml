@@ -226,6 +226,9 @@ website:
             - text: "Model Comparison"
               file: example/session-23-example.qmd
         - section: "Visualizing Spatial Data"
+          contents:
+            - text: "Data Visualization I"
+              file: example/session-25-example.qmd
 
     - title: "Lessons"
       contents:

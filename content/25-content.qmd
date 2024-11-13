@@ -24,11 +24,15 @@ We’ve spent the last few weeks learning about operations to compile geographic
 
 By the end of today you should be able to:
 
-- Describe some basic principles of data visualization
+* Describe some basic principles of data visualization
 
-- Extend principles of data visualization to the development of maps
+* Extend principles of data visualization to the development of maps
 
-- Distinguish between several common types of spatial data visualization
+* Distinguish between several common types of spatial data visualization
+
+* Understand the relationship between the Grammar of Graphics and `ggplot` syntax
+
+* Describe the various options for customizing `ggplots` and their syntactic conventions
 
 
 

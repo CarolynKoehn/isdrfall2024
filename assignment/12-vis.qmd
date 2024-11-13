@@ -10,6 +10,8 @@ title: "Assignment 10: Data Visualization"
 
 * Combine vector and raster data in the same map.
 
+* Utilize packages that connect to online databases to pull data into `R`
+
 You'll need to accept the link to access the questions. 
 
 ## Instructions

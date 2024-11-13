@@ -1,0 +1,40 @@
+---
+title: "Session 25 code"
+author: "Carolyn Koehn"
+format: html
+---
+
+Load library and data:
+
+```{r}
+library(ggplot2)
+
+bikes <- readr::read_csv("https://raw.githubusercontent.com/z3tt/graphic-design-ggplot2/main/data/london-bikes-custom.csv",
+                         col_types = "Dcfffilllddddc"
+)
+bikes$season <- forcats::fct_inorder(bikes$season)
+```
+
+Playing with aesthetics, scales, facets, and coordinates:
+
+```{r}
+ggplot(bikes, aes(x=temp_feel, y=count)) +
+  geom_point(aes(color = day_night,
+                 shape = is_workday),
+             size=1.5) +
+  geom_smooth()
+
+ggplot(bikes, aes(x=temp_feel, y=count, color = day_night)) +
+  geom_point(aes(shape = is_workday),
+             size=1.5) +
+  geom_smooth() +
+  facet_wrap(~is_workday) +
+  coord_flip()
+
+ggplot(bikes, aes(x=count, y=temp_feel, color = day_night)) +
+  geom_point(aes(shape = is_workday),
+             size=1.5) +
+  geom_smooth() +
+  facet_wrap(~is_workday)
+```
+
