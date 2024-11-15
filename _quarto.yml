@@ -168,8 +168,8 @@ website:
               file: assignment/09-pointpatterns.qmd
             - text: "Statistical Modelling"
               file: assignment/11-statmod.qmd
-            # - text: "Movement and Networks" 
-            #   file: assignment/12-nets.qmd
+            - text: "Data Visualization"
+              file: assignment/12-vis.qmd
         - section: "Final Project"
           contents:
             - assignment/final-proj.qmd
