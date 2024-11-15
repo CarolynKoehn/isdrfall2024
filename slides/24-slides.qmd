@@ -1,6 +1,6 @@
 ---
 title: "Data Visualization and Maps I"
-subtitle: "HES 505 Fall 2024: Session 24"
+subtitle: "HES 505 Fall 2024: Session 25"
 author: "Carolyn Koehn"
 execute: 
   eval: true
@@ -15,7 +15,6 @@ format:
 ```{r}
 #| include: false
 library(tidyverse)
-
 ```
 
 # Objectives {background="#9F281A"}
@@ -27,6 +26,144 @@ By the end of today you should be able to:
 * Extend principles of data visualization to the development of maps
 
 * Distinguish between several common types of spatial data visualization
+
+* Understand the relationship between the Grammar of Graphics and `ggplot` syntax
+
+* Describe the various options for customizing `ggplots` and their syntactic conventions
+
+# But first... Scaling
+
+```{r}
+#| include: false
+
+# code from assignment 9
+library(sf)
+library(tidyverse, quietly = TRUE)
+library(terra)
+library(tmap, quietly = TRUE)
+library(caret)
+
+ 
+cejst.pnw <- read_sf("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/cejst_pnw.shp")%>% 
+  filter(., !st_is_empty(.))
+
+incidents.csv <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/ics209-plus-wf_incidents_1999to2020.csv")
+
+land.use <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/land_use_pnw.tif")
+fire.haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment07/wildfire_hazard_agg.tif")
+
+
+fire.haz.proj <- project(fire.haz, land.use)
+
+
+cejst.proj <- cejst.pnw %>% 
+  st_transform(., crs=crs(land.use))
+
+incidents.proj <- incidents.csv %>% 
+  filter(., !is.na(POO_LONGITUDE) | !is.na(POO_LATITUDE) ) %>% 
+  st_as_sf(., coords = c("POO_LONGITUDE", "POO_LATITUDE"), crs= 4269) %>% 
+  st_transform(., crs=crs(land.use))
+incidents.pnw <- st_crop(incidents.proj, st_bbox(cejst.proj))
+
+hazard.smooth <- focal(fire.haz.proj, w=5, fun="mean")
+land.use.smooth <- focal(land.use, w=5, fun="modal")
+levels(land.use.smooth) <- levels(land.use)
+
+cejst.select <- cejst.proj %>% 
+  select(., c(TPF, HBF_PFS, P200_I_PFS))
+
+incident.cejst <- incidents.pnw %>% 
+  st_join(., y=cejst.select, join=st_within) 
+
+incident.landuse.ext <- terra::extract(x=land.use.smooth, y = vect(incident.cejst), fun="modal", na.rm=TRUE)
+
+incident.firehaz.ext <- terra::extract(x= hazard.smooth, y = vect(incident.cejst), fun="mean", na.rm=TRUE)
+
+incident.cejst.join <- cbind(incident.cejst,incident.landuse.ext$category, incident.firehaz.ext$focal_mean) %>% 
+  rename(category = "incident.landuse.ext.category", hazard = "incident.firehaz.ext.focal_mean")
+
+incident.cejst.prep <- incident.cejst.join %>% 
+  select(., PROJECTED_FINAL_IM_COST, TPF, HBF_PFS, P200_I_PFS, hazard, category,) %>% 
+  st_drop_geometry(.) %>% 
+  filter(., complete.cases(.))
+
+incident.cejst.model <- incident.cejst.prep  %>% 
+  mutate(across(TPF:hazard, ~ as.numeric(scale(.x))),
+         category=droplevels(category),
+         cost = as.integer(floor(PROJECTED_FINAL_IM_COST))) %>% 
+  select(-PROJECTED_FINAL_IM_COST)
+
+set.seed(998)
+inTraining <- createDataPartition(incident.cejst.model$category, p = .8, list = FALSE)
+training <- incident.cejst.model[ inTraining,]
+testing  <- incident.cejst.model[-inTraining,]
+
+fitControl <- trainControl(
+   method = "cv",  # k-fold cross validation
+   number = 10,  # 10 folds
+   savePredictions = "final"       # save predictions for the optimal tuning parameter
+)
+
+PoisFit <- train( cost ~ ., data = training, 
+                 method = "glm", 
+                 family = poisson,
+                 trControl = fitControl,
+                 metric="RMSE"
+                 )
+
+TPF.rast <- (rasterize(cejst.select, hazard.smooth, field="TPF") - mean(incident.cejst.prep$TPF,na.rm=TRUE))/sd(incident.cejst.prep$TPF)
+
+HBF_PFS.rast <- (rasterize(cejst.select, hazard.smooth, field="HBF_PFS")- mean(incident.cejst.prep$HBF_PFS,na.rm=TRUE))/sd(incident.cejst.prep$HBF_PFS)
+
+P200_I_PFS.rast <- (rasterize(cejst.select, hazard.smooth, field="P200_I_PFS")- mean(incident.cejst.prep$P200_I_PFS,na.rm=TRUE))/sd(incident.cejst.prep$P200_I_PFS)
+
+land.use.smooth <- subst(land.use.smooth, from=c("Non-Forest Wetland","Non-Processing Area Mask"), to=c(NA, NA))
+
+hazard.smooth.scl <- (hazard.smooth - mean(incident.cejst.prep$hazard))/sd(incident.cejst.prep$hazard)
+
+pred.rast <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl)
+names(pred.rast)[5] <- "hazard"
+```
+
+## Assignment 9: Scaling the hazard data
+
+```{r}
+#| echo: true
+
+hazard.smooth.scl <- (hazard.smooth - mean(incident.cejst.prep$hazard))/sd(incident.cejst.prep$hazard)
+#versus
+hazard.smooth.scl.nogood <- scale(hazard.smooth)
+```
+
+## Assignment 9: Scaling the hazard data
+
+```{r}
+par(mfrow=c(1,2))
+plot(hazard.smooth.scl, main="Scaling with the model data")
+plot(hazard.smooth.scl.nogood, main="Scaling with the raster data")
+```
+
+## Assignment 9: Different predictions for different scaling
+
+```{r}
+#| include: false
+
+pred.rast <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl)
+names(pred.rast)[5] <- "hazard"
+
+pred.rast.nogood <- c(TPF.rast, HBF_PFS.rast, P200_I_PFS.rast, land.use.smooth, hazard.smooth.scl.nogood)
+names(pred.rast.nogood)[5] <- "hazard"
+
+pois.spatial <- terra :: predict(pred.rast, PoisFit, na.rm=TRUE)
+pois.spatial.nogood <- terra :: predict(pred.rast.nogood, PoisFit, na.rm=TRUE)
+```
+```{r}
+#| echo: false
+par(mfrow=c(1,2))
+plot(pois.spatial, main="Scaling with the model data")
+plot(pois.spatial.nogood, main="Scaling with the raster data")
+par(mfrow=c(1,1))
+```
 
 
 # Introduction to Data Visualization {background="#9F281A"}
@@ -306,3 +443,786 @@ Tricky because: countries were asked slightly different questions, data is scale
 
 ![From Healy 2019](img/slide_29/Cartogram.png)
 
+#
+![](img/slide_29/gg_pyramid.png)
+
+##
+
+::: footer
+[{ggplot2} package description](https://ggplot2.tidyverse.org/)
+:::
+
+![](img/slide_30/ggplot2.png){fig-align="center" fig-alt="The ggplot2 hex logo."}
+
+<br>
+
+<b style='font-size:30pt;'><code>{ggplot2}</code> is a system for declaratively creating graphics,<br>based on "The Grammar of Graphics" (Wilkinson, 2005).</b>
+
+::: fragment
+You provide the data, tell `ggplot2` how to map variables to aesthetics, what graphical primitives to use, and it takes care of the details.
+:::
+
+## Advantages of {ggplot2}
+
+::: incremental
+-   consistent underlying "grammar of graphics" (Wilkinson 2005)\
+-   very flexible, layered plot specification\
+-   theme system for polishing plot appearance\
+-   lots of additional functionality thanks to extensions\
+-   active and helpful community
+:::
+
+## The Grammar of {ggplot2}
+
+<br>
+<table style='width:100%;font-size:14pt;'>
+  <tr>
+    <th>Component</th>
+    <th>Function</th>
+    <th>Explanation</th>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Data</b></td>
+    <td><code>ggplot(data)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>*The raw data that you want to visualise.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Aesthetics&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+    <td><code>aes()</code></td>
+    <td>*Aesthetic mappings between variables and visual properties.*</td>
+  <tr>
+    <td><b style='color:#67676;'>Geometries</b></td>
+    <td><code>geom_*()</code></td>
+    <td>*The geometric shapes representing the data.*</td>
+  </tr>
+</table>
+
+## The Grammar of {ggplot2}
+
+
+<br>
+<table style='width:100%;font-size:14pt;'>
+  <tr>
+    <th>Component</th>
+    <th>Function</th>
+    <th>Explanation</th>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Data</b></td>
+    <td><code>ggplot(data)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>*The raw data that you want to visualise.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Aesthetics&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+    <td><code>aes()</code></td>
+    <td>*Aesthetic mappings between variables and visual properties.*</td>
+  <tr>
+    <td><b style='color:#67676;'>Geometries</b></td>
+    <td><code>geom_*()</code></td>
+    <td>*The geometric shapes representing the data.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Statistics</b></td>
+    <td><code>stat_*()</code></td>
+    <td>*The statistical transformations applied to the data.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Scales</b></td>
+    <td><code>scale_*()</code></td>
+    <td>*Maps between the data and the aesthetic dimensions.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Coordinate System</b></td>
+    <td><code>coord_*()</code></td>
+    <td>*Maps data into the plane of the data rectangle.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Facets</b></td>
+    <td><code>facet_*()</code></td>
+    <td>*The arrangement of the data into a grid of plots.*</td>
+  </tr>
+  <tr>
+    <td><b style='color:#67676;'>Visual Themes</b></td>
+    <td><code>theme()</code> and <code>theme_*()</code></td>
+    <td>*The overall visual defaults of a plot.*</td>
+  </tr>
+</table>
+
+# A Basic ggplot Example
+
+## The Data
+
+<b style='font-size:2.3rem;'>Bike sharing counts in London, UK, powered by [TfL Open Data](https://tfl.gov.uk/modes/cycling/santander-cycles)</b>
+
+::: incremental
+-   covers the years 2015 and 2016
+-   incl. weather data acquired from [freemeteo.com](https://freemeteo.com)
+-   prepared by Hristo Mavrodiev for [Kaggle](https://www.kaggle.com/hmavrodiev/london-bike-sharing-dataset)
+-   further modification by myself
+:::
+
+```{r}
+#| label: data-import
+bikes <- readr::read_csv("https://raw.githubusercontent.com/z3tt/graphic-design-ggplot2/main/data/london-bikes-custom.csv",
+  col_types = "Dcfffilllddddc"
+)
+bikes$season <- forcats::fct_inorder(bikes$season)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| label: data-table
+#| echo: false
+#| purl: false
+library(tidyverse)
+tibble(
+    Variable = names(bikes),
+    Description = c(
+      "Date encoded as `YYYY-MM-DD`", "`day` (6:00am–5:59pm) or `night` (6:00pm–5:59am)", "`2015` or `2016`", "`1` (January) to `12` (December)", "`winter`, `spring`, `summer`, or `autumn`", "Sum of reported bikes rented", "`TRUE` being Monday to Friday and no bank holiday", "`TRUE` being Saturday or Sunday", "`TRUE` being a bank holiday in the UK", "Average air temperature (°C)", "Average feels like temperature (°C)", "Average air humidity (%)", "Average wind speed (km/h)", "Most common weather type"
+    ),
+    Class = c(
+      "date", "character", "factor", "factor", "factor", "integer", "logical", "logical", "logical", "double", "double", "double", "double", "character"
+    )
+  ) %>%
+  kableExtra::kbl(
+    booktabs = TRUE, longtable = TRUE
+  ) %>%
+  kableExtra::kable_styling(
+    font_size = 24
+  ) %>%
+  kableExtra::kable_minimal(
+    "hover", full_width = TRUE, position = "left", html_font = "Cabinet Grotesk"
+  )
+```
+
+## `ggplot2::ggplot()`
+
+```{r}
+#| label: ggplot-function
+#| eval: false
+#| echo: false
+#?ggplot
+```
+
+![](img/slide_30/ggplot-fun-help.png){fig-alt="The help page of the ggplot() function." fig-width="175%"}
+
+## Data
+
+```{r}
+#| label: setup-ggplot-slides
+#| include: false
+#| purl: false
+library(ggplot2)
+theme_set(theme_grey(base_size = 14))
+```
+
+```{r}
+#| label: ggplot-data
+#| output-location: column
+#| echo: true
+ggplot(data = bikes)
+```
+
+## Aesthetic Mapping
+
+**= link variables to graphical properties**
+
+::: incremental
+-   positions (`x`, `y`)
+-   colors (`color`, `fill`)
+-   shapes (`shape`, `linetype`)
+-   size (`size`)
+-   transparency (`alpha`)
+-   groupings (`group`)
+:::
+
+## Aesthetic Mapping
+
+```{r}
+#| label: ggplot-aesthetics-outside
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "2|1,2"
+ggplot(data = bikes) +
+  aes(x = temp_feel, y = count)
+```
+
+## <span style='color:#4758AB;'>aes</span>thetics
+
+`aes()` outside as component
+
+```{r}
+#| label: ggplot-aesthetics-outside-comp
+#| echo: true
+#| eval: false
+ggplot(data = bikes) +
+  aes(x = temp_feel, y = count)
+```
+
+::: fragment
+`aes()` inside, explicit matching
+
+```{r}
+#| label: ggplot-aesthetics-inside
+#| echo: true
+#| eval: false
+ggplot(data = bikes, mapping = aes(x = temp_feel, y = count))
+```
+
+:::
+
+::: fragment
+`aes()` inside, implicit matching
+
+```{r}
+#| label: ggplot-aesthetics-inside-implicit
+#| echo: true
+#| eval: false
+ggplot(bikes, aes(temp_feel, count))
+```
+
+:::
+
+::: fragment
+`aes()` inside, mixed matching
+
+```{r}
+#| label: ggplot-aesthetics-inside-mix
+#| echo: true
+#| eval: false
+ggplot(bikes, aes(x = temp_feel, y = count))
+```
+:::
+
+## Geometries
+
+<br>
+
+<b class='simple-highlight-grn' style='font-size:2.6rem;'>= interpret aesthetics as graphical representations</b><br><br>
+
+::: incremental
+-   points
+-   lines
+-   polygons
+-   text labels
+-   ...
+:::
+
+## Geometries
+
+```{r}
+#| label: geom-point
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "1,2,3,4|5"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count)
+  ) +
+  geom_point()
+```
+
+## Visual Properties of Layers
+
+```{r}
+#| label: geom-point-properties
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "5,6,7,8,9,10,11|6,7,8,9,10"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count)
+  ) +
+  geom_point(
+    color = "#28a87d",
+    alpha = .5,
+    shape = "X",
+    stroke = 1,
+    size = 4
+  )
+```
+
+## Setting vs Mapping of Visual Properties
+
+::: {layout-ncol="2"}
+::: fragment
+```{r}
+#| label: geom-point-properties-set
+#| echo: true
+#| fig-height: 3.5
+#| code-line-numbers: "6"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count)
+  ) +
+  geom_point(
+    color = "#28a87d",
+    alpha = .5
+  )
+```
+:::
+::: fragment
+```{r}
+#| label: geom-point-properties-map
+#| echo: true
+#| fig-height: 3.5
+#| code-line-numbers: "6"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count)
+  ) +
+  geom_point(
+    aes(color = season),
+    alpha = .5
+  )
+```
+:::
+:::
+
+## Mapping Expressions
+
+```{r}
+#| label: geom-point-aes-expression
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "6"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count)
+  ) +
+  geom_point(
+    aes(color = temp_feel > 20),
+    alpha = .5
+  )
+```
+
+## Mapping Expressions
+
+```{r}
+#| label: geom-point-aes-expression-exercise
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "3|6"
+ggplot(
+    bikes,
+    aes(x = temp, y = temp_feel)
+  ) +
+  geom_point(
+    aes(color = weather_type == "clear"),
+    alpha = .5,
+    size = 2
+  )
+```
+
+## Mapping to Size
+
+```{r}
+#| label: geom-point-aes-size-exercise
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "7"
+ggplot(
+    bikes,
+    aes(x = temp, y = temp_feel)
+  ) +
+  geom_point(
+    aes(color = weather_type == "clear",
+        size = count),
+    alpha = .5
+  )
+```
+
+## Setting a Constant Property
+
+```{r}
+#| label: geom-point-aes-expression-exercise-shape
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "8"
+ggplot(
+    bikes,
+    aes(x = temp, y = temp_feel)
+  ) +
+  geom_point(
+    aes(color = weather_type == "clear",
+        size = count),
+    shape = 18,
+    alpha = .5
+  )
+```
+
+## Adding More Layers
+
+```{r}
+#| label: geom-smooth
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "9,10,11"
+ggplot(
+    bikes,
+    aes(x = temp_feel, y = count,
+        color = season)
+  ) +
+  geom_point(
+    alpha = .5
+  ) +
+  geom_smooth(
+    method = "lm"
+  )
+```
+
+# Statistical Layers
+
+
+## \`stat_\*()\` and \`geom_\*()\`
+
+
+```{r}
+#| label: stat-geom
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = temp_feel, y = count)) +
+  stat_smooth(geom = "smooth")
+```
+
+## \`stat_\*()\` and \`geom_\*()\`
+
+```{r}
+#| label: geom-stat
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = temp_feel, y = count)) +
+  geom_smooth(stat = "smooth")
+```
+
+
+
+## \`stat_\*()\` and \`geom_\*()\`
+
+::: {layout-ncol="2"}
+```{r}
+#| label: stat-geom-2
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = season)) +
+  stat_count(geom = "bar")
+```
+
+```{r}
+#| label: geom-stat-2
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = season)) +
+  geom_bar(stat = "count")
+```
+:::
+
+
+## \`stat_\*()\` and \`geom_\*()\`
+
+::: {layout-ncol="2"}
+```{r}
+#| label: stat-geom-3
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = date, y = temp_feel)) +
+  stat_identity(geom = "point")
+```
+
+```{r}
+#| label: geom-stat-3
+#| echo: true
+#| fig-height: 5.1
+#| code-line-numbers: "2"
+ggplot(bikes, aes(x = date, y = temp_feel)) +
+  geom_point(stat = "identity")
+```
+:::
+
+```{r}
+#| label: prep
+
+
+bikes$season <- forcats::fct_inorder(bikes$season)
+theme_set(theme_light(base_size = 14))
+theme_update(
+  panel.grid.minor = element_blank(),
+  plot.title = element_text(face = "bold"),
+  legend.position = "top",
+  plot.title.position = "plot"
+)
+invisible(Sys.setlocale("LC_TIME", "C"))
+```
+
+# Facets
+
+## Facets
+
+<br>
+
+<b class='simple-highlight-grn' style='font-size:2.6rem;'>= split variables to multiple panels</b><br><br>
+
+::: fragment
+Facets are also known as:
+
+-   small multiples
+-   trellis graphs
+-   lattice plots
+-   conditioning
+:::
+
+------------------------------------------------------------------------
+
+::: {layout-ncol="2"}
+```{r}
+#| label: facet-types-wrap
+#| echo: false
+#| purl: false
+ggplot(bikes, aes(x = 1, y = 1)) +
+  geom_text(
+    aes(label = paste0("Subset for\n", stringr::str_to_title(season))),
+    size = 5, lineheight = .9
+  ) +
+  facet_wrap(~stringr::str_to_title(season)) +
+  ggtitle("facet_wrap()") +
+  theme_bw(base_size = 24) +
+  theme(
+    plot.title = element_text(hjust = .5, face = "bold"),
+    strip.text = element_text(face = "bold", size = 18),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    plot.background = element_rect(color = "#f8f8f8", fill = "#f8f8f8"),
+    plot.margin = margin(t = 3, r = 25)
+  )
+```
+
+::: fragment
+```{r}
+#| label: facet-types-grid
+#| echo: false
+#| purl: false
+data <- tibble(
+  x = 1, y = 1,
+  day_night = c("Day", "Day", "Night", "Night"),
+  year = factor(c("2015", "2016", "2015", "2016"), levels = levels(bikes$year)),
+  label = c("Subset for\nDay × 2015", "Subset for\nDay × 2016",
+            "Subset for\nNight × 2015", "Subset for\nNight × 2016")
+)
+ggplot(data, aes(x = 1, y = 1)) +
+ geom_text(
+    aes(label = label),
+    size = 5, lineheight = .9
+  ) +
+  facet_grid(day_night ~ year) +
+  ggtitle("facet_grid()") +
+  theme_bw(base_size = 24) +
+  theme(
+    plot.title = element_text(hjust = .5, face = "bold"),
+    strip.text = element_text(face = "bold", size = 18),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    plot.background = element_rect(color = "#f8f8f8", fill = "#f8f8f8"),
+    plot.margin = margin(t = 3, l = 25)
+  )
+```
+:::
+:::
+
+## Wrapped Facets
+
+```{r}
+#| label: facet-wrap
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "1,2,3,4|2,4|3"
+g <-
+  ggplot(
+    bikes,
+    aes(x = temp_feel, y = count,
+        color = season)
+  ) +
+  geom_point(
+    alpha = .3,
+    guide = "none"
+  )
+g +
+  facet_wrap(
+    vars(day_night)
+  )
+```
+
+## Wrapped Facets
+
+```{r}
+#| label: facet-wrap-circumflex
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "3"
+g +
+  facet_wrap(
+    ~ day_night
+  )
+```
+
+# Scales
+
+## Scales
+
+<br>
+
+<b class='simple-highlight-grn' style='font-size:2.6rem;'>= translate between variable ranges and property ranges</b><br><br>
+
+::: incremental
+-   feels-like temperature  ⇄  x
+-   reported bike shares  ⇄  y
+-   season  ⇄  color
+-   year  ⇄  shape
+-   ...
+:::
+
+## Scales
+
+The `scale_*()` components control the properties of all the **aesthetic dimensions mapped to the data**.
+
+Consequently, there are `scale_*()` functions for all aesthetics such as:
+
+-   **positions** via `scale_x_*()` and `scale_y_*()`
+
+-   **colors** via `scale_color_*()` and `scale_fill_*()`
+
+-   **sizes** via `scale_size_*()` and `scale_radius_*()`
+
+-   **shapes** via `scale_shape_*()` and `scale_linetype_*()`
+
+-   **transparency** via `scale_alpha_*()`
+
+## Scales
+
+The `scale_*()` components control the properties of all the **aesthetic dimensions mapped to the data**.
+
+The extensions (`*`) can be filled by e.g.:
+
+-   `continuous()`, `discrete()`, `reverse()`, `log10()`, `sqrt()`, `date()` for positions
+
+-   `continuous()`, `discrete()`, `manual()`, `gradient()`, `gradient2()`, `brewer()` for colors
+
+-   `continuous()`, `discrete()`, `manual()`, `ordinal()`, `area()`, `date()` for sizes
+
+-   `continuous()`, `discrete()`, `manual()`, `ordinal()` for shapes
+
+-   `continuous()`, `discrete()`, `manual()`, `ordinal()`, `date()` for transparency
+
+------------------------------------------------------------------------
+
+
+## Continuous vs. Discrete in {ggplot2}
+
+::: {layout-ncol="2"}
+## Continuous:<br>quantitative or numerical data
+
+-   height
+-   weight
+-   age
+-   counts
+
+## Discrete:<br>qualitative or categorical data
+
+-   species
+-   sex
+-   study sites
+-   age group
+:::
+
+## Continuous vs. Discrete in {ggplot2}
+
+::: {layout-ncol="2"}
+## Continuous:<br>quantitative or numerical data
+
+-   height (continuous)
+-   weight (continuous)
+-   age (continuous or discrete)
+-   counts (discrete)
+
+## Discrete:<br>qualitative or categorical data
+
+-   species (nominal)
+-   sex (nominal)
+-   study site (nominal or ordinal)
+-   age group (ordinal)
+:::
+
+## Aesthetics + Scales
+
+```{r}
+#| label: scales-default-invisible
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "3,4"
+ggplot(
+    bikes,
+    aes(x = date, y = count,
+        color = season)
+  ) +
+  geom_point()
+```
+
+## Aesthetics + Scales
+
+```{r}
+#| label: scales-default
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "3,4,7,8,9|7,8,9"
+ggplot(
+    bikes,
+    aes(x = date, y = count,
+        color = season)
+  ) +
+  geom_point() +
+  scale_x_date() +
+  scale_y_continuous() +
+  scale_color_discrete()
+```
+
+## Scales
+
+```{r}
+#| label: scales-overwrite-1
+#| echo: true
+#| output-location: column
+#| code-line-numbers: "7"
+ggplot(
+    bikes,
+    aes(x = date, y = count,
+        color = season)
+  ) +
+  geom_point() +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_color_discrete()
+```
+
+## Coordinate Systems
+
+= interpret the position aesthetics
+
+::: incremental
+-   **linear coordinate systems:** preserve the geometrical shapes
+    -   `coord_cartesian()`
+    -   `coord_fixed()`
+    -   `coord_flip()`
+-   **non-linear coordinate systems:** likely change the geometrical shapes
+    -   `coord_polar()`
+    -   `coord_map()` and `coord_sf()`
+    -   `coord_trans()`
+:::

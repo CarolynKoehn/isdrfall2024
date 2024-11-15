@@ -1,0 +1,166 @@
+---
+title: "Data Visualization and Maps II"
+subtitle: "HES 505 Fall 2023: Session 26"
+author: "Carolyn Koehn"
+execute: 
+  eval: true
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+```{r}
+#| include: false
+library(tidycensus)
+library(sf)
+library(tidyverse)
+library(ggmap)
+library(maps)
+library(units)
+library(cartogram)
+library(patchwork)
+library(tmap)
+library(viridis)
+censkey <- Sys.getenv("CENSUS_API_KEY")
+```
+
+# Objectives {background="#9F281A"}
+
+By the end of today you should be able to:
+
+* Generate complicated plot layouts without additional pre-processing
+
+* Construct a map using `ggplot2` and `tmap`
+
+* Combine vector and raster data in the same map
+
+
+# Building Choropleth Maps {background="#0033A0"}
+
+## `tidycensus` package
+
+https://walker-data.com/tidycensus/articles/basic-usage.html
+
+## Using `ggplot2`
+
+```{r}
+#| echo: true
+cty.info <- get_acs(geography = "county", 
+                      variables = c(pop="B01003_001", 
+                                    medincome = "B19013_001"),
+                      survey="acs5",
+                      state = c("WA", "OR", "ID", "MT", "WY"),
+                      geometry = TRUE, key = censkey, progress_bar=FALSE) %>% 
+  select(., -moe) %>% 
+  pivot_wider(
+    names_from = "variable",
+    values_from = "estimate"
+  )
+
+p <- ggplot(data=cty.info) +
+  geom_sf(mapping=aes(fill=medincome))
+```
+
+## Static Maps with `ggplot2`
+
+```{r}
+p
+```
+
+## Changing aesthetics
+
+```{r}
+#| echo: true
+p <- ggplot(data=cty.info) +
+  geom_sf(mapping=aes(fill=pop), color="white") +
+  scale_fill_viridis()
+
+```
+
+## Changing aesthetics
+
+```{r}
+p
+```
+
+## Adding layers
+
+```{r}
+#| echo: true
+st <- tigris::states(progress_bar=FALSE) %>% 
+  filter(., STUSPS %in% c("WA", "OR", "ID", "MT", "WY"))
+
+p <- ggplot(data=cty.info) +
+  geom_sf(mapping=aes(fill=pop), color="white") +
+  geom_sf(data=st, fill=NA, color="red") +
+  scale_fill_viridis()
+```
+
+## Adding layers
+
+```{r}
+p
+```
+
+## Using `tmap`
+
+```{r}
+#| echo: true
+pt <- tm_shape(cty.info) + 
+  tm_polygons(col = "pop",
+              border.col = "white") + 
+  tm_legend(outside = TRUE)
+```
+
+## Using `tmap`
+
+```{r}
+pt
+```
+
+## Changing aesthetics
+
+```{r}
+#| echo: true
+pt <- tm_shape(cty.info) + 
+  tm_polygons(col = "pop", n=10,palette=viridis(10),
+              border.col = "white") + 
+  tm_legend(outside = TRUE)
+```
+
+## Changing aesthetics
+
+```{r}
+pt
+```
+
+## Adding layers
+
+```{r}
+#| echo: true
+
+pt <- tm_shape(cty.info) + 
+  tm_polygons(col = "pop", n=10,palette=viridis(10),
+              border.col = "white") + 
+  tm_shape(st) +
+  tm_borders("red") +
+  tm_legend(outside = TRUE)
+```
+
+## Adding layers
+```{r}
+pt
+
+```
+
+
+## Themes and Axes
+
+# Rasters in `ggplot`
+
+## Layering rasters and vectors
+
+# Complicated layouts with `patchwork`
