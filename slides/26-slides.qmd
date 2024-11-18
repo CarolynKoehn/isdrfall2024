@@ -24,6 +24,7 @@ library(cartogram)
 library(patchwork)
 library(tmap)
 library(viridis)
+library(terra)
 censkey <- Sys.getenv("CENSUS_API_KEY")
 ```
 
@@ -156,11 +157,198 @@ pt
 
 ```
 
+## Themes
 
-## Themes and Axes
+```{r}
+#| echo: true
 
-# Rasters in `ggplot`
+p
+```
+
+## Themes
+
+```{r}
+#| echo: true
+
+p + 
+  theme_void()
+```
+
+## Themes
+
+```{r}
+#| echo: true
+
+p + 
+  theme_void() +
+  theme(panel.background = element_rect(fill="white", color="black"))
+```
+
+## Labels
+
+```{r}
+#| echo: true
+
+p +
+  labs(title = "County Populations")
+```
+
+## Legend customization
+
+```{r}
+#| echo: true
+
+ggplot(data=cty.info) +
+  geom_sf(mapping=aes(fill=pop), color="white") +
+  geom_sf(data=st, fill=NA, color="red") +
+  scale_fill_viridis(name = "Population\n(millions)",
+                     breaks = seq(from=0, to=3e6, by=1e6),
+                     labels = seq(from=0, to=3e6, by=1e6)/1e6)
+```
+
+## Legend customization
+
+```{r}
+#| echo: true
+
+ggplot(data=cty.info) +
+  geom_sf(mapping=aes(fill=pop), color="white") +
+  geom_sf(data=st, fill=NA, color="red") +
+  scale_fill_viridis(name = "Population\n(millions)",
+                     limits = c(0, 3e6),
+                     breaks = seq(from=0, to=3e6, by=1e6),
+                     labels = seq(from=0, to=3e6, by=1e6)/1e6)
+```
+
+# Rasters in `ggplot2`
+
+## Convert raster to tidy format
+
+To visualize rasters in `ggplot2`, they need to be converted to a dataframe.
+
+```{r}
+#| echo: true
+#| eval: false
+
+fire.haz <- rast("/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+
+fire.haz_df <- as.data.frame(fire.haz)
+
+str(fire.haz_df)
+```
+```{r}
+#| include: false
+
+fire.haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+
+fire.haz_df <- as.data.frame(fire.haz, xy=TRUE)
+
+str(fire.haz_df)
+```
+
+## Use `geom_raster`
+
+```{r}
+#| echo: true
+#| warning: false
+
+ggplot(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
+  geom_raster()
+```
+
+## Coordinate system
+
+```{r}
+#| echo: true
+#| warning: false
+
+ggplot(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
+  geom_raster() +
+  coord_sf(default_crs = crs(fire.haz))
+```
 
 ## Layering rasters and vectors
 
+```{r}
+#| echo: true
+#| warning: true
+
+states <- tigris::states(progress_bar=FALSE) %>% 
+  filter(., STUSPS %in% c("WA", "OR", "ID")) %>%
+  st_transform(crs = st_crs(fire.haz))
+
+p2 <- ggplot(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
+  geom_raster() +
+  geom_sf(data = states, fill=NA, color="red", inherit.aes = FALSE) +
+  coord_sf(default_crs = crs(fire.haz))
+
+p3 <- ggplot() +
+  geom_raster(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
+  geom_sf(data = states, fill=NA, color="red") +
+  coord_sf(default_crs = crs(fire.haz))
+```
+
+## Layering rasters and vectors
+
+```{r}
+p2
+```
+
 # Complicated layouts with `patchwork`
+
+## Subplots
+
+```{r}
+#| echo: true
+
+p2+p3
+```
+
+## Combine legends
+
+```{r}
+#| echo: true
+
+p2+p3 + plot_layout(guides="collect")
+```
+
+## Change layout
+
+```{r}
+#| echo: true
+
+p+p3 + plot_layout(nrow=2)
+```
+
+## Map insets
+
+```{r}
+#| echo: true
+
+conus <- tigris::states() %>%
+  filter(!(DIVISION == 0 | STUSPS %in% c("HI", "AK"))) %>%
+  st_transform(st_crs(fire.haz))
+
+inset <- ggplot(data = conus) +
+  geom_sf(fill="white") +
+  geom_sf(data = filter(conus, STUSPS %in% c("ID", "OR", "WA")),
+          fill = "gray70", color="red") +
+  theme_void() +
+  theme(panel.background = element_rect(fill="white", color="black")) +
+  coord_sf()
+```
+
+## Map insets
+
+```{r}
+#| echo: true
+
+layout <- c(
+  patchwork::area(t = 1, l = 1, b = 5, r = 4),
+  patchwork::area(t = 1, l = 4, b = 2, r = 5),
+  patchwork::area(t = 3, l = 4, b = 5, r = 5)
+)
+
+p2 + inset + guide_area() + plot_layout(design=layout, guides='collect')
+```
+
