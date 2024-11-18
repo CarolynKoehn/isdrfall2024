@@ -1,0 +1,57 @@
+---
+title: "Assignment 10 Solutions: Data Visualization"
+---
+
+<span style="color:#9F281A;">Get data to visualize.</span>
+
+> I chose to visualize Venus flytrap locations and soil nitrogen.
+
+```{r}
+# load libraries
+library(rgbif)
+library(geodata)
+library(sf)
+library(terra)
+library(tidyverse)
+library(tidycensus)
+
+# load data
+# get a selection of 1000 Vensu flytrap observations from rgbif
+vflytrap_us <- occ_search(scientificName = "Dionaea muscipula", 
+                             country = "US",
+                             hasCoordinate = TRUE,
+                             limit=1000)
+
+# geodata raster
+soils <- geodata::soil_world(var = "nitrogen", depth=5, path=tempfile())
+
+# boundaries
+state_boundaries <- geodata::gadm(country = "USA", level=1, path=tempfile())
+```
+
+<span style="color:#9F281A;">Write pseudocode for how you will prepare your data for visualization, then execute your plan. Some possible objectives might be cropping your data to an area of interest and transforming the data to tidy format.</span>
+
+> Pseudocode:
+
+```{r}
+#| eval: false
+
+1. Convert Venus flytrap data to spatial object
+2. Convert state boundaries from SpatVector to sf object
+3. Filter state boundaries to only include North and South Carolina
+4. Subset Venus flytrap data to those states
+5. Crop soils raster to those states
+6. Convert soils raster to data frame
+```
+
+```{r}
+# Convert Venus flytrap data to spatial object
+vflytrap_us <- vflytrap_us$data
+vflytrap_dat_sf <- vflytrap_us %>%
+  filter(!is.na(decimalLatitude) & !is.na(decimalLongitude)) %>%
+  st_as_sf(coords = c("decimalLongitude", "decimalLatitude"), crs = 4326)
+
+# Convert state boundaries from SpatVector to sf object
+state_boundaries <- st_as_sf(state_boundaries)
+```
+
