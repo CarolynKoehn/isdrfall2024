@@ -12,7 +12,7 @@ As we move towards a complete geospatial statistical workflow, we'll need to be 
 
 ## Resources
 
-- <i class="fas fa-external-link-square-alt"></i> The [Integrating rasters and vectors](http://132.72.155.230:3838/r/combining-rasters-and-vector-layers.html) chapter of Michael Dorman's __Introduction to Spatial Data Programming with R__ online textbook has a number of worked examples combining vector and raster data.
+- <i class="fas fa-external-link-square-alt"></i> The [Integrating rasters and vectors](https://geobgu.xyz/r/combining-rasters-and-vector-layers.html) chapter of Michael Dorman's __Introduction to Spatial Data Programming with R__ online textbook has a number of worked examples combining vector and raster data.
 
 - <i class="fas fa-book"></i> [Raster-vector interactions](https://geocompr.robinlovelace.net/raster-vector.html) Chapter 6 in Lovelace et al., *Geocomputation with R* [@lovelace_geocomputation_2019] has a great description of why you might do some of these things in your analysis.
 
