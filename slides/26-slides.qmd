@@ -237,7 +237,7 @@ fire.haz_df <- as.data.frame(fire.haz)
 str(fire.haz_df)
 ```
 ```{r}
-#| include: false
+#| echo: false
 
 fire.haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
 
@@ -271,17 +271,23 @@ ggplot(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
 
 ```{r}
 #| echo: true
-#| warning: true
+#| warning: false
+#| message: false
 
+# get data
 states <- tigris::states(progress_bar=FALSE) %>% 
   filter(., STUSPS %in% c("WA", "OR", "ID")) %>%
   st_transform(crs = st_crs(fire.haz))
 
+# method 1
+# first dataset in ggplot() and use inherit.aes=FALSE
 p2 <- ggplot(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
   geom_raster() +
   geom_sf(data = states, fill=NA, color="red", inherit.aes = FALSE) +
   coord_sf(default_crs = crs(fire.haz))
 
+# method 2
+# first dataset in geom so inherit.aes isn't necessary
 p3 <- ggplot() +
   geom_raster(data = fire.haz_df, aes(x=x, y=y, fill = WHP_ID)) +
   geom_sf(data = states, fill=NA, color="red") +
@@ -324,13 +330,17 @@ p+p3 + plot_layout(nrow=2)
 
 ```{r}
 #| echo: true
+#| message: false
 
+# get data (filter to continuous US)
 conus <- tigris::states() %>%
   filter(!(DIVISION == 0 | STUSPS %in% c("HI", "AK"))) %>%
   st_transform(st_crs(fire.haz))
 
+# create inset map
 inset <- ggplot(data = conus) +
   geom_sf(fill="white") +
+  # fill study area states by filtering to those states and setting color parameters
   geom_sf(data = filter(conus, STUSPS %in% c("ID", "OR", "WA")),
           fill = "gray70", color="red") +
   theme_void() +

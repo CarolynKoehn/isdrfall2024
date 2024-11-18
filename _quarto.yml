@@ -129,8 +129,8 @@ website:
               file: content/25-content.qmd
             - text: "26: Data Visualization and Maps II"
               file: content/26-content.qmd
-            # - text: "31: Introduction to Interactive Maps"
-            #   file: content/31-content.qmd  
+            - text: "27: Introduction to Interactive Maps"
+              file: content/27-content.qmd
             # - text: "32: Conclusion"
             #   file: content/32-content.qmd  
     - title: "Assignments"
