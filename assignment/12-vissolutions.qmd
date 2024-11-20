@@ -126,6 +126,8 @@ tm_shape(crop(soils, aoi, mask=TRUE)) +
 > For a `tidycensus` example, I'l pull data on county level population to see if Vensus flytraps are in heavily populated areas.
 
 ```{r}
+#| message: false
+
 block_pop <- get_acs(geography = "county",
                      # most recent year available
                      year = 2022,
