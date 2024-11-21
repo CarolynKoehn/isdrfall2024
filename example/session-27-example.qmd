@@ -1,0 +1,110 @@
+---
+title: "Session 27 code"
+author: "Carolyn Koehn"
+format: html
+execute: 
+  eval: false
+---
+
+Load libraries:
+
+```{r}
+library(mapview)
+library(sf)
+library(terra)
+library(tidyverse)
+```
+
+Load data:
+
+```{r}
+#| eval: false
+landmarks <- read_csv("/opt/data/data/assignment04/landmarks_ID.csv") %>%
+  st_as_sf(., coords=c("longitude", "lattitude"), crs=4326)
+
+fire.haz <- rast("/opt/data/data/assignment01/wildfire_hazard_agg.tif")
+```
+```{r}
+#| include: false
+landmarks <- read_csv("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment04/landmarks_ID.csv") %>%
+  st_as_sf(., coords=c("longitude", "lattitude"), crs=4326)
+
+fire.haz <- rast("C:/Users/carolynkoehn/Documents/HES505_Fall_2024/data/2023/assignment01/wildfire_hazard_agg.tif")
+```
+
+Interactivity with mapview:
+
+```{r}
+mapview(landmarks)
+```
+
+```{r}
+mapview(raster::raster(fire.haz))
+```
+
+API with tidycensus:
+
+```{r}
+library(tidycensus)
+
+v20 <- load_variables(2020, "acs5")
+
+county_pop_white <- get_acs(geography = "county",
+                            year = 2020,
+                            variables = c("B02001_001", "B02001_002"),
+                            state = "ID",
+                            geometry = TRUE)
+
+county_perc_white <- county_pop_white %>%
+  st_make_valid(.) %>%
+  filter(!st_is_empty(.)) %>%
+  st_transform(., crs=st_crs(landmarks)) %>%
+  dplyr::select(-moe) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  mutate(perc_white = B02001_002/B02001_001*100)
+```
+
+Interactivity with tmap:
+
+Static map:
+
+```{r}
+library(tmap)
+
+tm_shape(county_perc_white) +
+  tm_polygons(col="perc_white")
+```
+
+Zoom map:
+
+```{r}
+tmap_mode("view")
+
+tm_shape(county_perc_white) +
+  tm_polygons(col="perc_white")
+```
+
+Change pop-up value:
+
+```{r}
+tm_shape(county_perc_white) +
+  tm_polygons(col="perc_white", id = "perc_white")
+```
+
+Add layer:
+
+```{r}
+tm_shape(county_perc_white) +
+  tm_polygons(col="perc_white") +
+  tm_shape(landmarks) +
+  tm_dots()
+```
+
+Change interactivity of different layers:
+
+```{r}
+tm_shape(county_perc_white) +
+  tm_polygons(col="perc_white", interactive=FALSE) +
+  tm_shape(landmarks) +
+  tm_dots(id="FULLNAME")
+```
