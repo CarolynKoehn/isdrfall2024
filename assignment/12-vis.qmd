@@ -44,3 +44,7 @@ You'll need to accept the link to access the questions.
 4. Change the raster color scale, legend name, title, and theme from `ggplot2` defaults. You can try any other `ggplot` customization you'd like now as well.
 
 5. Use `tmap` to recreate this plot with zooming functionality and any other interactive elements you'd like to add. Optionally, you can substitute the raster for `tidycensus` or other polygon data at this stage.
+
+:::{.callout-note}
+Solutions are [here](12-vissolutions.qmd)
+:::

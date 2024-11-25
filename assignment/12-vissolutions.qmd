@@ -1,0 +1,160 @@
+---
+title: "Assignment 10 Solutions: Data Visualization"
+---
+
+<span style="color:#9F281A;">Get data to visualize.</span>
+
+> I chose to visualize Venus flytrap locations and soil nitrogen.
+
+```{r}
+# load libraries
+library(rgbif)
+library(geodata)
+library(sf)
+library(terra)
+library(tidyverse)
+library(tidycensus)
+library(tmap)
+```
+
+```{r}
+#| cache: true
+
+# load data
+# get a selection of 1000 Venus flytrap observations from rgbif
+vflytrap_us <- occ_search(scientificName = "Dionaea muscipula", 
+                             country = "US",
+                             hasCoordinate = TRUE,
+                             limit=1000)
+
+# geodata raster
+soils <- geodata::soil_world(var = "nitrogen", depth=5, path=tempfile())
+
+# boundaries
+state_boundaries <- geodata::gadm(country = "USA", level=1, path=tempfile())
+```
+
+<span style="color:#9F281A;">Write pseudocode for how you will prepare your data for visualization, then execute your plan. Some possible objectives might be cropping your data to an area of interest and transforming the data to tidy format.</span>
+
+> There are a few necessary steps before I can plot. First, all vector data needs to be an `sf` object. `rgbif` returns a non-spatial dataframe, so I need to convert that to a spatial object. Next, I know Venus flytraps are endemic to just a few US states, so I will use spatial cropping tools to focus all my datasets to that area of interest. Finally, I convert my raster data to a dataframe. I always make this my last step before plotting, as I cannot perform any more spatial operations on the non-spatial dataframe.
+
+```{r}
+#| eval: false
+
+1. Convert Venus flytrap data to spatial object
+2. Convert state boundaries from SpatVector to sf object
+3. Filter state boundaries to only include North and South Carolina
+4. Subset Venus flytrap data to those states
+5. Crop soils raster to those states
+6. Convert soils raster to data frame
+```
+
+```{r}
+# Convert Venus flytrap data to spatial object
+vflytrap_us <- vflytrap_us$data
+vflytrap_dat_sf <- vflytrap_us %>%
+  filter(!is.na(decimalLatitude) & !is.na(decimalLongitude)) %>%
+  st_as_sf(coords = c("decimalLongitude", "decimalLatitude"), crs = 4326)
+
+# Convert state boundaries from SpatVector to sf object
+aoi <- st_as_sf(state_boundaries) %>%
+  # Filter state boundaries to only include North and South Carolina
+  filter(NAME_1 %in% c("North Carolina", "South Carolina"))
+
+# Subset Venus flytrap data to those states
+vflytrap_sub <- st_crop(vflytrap_dat_sf, aoi)
+
+# Crop soils raster to those states
+soils_plot <- crop(soils, aoi, mask=TRUE) %>%
+  # Convert soils raster to data frame
+  as.data.frame(soils, xy=TRUE)
+```
+
+<span style="color:#9F281A;">Use `ggplot2` to create a map of the raster data with the species presence points overlayed on top. Add state/province/equivalent level boundaries.</span>
+
+> First, I plot the raster. Then, I overlay the points and then the state polygons. `coord_sf()` is optional since `ggplot2` can retrieve the correct coordinate system from the `sf` data.
+
+```{r}
+ggplot() +
+  geom_raster(data = soils_plot, aes(x=x, y=y, fill=`nitrogen_0-5cm`)) +
+  geom_sf(data=vflytrap_sub) +
+  geom_sf(data=aoi, color="gray50", fill=NA)
+```
+
+<span style="color:#9F281A;">Change the raster color scale, legend name, title, and theme from `ggplot2` defaults. You can try any other `ggplot` customization you'd like now as well.</span>
+
+> The color scale and legend name can be changed in the `scale_fill_*` function. I like the `viridis` scale, so I'll use that here. The plot title can be changed in `labs`. I'd like to get rid of the gray background and axes, so I'll use `theme_void`. I'll also make the points slightly transparent and bright red for better visualization.
+
+```{r}
+ggplot() +
+  geom_raster(data = soils_plot, aes(x=x, y=y, fill=`nitrogen_0-5cm`)) +
+  geom_sf(data=vflytrap_sub, alpha = 0.4, color="red") +
+  geom_sf(data=aoi, color="gray50", fill=NA) +
+  scale_fill_viridis_c(name = "Soil N\n(Surface)") +
+  labs(title = "Venus Flytrap and Soil Nitrogen in the Carolinas") +
+  theme_void()
+```
+
+<span style="color:#9F281A;">Use `tmap` to recreate this plot with zooming functionality and any other interactive elements you'd like to add. Optionally, you can substitute the raster for `tidycensus` or other polygon data at this stage.</span>
+
+> First, I'll use `tmap` to recreate the plot above.
+
+```{r}
+tm_shape(crop(soils, aoi, mask=TRUE)) +
+  tm_raster(n=8, palette = viridis::viridis(8),
+            title = "Soil N\n(Surface)") +
+  tm_legend(outside=TRUE) +
+  tm_shape(vflytrap_sub) +
+  tm_dots(alpha=0.4, col="red") +
+  tm_shape(aoi) +
+  tm_borders("gray50") +
+  tm_layout(main.title="Venus Flytrap and Soil Nitrogen in the Carolinas")
+```
+
+> Zoom capabilities are possible with `tmap_mode`. The default hover text is the first column in `vflytrap_sub`, which is the specimen key. This could be helpful, but I'm going to change it to the year of observation.
+
+```{r}
+#| eval: false
+
+tmap_mode("view")
+
+tm_shape(crop(soils, aoi, mask=TRUE)) +
+  tm_raster(n=8, palette = viridis::viridis(8),
+            title = "Soil N\n(Surface)") +
+  tm_legend(outside=TRUE) +
+  tm_shape(vflytrap_sub) +
+  tm_dots(alpha=0.4, id="year", col="red") +
+  tm_shape(aoi) +
+  tm_borders("gray50") +
+  tm_layout(main.title="Venus Flytrap and Soil Nitrogen in the Carolinas")
+```
+
+> For a `tidycensus` example, I'll pull data on county level population to see if Vensus flytraps are in heavily populated areas.
+
+```{r}
+#| message: false
+#| eval: false
+
+block_pop <- get_acs(geography = "county",
+                     # most recent year available
+                     year = 2022,
+                     variables = "B01001_001",
+                     state = c("NC", "SC"),
+                     geometry=TRUE)
+block_pop_proj <- block_pop %>%
+  st_make_valid() %>%
+  filter(!st_is_empty(.)) %>%
+  st_transform(crs = st_crs(vflytrap_sub))
+
+tm_shape(block_pop_proj) +
+  tm_polygons(col="estimate", border.alpha = 0,
+              n=8, palette = viridis::viridis(8),
+            title = "Population", id="estimate") +
+  tm_legend(outside=TRUE) +
+  tm_shape(vflytrap_sub) +
+  tm_dots(alpha=0.4, col="red", interactive=FALSE) +
+  tm_shape(aoi) +
+  tm_borders("gray50") +
+  tm_layout(main.title="Venus Flytrap and Population in the Carolinas")
+```
+
