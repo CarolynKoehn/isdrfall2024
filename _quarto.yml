@@ -131,6 +131,8 @@ website:
               file: content/26-content.qmd
             - text: "27: Introduction to Interactive Maps"
               file: content/27-content.qmd
+            - text: "28: Interactive Dashboards"
+              file: content/28-content.qmd
             # - text: "32: Conclusion"
             #   file: content/32-content.qmd  
     - title: "Assignments"

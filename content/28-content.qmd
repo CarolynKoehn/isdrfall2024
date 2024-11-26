@@ -1,0 +1,39 @@
+---
+title: "Interactive Dashboards"
+date: "2024-12-02"
+---
+
+```{r slides-videos, echo=FALSE, include=FALSE}
+source(here::here("R", "slide-things.R"))
+```
+
+Now that you’ve had a chance to practice building a few maps and learning some of the core ideas behind the Grammar of Graphics, we can extend those ideas into the development of interactive webmaps and more expansive data visualizations that can be served on the internet and accessed by collaborators and members of the public. Like the previous unit on static maps, this could be a course unto itself, but we should be able to introduce you to enough ideas to get started.
+
+## Resources
+
+- {{< fa arrow-up-right-from-square >}} The [`flexdashboard` vignette](https://rstudio.github.io/flexdashboard/articles/shiny.html) has a simple working example of an interactive dashboard and links to other examples with source code.
+
+
+## Objectives
+
+By the end of today you should be able to:
+
+- List the necessary elements of an interactive dashboard
+
+- Outline the structure of code needed to build a `flexdashboard`
+
+- Build a simple interactive dashboard with spatial data
+
+
+```{r show-slide-tabs, echo=FALSE, results="asis"}
+slide_buttons("/slides/28-slides")
+```
+
+<div>
+
+```{=html}
+<iframe class="slide-deck" src="/slides/28-slides.html"></iframe>
+```
+
+</div>
+

@@ -1,0 +1,172 @@
+---
+title: "Interactive Dashboards"
+subtitle: "HES 505 Fall 2024: Session 28"
+author: "Carolyn Koehn"
+execute: 
+  eval: false
+  echo: true
+format: 
+  revealjs:
+    theme: mytheme.scss
+    slide-number: true
+    show-slide-number: print
+    self-contained: true  
+---
+
+# Objectives {background="#0033A0"}
+
+- List the necessary elements of an interactive dashboard
+
+- Outline the structure of code needed to build a `flexdashboard`
+
+- Build a simple interactive dashboard with spatial data
+
+
+## What is an interactive dashboard?
+
+- Reactive to user inputs
+
+- [Examples](https://pkgs.rstudio.com/flexdashboard/articles/examples.html)
+
+## What do we need?
+
+1. Proper YAML header
+2. `global` code chunk to load libraries and data
+3. `Shiny` inputs and outputs
+4. Render results
+
+## YAML header
+
+- Output is now a flexdashboard (instead of html)
+
+- `runtime:: shiny` allows `R Shiny` to handle interactivity
+
+```{r}
+---
+title: "Climate, social, and environmental justice markers for the Pacific Northwest"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+```
+
+## `global` code
+
+Code that only needs to run once
+
+```{r global}
+#| echo: fenced
+# include: false
+
+library(shiny)
+library(sf)
+library(tidyverse)
+library(tmap)
+tmap_mode("view")
+
+cejst <- st_read("/opt/data/data/assignment01/cejst_nw.shp")
+
+# get column codes and meanings
+col_choices <- read_csv("/opt/data/data/assignment04/columns.csv") %>%
+  # make nicer column names for a display table
+  rename("Code" = "shapefile_column", "Description" = "column_name") %>%
+  # keep only "percentile" type columns
+  filter(str_detect(Code, "PFS"))
+```
+
+## Inputs
+
+- Live in a `sidebar`
+
+```{r}
+#| eval: false
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+```
+
+## Types of Inputs
+
+:::{style="font-size: 0.8em"}
+|`R` Function |	Input Type |
+|:--|:---|
+|`selectInput` 	|A box with choices to select from|
+|`sliderInput` |	A slider bar|
+|`radioButtons` |	A set of radio buttons|
+|`textInput` |	A field to enter text|
+|`numericInput`| 	A field to enter numbers|
+|`checkboxInput`| 	A single check box|
+|`dateInput` |	A calendar to aid date selection|
+|`dateRangeInput`| 	A pair of calendars for selecting a date range|
+|`fileInput` 	|A file upload control wizard|
+:::
+
+## Adding Inputs
+
+```{r}
+# Box with choices: which cejst column to map
+selectInput("column_select", label = "Justice Marker:",
+            choices = col_choices$Code, selected = "DF_PFS")
+
+# Two sliders to select the maximum and minimum values to map
+sliderInput("min_threshold_adjust", label = "Minimum value:",
+            min = 0, max = 1, value = 0.5, step = 0.05)
+sliderInput("max_threshold_adjust", label = "Maximum value:",
+            min = 0, max = 1, value = 1, step = 0.05)
+```
+
+## Adding Outputs
+
+Create a new column with title
+
+```{r}
+Column
+-----------------------------------------------------------------------
+
+### Climate, Social, and Environmental Justice
+```
+
+## Types of Outputs
+
+|`R` Function |	Output Type|
+|:--|:---|
+|`renderPlot` |	R graphics output|
+|`renderPrint` |	R printed output|
+|`renderTable` |	Data frame, matrix, other table like structures|
+|`renderText` 	|Character vectors|
+
+## Adding Reactive Output
+
+- Specify reactive elements with `input$NameOfInput`
+
+- In this example, we use reactive filtering to only map `cejst` tracts that meet user criteria
+
+```{r}
+# renderTmap is a tmap special case of renderPlot
+renderTmap({
+  # put reactively filtered data in tm_shape
+  tm_shape(subset(cejst[, input$column_select], # subset data to user's column
+                  # use the subset in the filtering steps, selecting the column of data with [[1]]
+                  cejst[, input$column_select][[1]] <= input$max_threshold_adjust & # data column should be less than or equal to the user's max threhold
+                    cejst[, input$column_select][[1]] >= input$min_threshold_adjust)) + #more than or equal to the min threshold
+    # add the polygons filled by the user's selected column
+    tm_polygons(col = input$column_select)
+})
+```
+
+## Add text/explanation to sidebar
+
+- Add plain text before or after code chunks
+
+- I've also added a nice table with the column name meanings for reference
+
+```{r}
+knitr::kable(col_choices[,1:2])
+```
+
+## Publishing
+
+- On shinyapps.io (free; [tutorial here](https://cobalt-casco.github.io/r-shiny-geospatial/05-publishing-shiny-app.html))
+
+- On GitHub Pages (limited free pages; [tutorial here](https://www.r-bloggers.com/2020/09/deploying-flexdashboard-on-github-pages/))
+
+- Contact Research Computing for options
