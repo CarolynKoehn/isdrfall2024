@@ -233,6 +233,8 @@ website:
               file: example/session-25-example.qmd
             - text: "Interactivity"
               file: example/session-27-example.qmd
+            - text: "Interactive Dashboard"
+              file: example/session-28-example.qmd
 
     - title: "Lessons"
       contents:

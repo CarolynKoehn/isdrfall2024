@@ -1,0 +1,122 @@
+---
+title: "Climate, social, and environmental justice markers for the Pacific Northwest"
+output: html
+---
+
+The YAML header for the app is:
+
+```{r}
+#| eval: false
+
+---
+title: "Climate, social, and environmental justice markers for the Pacific Northwest"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+```
+
+`global` code chunk:
+
+```{r global}
+#| eval: false
+#| echo: fenced
+# replace 'eval:false' with 'include: false'
+
+library(shiny)
+library(sf)
+library(tidyverse)
+library(tmap)
+tmap_mode("view")
+
+cejst <- st_read("/opt/data/data/assignment01/cejst_nw.shp")
+
+# get column codes and meanings
+col_choices <- read_csv("/opt/data/data/assignment04/columns.csv") %>%
+  # make nicer column names for a display table
+  rename("Code" = "shapefile_column", "Description" = "column_name") %>%
+  # keep only "percentile" type columns
+  filter(str_detect(Code, "PFS"))
+```
+
+Create a sidebar column:
+
+```{r}
+#| echo: true
+#| eval: false
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Select the cejst marker:
+```
+
+Add code chunk with inputs under the sidebar column:
+
+```{r}
+#| eval: false
+
+# Box with choices: which cejst column to map
+selectInput("column_select", 
+            label = "Justice Marker:",
+            choices = col_choices$Code, 
+            selected = "DF_PFS")
+
+# Two sliders to select the maximum and minimum values to map
+sliderInput("min_threshold_adjust", 
+            label = "Minimum value:",
+            min = 0, 
+            max = 1, 
+            value = 0.5, 
+            step = 0.05)
+sliderInput("max_threshold_adjust", label = "Maximum value:",
+            min = 0, max = 1, value = 1, step = 0.05)
+```
+
+Add table in sidebar:
+
+```{r}
+#| eval: false
+knitr::kable(col_choices[,1:2])
+```
+
+Add another column for map display:
+
+```{r}
+#| echo: true
+#| eval: false
+
+Column
+-----------------------------------------------------------------------
+
+### Climate, Social, and Environmental Justice
+```
+
+Render map with filters based on user inputs:
+
+```{r}
+#| eval: false
+
+# renderTmap is a tmap special case of renderPlot
+renderTmap({
+  # put reactively filtered data in tm_shape
+  tm_shape(subset(cejst[, input$column_select], # subset data to user's column
+                  # use the subset in the filtering steps, selecting the column of data with [[1]]
+                  cejst[, input$column_select][[1]] <= input$max_threshold_adjust & # data column should be less than or equal to the user's max threshold
+                    cejst[, input$column_select][[1]] >= input$min_threshold_adjust)) + #more than or equal to the min threshold
+    # add the polygons filled by the user's selected column
+    tm_polygons(col = input$column_select)
+})
+```
+
+You can test your code by creating the "base" plot first, then adding the `input$` reactive elements later.
+
+```{r}
+#| eval: false
+
+# how to test your code
+tm_shape(subset(cejst[, "DF_PFS"], 
+                  cejst[, "DF_PFS"][[1]] <= 1 &
+                    cejst[, "DF_PFS"][[1]] >= 0.5)) +
+    tm_polygons(col = "DF_PFS")
+```
+
