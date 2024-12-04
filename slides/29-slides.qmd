@@ -1,7 +1,7 @@
 ---
 title: "Conclusion"
-subtitle: "HES 505 Fall 2023: Session 32"
-author: "Matt Williamson"
+subtitle: "HES 505 Fall 2023: Session 29"
+author: "Carolyn Koehn"
 execute: 
   eval: true
 format: 
@@ -18,18 +18,14 @@ format:
 
 ## Storing your data
 
-* Kyle's shared Google drive folder syncs to: `/opt/data/2023/project_data/`
+* Kyle's shared Google drive folder syncs to: `/opt/data/data/finalproject/`
   
   * Read Only
-  * Syncs hourly
-
-* You have write access to: `/opt/projects/` 
-  * Intermediate files
-  * Things you don't want others to see
+  * Syncs hourly (at half past)
   
 # Work Session
 
->ERB 1127: 11am - 1pm
+>This classroom: 2:30am - 4:30pm, Dec 11
 
 # Course Objectives
 
