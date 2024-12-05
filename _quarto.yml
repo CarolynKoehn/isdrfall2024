@@ -150,6 +150,8 @@ website:
               file: assignment/10-secondrevision.qmd
             - text: "Assignment Revision 3"
               file: assignment/13-thirdrevision.qmd
+            - text: "Final Self-reflection" 
+              file: assignment/self-eval3.qmd
         - section: "Homework"
           contents:
             - text: "Introducing the course" 
