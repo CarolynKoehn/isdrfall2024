@@ -2,4 +2,4 @@
 title: "Examples"
 ---
 
-This section has the code and description from the live-coding exercises that we'll do in class.
+This section has the code and description from the live-coding exercises that we did in class. Select a topic from the side menu to review the code we worked through together.
